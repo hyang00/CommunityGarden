@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "115814183426",
+    "firebase_url": "https://gardentours-3ec05.firebaseio.com",
+    "project_id": "gardentours-3ec05",
+    "storage_bucket": "gardentours-3ec05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115814183426:android:fb232981e215f3daafed1b",
+        "android_client_info": {
+          "package_name": "com.example.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "115814183426-2r0or849slei07tvj69ur5fg6n7vgsbd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finalproject",
+            "certificate_hash": "60235a819b35b871c72bcacc84e2cb3be5a97444"
+          }
+        },
+        {
+          "client_id": "115814183426-ms4kqknclsesfqsaepjt46v2cn5gb93b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6QLiKFywqmD4dJCbl5-6ZxmCoupmZNWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115814183426-ms4kqknclsesfqsaepjt46v2cn5gb93b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
