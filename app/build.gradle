@@ -34,6 +34,9 @@ dependencies {
 
     // add the Firebase SDK for Google Analytics
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    // add the firebase sdk for Authentification
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+
     // add SDKs for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
 }
