@@ -82,9 +82,10 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            goToSignUpActivity();
+                            //FirebaseUser user = firebaseAuth.getCurrentUser();
+
                             // TODO: Register user in database
-                            goToMainActivity();
                         } else {
                             // Show failure message
                             Toast toast = Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT);
@@ -99,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 
     private void loginUser(String email, String password) {
         firebaseAuth.signInWithEmailAndPassword(email, password)
@@ -124,6 +127,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public void goToMainActivity(){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToSignUpActivity() {
+        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
         startActivity(intent);
         finish();
     }
