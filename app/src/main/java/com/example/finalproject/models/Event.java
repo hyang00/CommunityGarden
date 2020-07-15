@@ -25,6 +25,7 @@ public class Event {
         this.address = address;
         this.time = time;
         attendees = new ArrayList<String>();
+        attendees.add("hi");
     }
 
     public String getAuthor() {
