@@ -76,19 +76,22 @@ public class HostEventFragment extends Fragment {
                     Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String uid = firebaseAuth.getInstance().getCurrentUser().getUid();
                 postEvent(uid, title, description, address, time);
             }
         });
     }
     public void postEvent(String author, String title, String description, String location, String time){
-        Event event = new Event(author, title, description, location, time);
+
         String key = mDatabase.child("Posts").push().getKey();
+        Event event = new Event(key, author, title, description, location, time);
         mDatabase.child("Posts").child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.i(TAG, "posted successfully");
             }
         });
+        mDatabase.child("UserEvents").child(author).child("eventsHosting").child(key).setValue(true);
+        //mDatabase.child("UserEvents").child(author).child("eventsHosting").push().setValue(key);
     }
 }
