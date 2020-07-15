@@ -6,8 +6,12 @@ public class User {
     private String location;
     private String bio;
 
-    User(String uid, String screenName, String location, String bio){
-        this.uid = uid;
+    public User(){
+
+    }
+
+    public User(String screenName, String location, String bio){
+        //this.uid = uid;
         this.screenName = screenName;
         this.location = location;
         this.bio = bio;
