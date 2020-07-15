@@ -99,6 +99,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                         //map.put(uid, true);
                         //userEventRef.updateChildren(map2);
                         Toast.makeText(context, "Successfully Registered", Toast.LENGTH_SHORT).show();
+                        database.child("UserEvents").child(uid).child("eventsAttending").child(event.getEventId()).setValue(true);
+
                     } else {
                         Toast.makeText(context, "Already Registered", Toast.LENGTH_SHORT).show();
                     }
