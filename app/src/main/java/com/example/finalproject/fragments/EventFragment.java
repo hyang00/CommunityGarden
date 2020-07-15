@@ -91,19 +91,20 @@ public class EventFragment extends Fragment {
     }
 
     private void queryEvents() {
-        adapter.clear();
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = database.child("Posts");
         //Query phoneQuery = ref.orderByChild(phoneNo).equalTo("+923336091371");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                adapter.clear();
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                     Event event = singleSnapshot.getValue(Event.class);
+                    event.setEventId(singleSnapshot.getKey());
                     adapter.add(event);
-                    adapter.notifyDataSetChanged();
-
+                    Log.i(TAG, event.getTitle() + ": " + event.getEventId());
                 }
+                adapter.notifyDataSetChanged();
                 swipeContainer.setRefreshing(false);
             }
             @Override

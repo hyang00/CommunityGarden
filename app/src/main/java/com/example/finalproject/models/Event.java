@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
-@IgnoreExtraProperties
+//@IgnoreExtraProperties
 public class Event {
+    private String eventId;
     private String author; // user id
     private String title;
     private String description;
@@ -18,14 +19,23 @@ public class Event {
 
     }
 
-    public Event(String author, String title, String description, String address, String time){
+    public Event(String eventId, String author, String title, String description, String address, String time){
+        //this.eventId = eventId;
         this.author = author;
         this.title = title;
         this.description = description;
         this.address = address;
         this.time = time;
-        attendees = new ArrayList<String>();
+        attendees = new ArrayList<>();
         attendees.add("hi");
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId){
+        this.eventId = eventId;
     }
 
     public String getAuthor() {
@@ -74,5 +84,13 @@ public class Event {
 
     public void setAttendees(List<String> attendees) {
         this.attendees = attendees;
+    }
+
+    public void addAttendee(String uid){
+        attendees.add(uid);
+    }
+
+    public boolean isAttending(String uid){
+        return attendees.contains(uid);
     }
 }
