@@ -1,5 +1,7 @@
 package com.example.finalproject.fragments;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -63,7 +69,37 @@ public class HostEventFragment extends Fragment {
         etDate = view.findViewById(R.id.etDate);
         etTime = view.findViewById(R.id.etTime);
         btnPost = view.findViewById(R.id.btnPost);
-
+        // launch a date picker when filling out date, populate date picker w/ current day/month/year to begin with;
+        etDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                DatePickerDialog picker = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                etDate.setText( (monthOfYear + 1) + "/"  +dayOfMonth +"/" + year);
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
+        // launch a time picker when filling out the time
+        etTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerDialog picker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int sHour, int sMinute) {
+                        etTime.setText(formatTime(sHour, sMinute));
+                    }
+                }, 1, 1, false);
+                picker.show();
+            }
+        });
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,6 +117,7 @@ public class HostEventFragment extends Fragment {
             }
         });
     }
+
     public void postEvent(String author, String title, String description, String location, String time){
 
         String key = mDatabase.child("Posts").push().getKey();
@@ -93,5 +130,22 @@ public class HostEventFragment extends Fragment {
         });
         mDatabase.child("UserEvents").child(author).child("eventsHosting").child(key).setValue(true);
         //mDatabase.child("UserEvents").child(author).child("eventsHosting").push().setValue(key);
+    }
+    // Takes in hours/24 and minutes/60 and formats it as 1:00 PM form
+    public String formatTime(int hour, int min) {
+        String format = " AM";
+        String minutes = ""+ min;
+        if (hour>=12) {
+            format = " PM";
+        }
+        if (hour == 0) {
+            hour += 12;
+        } else if (hour > 12) {
+            hour -=12;
+        }
+        if (min<10){
+            minutes = "0"+ minutes;
+        }
+        return ""+ hour + ":" + minutes + format;
     }
 }

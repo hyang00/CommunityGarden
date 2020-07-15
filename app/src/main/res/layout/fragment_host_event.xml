@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="false"
     android:orientation="vertical"
     android:padding="12dp"
     tools:context=".fragments.HostEventFragment">
@@ -32,12 +33,18 @@
         android:hint="Address"
         android:inputType="textPostalAddress" />
 
+    <!--    <DatePicker android:id="@+id/datePicker1"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:datePickerMode="calendar"/>-->
+
     <EditText
         android:id="@+id/etDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="date"
+        android:focusableInTouchMode="false"
+        android:hint="MM/DD/YYYY"
         android:inputType="textShortMessage" />
 
     <EditText
@@ -45,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:focusableInTouchMode="false"
         android:hint="Time"
         android:inputType="textPersonName" />
 
