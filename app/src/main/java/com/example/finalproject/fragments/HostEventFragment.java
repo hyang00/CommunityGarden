@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,16 +37,26 @@ import com.example.finalproject.ImageFormatter;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -63,6 +74,8 @@ public class HostEventFragment extends Fragment {
     private EditText etDate;
     private EditText etTime;
     private Button btnPost;
+    private Uri imageToUpload;
+    private Uri downloadUri;
 
     FirebaseAuth firebaseAuth;
     private DatabaseReference mDatabase;
@@ -151,7 +164,7 @@ public class HostEventFragment extends Fragment {
     public void postEvent(String author, String title, String description, String location, String time){
 
         String key = mDatabase.child("Posts").push().getKey();
-        Event event = new Event(key, author, title, description, location, time);
+        Event event = new Event(key, author, title, description, downloadUri.toString(), location, time);
         mDatabase.child("Posts").child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -210,40 +223,89 @@ public class HostEventFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode != RESULT_CANCELED) {
+            Bitmap bm = null;
             switch (requestCode) {
                 case 0:
                     if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        ivPhoto.setImageBitmap(selectedImage);
+                        bm = (Bitmap) data.getExtras().get("data");
+                        ivPhoto.setImageBitmap(bm);
+                        imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
                     }
-
                     break;
                 case 1:
                     if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage =  data.getData();
-                        Bitmap bm = null;
-//                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//                        if (selectedImage != null) {
-//                            Cursor cursor = getContext().getContentResolver().query(selectedImage,
-//                                    filePathColumn, null, null, null);
-//                            if (cursor != null) {
-//                                cursor.moveToFirst();
-//
-//                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                                String picturePath = cursor.getString(columnIndex);
-//                                ivPhoto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-//                                cursor.close();
-//                            }
-//                        }
                         bm = ImageFormatter.getImageResized(getContext(), selectedImage);
                         int rotation = ImageFormatter.getRotation(getContext(), selectedImage, false);
                         bm = ImageFormatter.rotate(bm, rotation);
                         ivPhoto.setImageBitmap(bm);
-                        //ivPhoto.setImageURI(selectedImage);
-
+                        //uploadImage(selectedImage);
                     }
                     break;
             }
+            imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
+            uploadImage(imageToUpload);
+        }
+    }
+
+
+
+    private void uploadImage(Uri filePath) {
+        FirebaseStorage storage;
+        StorageReference storageReference;
+
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
+        if(filePath != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            final StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            ref.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    }).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return ref.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                downloadUri = task.getResult();
+                                Log.i(TAG, downloadUri.toString());
+                            } else {
+                            }
+                        }
+                    });
+
         }
     }
 }

@@ -26,7 +26,7 @@
     <EditText
         android:id="@+id/etDescription"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:ems="10"
         android:gravity="start|top"
         android:hint="Description"
@@ -35,7 +35,7 @@
     <ImageView
         android:id="@+id/ivPhoto"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="200dp"
         app:srcCompat="@drawable/ic_baseline_add_box_24"
         tools:src="@tools:sample/avatars" />
 

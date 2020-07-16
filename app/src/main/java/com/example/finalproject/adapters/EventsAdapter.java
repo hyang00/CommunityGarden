@@ -2,6 +2,7 @@ package com.example.finalproject.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.finalproject.EventDetailsActivity;
 import com.example.finalproject.LoginActivity;
 import com.example.finalproject.MainActivity;
@@ -29,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.parceler.Parcels;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +122,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             // bind the event data to the view elements
             tvTitle.setText(event.getTitle());
             tvDescription.setText(event.getDescription());
+            if(event.getImageUrl()!=null){
+               Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
+            }
         }
 
         @Override

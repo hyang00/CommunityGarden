@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 
 // Modified from :  https://gist.github.com/Mariovc/f06e70ebe8ca52fbbbe2
@@ -19,6 +20,15 @@ public class ImageFormatter {
 
     public static final  String TAG = "Image Formatter";
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
+
+    //convert bitmap to uri
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
     /**
      * Resize to avoid using too much memory loading big images (e.g.: 2560*1920)
      **/

@@ -14,6 +14,7 @@ public class Event {
     private String author; // user id
     private String title;
     private String description;
+    private String imageUrl;
     private String address;
     private String time;
     private List<String> attendees;
@@ -22,15 +23,16 @@ public class Event {
 
     }
 
-    public Event(String eventId, String author, String title, String description, String address, String time){
+    public Event(String eventId, String author, String title, String description, String imageUrl, String address, String time){
         //this.eventId = eventId;
         this.author = author;
         this.title = title;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.address = address;
         this.time = time;
         attendees = new ArrayList<>();
-        attendees.add("hi");
+        attendees.add(author);
     }
 
     public String getEventId() {
@@ -94,6 +96,17 @@ public class Event {
     }
 
     public boolean isAttending(String uid){
+        if(attendees==null){
+            return false;
+        }
         return attendees.contains(uid);
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
