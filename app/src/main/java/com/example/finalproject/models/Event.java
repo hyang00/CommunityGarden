@@ -5,7 +5,10 @@ import java.util.List;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import org.parceler.Parcel;
+
 //@IgnoreExtraProperties
+@Parcel
 public class Event {
     private String eventId;
     private String author; // user id

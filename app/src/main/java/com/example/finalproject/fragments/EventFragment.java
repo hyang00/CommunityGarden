@@ -90,7 +90,7 @@ public class EventFragment extends Fragment {
     private void loadNextDataFromApi(int page, int totalItemsCount) {
     }
 
-    private void queryEvents() {
+    protected void queryEvents() {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = database.child("Posts");
         //Query phoneQuery = ref.orderByChild(phoneNo).equalTo("+923336091371");
