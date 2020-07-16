@@ -30,7 +30,7 @@ import java.util.List;
 
 public class EventFragment extends Fragment {
 
-    public static final  String TAG = "Event Fragment";
+    private static final  String TAG = "Event Fragment";
 
     private RecyclerView rvEvents;
     protected EventsAdapter adapter;
@@ -92,7 +92,7 @@ public class EventFragment extends Fragment {
 
     protected void queryEvents() {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference ref = database.child("Posts");
+        Query ref = database.child("Posts").orderByKey();
         //Query phoneQuery = ref.orderByChild(phoneNo).equalTo("+923336091371");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
