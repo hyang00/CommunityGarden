@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,13 +9,19 @@
     android:padding="12dp"
     tools:context=".fragments.HostEventFragment">
 
-    <EditText
-        android:id="@+id/etTitle"
+    <com.google.android.material.textfield.TextInputLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Title"
-        android:inputType="textPersonName" />
+        android:hint="Title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etTitle"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <EditText
         android:id="@+id/etDescription"
@@ -24,6 +31,13 @@
         android:gravity="start|top"
         android:hint="Description"
         android:inputType="textImeMultiLine" />
+
+    <ImageView
+        android:id="@+id/ivPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/ic_baseline_add_box_24"
+        tools:src="@tools:sample/avatars" />
 
     <EditText
         android:id="@+id/etAddress"
@@ -37,15 +51,27 @@
     <!--        android:layout_width="wrap_content"-->
     <!--        android:layout_height="wrap_content"-->
     <!--        android:datePickerMode="calendar"/>-->
-
-    <EditText
-        android:id="@+id/etDate"
+    <com.google.android.material.textfield.TextInputLayout
+        app:startIconDrawable="@drawable/ic_baseline_event_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:focusableInTouchMode="false"
-        android:hint="MM/DD/YYYY"
-        android:inputType="textShortMessage" />
+        android:hint="MM/DD/YYYY">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+<!--    <EditText-->
+<!--        android:id="@+id/etDate"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:ems="10"-->
+<!--        android:focusableInTouchMode="false"-->
+<!--        android:hint="MM/DD/YYYY"-->
+<!--        android:inputType="textShortMessage" />-->
 
     <EditText
         android:id="@+id/etTime"
