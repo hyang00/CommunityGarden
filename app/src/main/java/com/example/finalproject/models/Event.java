@@ -1,7 +1,14 @@
 package com.example.finalproject.models;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -17,7 +24,8 @@ public class Event {
     private String imageUrl;
     private String address;
     private String time;
-    private List<String> attendees;
+    private Map<String, Boolean> attendees = new HashMap<>();
+    //private ArrayList<String> attendees = new ArrayList<>();
 
     public Event(){
 
@@ -31,8 +39,6 @@ public class Event {
         this.imageUrl = imageUrl;
         this.address = address;
         this.time = time;
-        attendees = new ArrayList<>();
-        attendees.add(author);
     }
 
     public String getEventId() {
@@ -83,24 +89,39 @@ public class Event {
         this.time = time;
     }
 
-    public List<String> getAttendees() {
+    public Map<String, Boolean> getAttendees() {
         return attendees;
     }
 
-    public void setAttendees(List<String> attendees) {
+    public void setAttendees(Map<String, Boolean> attendees) {
         this.attendees = attendees;
     }
 
-    public void addAttendee(String uid){
-        attendees.add(uid);
+    public boolean isAttending(String uid){
+        return attendees.containsKey(uid);
     }
 
-    public boolean isAttending(String uid){
-        if(attendees==null){
-            return false;
-        }
-        return attendees.contains(uid);
+    public void addAttendee(String uid){
+        attendees.put(uid, true);
     }
+    //    public List<String> getAttendees() {
+//        return attendees;
+//    }
+//
+//    public void setAttendees(List<String> attendees) {
+//        this.attendees = attendees;
+//    }
+//
+//    public void addAttendee(String uid){
+//        attendees.add(uid);
+//    }
+//
+//    public boolean isAttending(String uid){
+//        if(attendees==null){
+//            return false;
+//        }
+//        return attendees.contains(uid);
+//    }
 
     public String getImageUrl() {
         return imageUrl;

@@ -22,6 +22,8 @@ import com.example.finalproject.LoginActivity;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,7 +67,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     public void add(Event event) {
-        events.add(event);
+        events.add( event);
     }
 
     public void clear() {
@@ -99,15 +101,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
                     // check if the user has already rsvp'd
                     if (!event.isAttending(uid)){
-                        event.addAttendee(uid);
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("attendees", event.getAttendees());
-                        eventRef.updateChildren(map);
-                        //Map<String, Object> map2 = new HashMap<>();
-                        //map.put(uid, true);
-                        //userEventRef.updateChildren(map2);
+                        database.child("Posts").child(event.getEventId()).child("attendees").child(uid).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.i("hi", "here");
+                            }
+                        });
                         Toast.makeText(context, "Successfully Registered", Toast.LENGTH_SHORT).show();
-                        database.child("UserEvents").child(uid).child("eventsAttending").child(event.getEventId()).setValue(true);
+                        //database.child("UserEvents").child(uid).child("eventsAttending").child(event.getEventId()).setValue(true);
 
                     } else {
                         Toast.makeText(context, "Already Registered", Toast.LENGTH_SHORT).show();
