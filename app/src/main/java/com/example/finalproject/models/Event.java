@@ -104,24 +104,6 @@ public class Event {
     public void addAttendee(String uid){
         attendees.put(uid, true);
     }
-    //    public List<String> getAttendees() {
-//        return attendees;
-//    }
-//
-//    public void setAttendees(List<String> attendees) {
-//        this.attendees = attendees;
-//    }
-//
-//    public void addAttendee(String uid){
-//        attendees.add(uid);
-//    }
-//
-//    public boolean isAttending(String uid){
-//        if(attendees==null){
-//            return false;
-//        }
-//        return attendees.contains(uid);
-//    }
 
     public String getImageUrl() {
         return imageUrl;
