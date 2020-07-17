@@ -47,6 +47,7 @@
         android:id="@+id/ivPhoto"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_baseline_add_box_24"
         tools:src="@tools:sample/avatars" />
     <com.google.android.material.textfield.TextInputLayout
