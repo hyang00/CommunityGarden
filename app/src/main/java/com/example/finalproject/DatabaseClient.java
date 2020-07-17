@@ -84,6 +84,24 @@ public class DatabaseClient {
         }
 
     }
+    // Get User profile
+    public static void getUserProfile(final String userId){
+        Query ref = database.child(KEY_PROFILE).child(userId);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot singleSnapshot : snapshot.getChildren()){
+                    User user = singleSnapshot.getValue(User.class);
+                    EventDetailsActivity.setUser(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     // Query events for main Event feed
     public static void queryEvents(final EventsAdapter adapter, final SwipeRefreshLayout swipeContainer){
