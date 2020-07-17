@@ -84,7 +84,6 @@ public class HostEventFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,6 +102,7 @@ public class HostEventFragment extends Fragment {
         etDate = view.findViewById(R.id.etDate);
         etTime = view.findViewById(R.id.etTime);
         btnPost = view.findViewById(R.id.btnPost);
+        // launch an option to either add photo to post from camera/gallery
         ivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,6 +140,7 @@ public class HostEventFragment extends Fragment {
                 picker.show();
             }
         });
+        // Save Post to database on click
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,7 +153,17 @@ public class HostEventFragment extends Fragment {
                     Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                // post event to realtime db
                 DatabaseClient.postEvent(getContext(), title, description, address, date, time, downloadUri);
+
+                // reset fields TODO: Maybe go to another page when done posting?
+                etTitle.setText("");
+                etDescription.setText("");
+                etAddress.setText("");
+                etDate.setText("");
+                etTime.setText("");
+                ivPhoto.setImageResource(R.drawable.ic_baseline_add_box_24);
             }
         });
     }
@@ -208,14 +219,14 @@ public class HostEventFragment extends Fragment {
         if(resultCode != RESULT_CANCELED) {
             Bitmap bm = null;
             switch (requestCode) {
-                case 0:
+                case 0:  // If photo from Camera
                     if (resultCode == RESULT_OK && data != null) {
                         bm = (Bitmap) data.getExtras().get("data");
                         ivPhoto.setImageBitmap(bm);
                         imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
                     }
                     break;
-                case 1:
+                case 1:     // If photo from Gallery
                     if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage =  data.getData();
                         bm = ImageFormatter.getImageResized(getContext(), selectedImage);

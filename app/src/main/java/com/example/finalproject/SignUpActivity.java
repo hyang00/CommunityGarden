@@ -38,8 +38,10 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.activity_sign_up);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         etName = findViewById(R.id.etName);
         etBio = findViewById(R.id.etBio);
         etAddress = findViewById(R.id.etAddress);

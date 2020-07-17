@@ -124,7 +124,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Pass activity result back to Facebook SDK
         facebookLoginManager.onActivityResult(requestCode, resultCode, data);
     }
@@ -141,16 +140,14 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
                             final FirebaseUser user = firebaseAuth.getCurrentUser();
                             DatabaseClient.isNewUser(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()){
-                                        goToMainActivity();
+                                        goToMainActivity(); // if a returning user go to home page
                                     } else {
-                                        createFacebookUser(user);
+                                        createFacebookUser(user);  // otherwise populate user profile in database
                                     }
                                 }
                                 @Override
@@ -163,12 +160,12 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
                     }
                 });
     }
 
+    // Create new user profile in firebase when new user logs in through facebook
     private void createFacebookUser(FirebaseUser firebaseUser){
         String firebaseUserDisplayName = firebaseUser.getDisplayName();
         String firebaseUserProfilePhotoURL = "https://graph.facebook.com" + firebaseUser.getPhotoUrl().getPath() + "?type=large";

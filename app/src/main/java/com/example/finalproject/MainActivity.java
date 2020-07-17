@@ -25,14 +25,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-
-        // define your fragments here
-//        final Fragment fragment1 = new FirstFragment();
-//        final Fragment fragment2 = new SecondFragment();
-//        final Fragment fragment3 = new ThirdFragment();
 
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(

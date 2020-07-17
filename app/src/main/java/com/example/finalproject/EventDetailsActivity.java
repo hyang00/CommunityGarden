@@ -66,6 +66,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         }, event.getAuthor());
+
         tvDate.setText(event.getDate());
         tvTime.setText(event.getTime());
         tvDescription.setText(event.getDescription());
