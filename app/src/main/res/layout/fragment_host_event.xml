@@ -21,16 +21,27 @@
             android:id="@+id/etTitle"
             />
     </com.google.android.material.textfield.TextInputLayout>
-
-
-    <EditText
-        android:id="@+id/etDescription"
+    <com.google.android.material.textfield.TextInputLayout
+        app:startIconDrawable="@drawable/ic_baseline_description_24"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="Description"
-        android:inputType="textImeMultiLine" />
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
+        android:hint="Description">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        android:id="@+id/etDescription"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:ems="10"-->
+<!--        android:gravity="start|top"-->
+<!--        android:hint="Description"-->
+<!--        android:inputType="textImeMultiLine" />-->
 
     <ImageView
         android:id="@+id/ivPhoto"
@@ -38,21 +49,32 @@
         android:layout_height="200dp"
         app:srcCompat="@drawable/ic_baseline_add_box_24"
         tools:src="@tools:sample/avatars" />
-
-    <EditText
-        android:id="@+id/etAddress"
+    <com.google.android.material.textfield.TextInputLayout
+        app:startIconDrawable="@drawable/ic_baseline_event_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Address"
-        android:inputType="textPostalAddress" />
+        android:focusableInTouchMode="false"
+        android:hint="Address">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+<!--    <EditText-->
+<!--        android:id="@+id/etAddress"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Address"-->
+<!--        android:inputType="textPostalAddress" />-->
 
     <!--    <DatePicker android:id="@+id/datePicker1"-->
     <!--        android:layout_width="wrap_content"-->
     <!--        android:layout_height="wrap_content"-->
     <!--        android:datePickerMode="calendar"/>-->
     <com.google.android.material.textfield.TextInputLayout
-        app:startIconDrawable="@drawable/ic_baseline_event_24"
+        app:startIconDrawable="@drawable/ic_baseline_location_on_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="false"
@@ -72,15 +94,27 @@
 <!--        android:focusableInTouchMode="false"-->
 <!--        android:hint="MM/DD/YYYY"-->
 <!--        android:inputType="textShortMessage" />-->
-
-    <EditText
-        android:id="@+id/etTime"
+    <com.google.android.material.textfield.TextInputLayout
+        app:startIconDrawable="@drawable/ic_baseline_access_time_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:focusableInTouchMode="false"
-        android:hint="Time"
-        android:inputType="textPersonName" />
+        android:hint="Time">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+<!--    <EditText-->
+<!--        android:id="@+id/etTime"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:ems="10"-->
+<!--        android:focusableInTouchMode="false"-->
+<!--        android:hint="Time"-->
+<!--        android:inputType="textPersonName" />-->
 
     <Button
         android:id="@+id/btnPost"
