@@ -43,22 +43,12 @@ public class SignUpActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
                 String address = etAddress.getText().toString();
-                createUser(name, bio, address);
+                // Create user profile in database
+                DatabaseClient.createUser(name, bio, address);
                 // Go to main page after finished registering new user
                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
-            }
-        });
-    }
-
-    private void createUser(String name, String bio, String address) {
-        String uid = firebaseAuth.getInstance().getCurrentUser().getUid();
-        User user = new User (name, bio, address);
-        mDatabase.child("Profiles").child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.i(TAG, "profile added to database");
             }
         });
     }

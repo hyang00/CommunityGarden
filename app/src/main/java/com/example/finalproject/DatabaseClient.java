@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.fragments.HostEventFragment;
 import com.example.finalproject.models.Event;
+import com.example.finalproject.models.User;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +35,7 @@ import java.util.UUID;
 public class DatabaseClient {
     private static final String KEY_POSTS = "Posts";
     private static final String KEY_ATTENDEES = "attendees";
+    private static final String KEY_PROFILE = "Profiles";
     private static final String TAG = "Database Client";
     private final static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private final static String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -50,7 +52,17 @@ public class DatabaseClient {
             }
         });
         //database.child("UserEvents").child(author).child("eventsHosting").child(key).setValue(true);
+    }
 
+    // Add a new user profile to the database
+    public static void createUser(String name, String bio, String address){
+        User user = new User (name, bio, address);
+        database.child(KEY_PROFILE).child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.i(TAG, "profile added to database");
+            }
+        });
     }
     // Adds user to attendees section of post
     public static void rsvpUser(final Event event, Context context){
