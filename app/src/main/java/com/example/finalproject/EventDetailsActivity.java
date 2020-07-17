@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
@@ -18,7 +22,7 @@ import org.w3c.dom.Text;
 public class EventDetailsActivity extends AppCompatActivity {
     public static final  String TAG = "EventDetailsActivity";
     private Event event;
-    private static  User user;
+    //private static  User user;
     private TextView tvTitle;
     private ImageView ivEventPhoto;
     private ImageView ivProfilePic;
@@ -27,7 +31,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView tvDate;
     private TextView tvTime;
     private TextView tvDescription;
-    private TextView tvLocation;
+    private TextView tvAddress;
     private Button btnRSVP;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +48,31 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvDate = findViewById(R.id.tvDate);
         tvTime = findViewById(R.id.tvTime);
         tvDescription = findViewById(R.id.tvDescription);
-        tvLocation = findViewById(R.id.tvLocation);
+        tvAddress = findViewById(R.id.tvAddress);
 
         tvTitle.setText(event.getTitle());
         if(event.getImageUrl()!=null){
             Glide.with(EventDetailsActivity.this).load(event.getImageUrl()).into(ivEventPhoto);
         }
-        //tvName.setText(user.getScreenName());
-        //tvName.setText(user.getBio());
-        // TODO: Set profile pic, name + bio
+        DatabaseClient.getUserProfile(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                tvName.setText(user.getScreenName());
+                tvName.setText(user.getBio());
+                // TODO: Set profile pic
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        }, event.getAuthor());
         tvDate.setText(event.getDate());
         tvTime.setText(event.getTime());
         tvDescription.setText(event.getDescription());
-        tvLocation.setText(event.getAddress());
+        tvAddress.setText(event.getAddress());
     }
-    public static void setUser(User user1){
-        user = user1;
-    }
+//    public static void setUser(User user1){
+//        user = user1;
+//    }
 
 }

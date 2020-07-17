@@ -20,6 +20,25 @@ public class UserEventFragment extends EventFragment{
     private static final  String TAG = "UserEventFragment";
     @Override
     protected void queryEvents() {
-        DatabaseClient.queryUserAttendingEvents(adapter, swipeContainer);
+        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseClient.queryUserAttendingEvents(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                adapter.clear();
+                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                    Event event = singleSnapshot.getValue(Event.class);
+                    event.setEventId(singleSnapshot.getKey());
+                    if(event.isAttending(uid)){
+                        adapter.add(event);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

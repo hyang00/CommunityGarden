@@ -84,24 +84,31 @@ public class DatabaseClient {
         }
 
     }
+
     // Get User profile
-    public static void getUserProfile(final String userId){
+    public static void getUserProfile(ValueEventListener listener, String userId){
         Query ref = database.child(KEY_PROFILE).child(userId);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot singleSnapshot : snapshot.getChildren()){
-                    User user = singleSnapshot.getValue(User.class);
-                    EventDetailsActivity.setUser(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        ref.addListenerForSingleValueEvent(listener);
     }
+
+//    // Get User profile
+//    public static void getUserProfile(String userId){
+//        Query ref = database.child(KEY_PROFILE).child(userId);
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot singleSnapshot : snapshot.getChildren()){
+//                    User user = singleSnapshot.getValue(User.class);
+//                    EventDetailsActivity.setUser(user);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
 
     // Query events for main Event feed
     public static void queryEvents(final EventsAdapter adapter, final SwipeRefreshLayout swipeContainer){
@@ -124,34 +131,39 @@ public class DatabaseClient {
             }
         });
     }
-
     // Query events for events that User is attending
-    public static void queryUserAttendingEvents(final EventsAdapter adapter, final SwipeRefreshLayout swipeContainer){
+    public static void queryUserAttendingEvents(ValueEventListener listener){
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         Query ref = database.child(KEY_POSTS).orderByKey();
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                adapter.clear();
-                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                    Event event = singleSnapshot.getValue(Event.class);
-                    event.setEventId(singleSnapshot.getKey());
-                    if(event.isAttending(uid)){
-                        adapter.add(event);
-                    }
-                }
-                adapter.notifyDataSetChanged();
-                swipeContainer.setRefreshing(false);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled", databaseError.toException());
-            }
-        });
+        ref.addListenerForSingleValueEvent(listener);
     }
+    // Query events for events that User is attending
+//    public static void queryUserAttendingEvents(final EventsAdapter adapter, final SwipeRefreshLayout swipeContainer){
+//        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+//        Query ref = database.child(KEY_POSTS).orderByKey();
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                adapter.clear();
+//                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+//                    Event event = singleSnapshot.getValue(Event.class);
+//                    event.setEventId(singleSnapshot.getKey());
+//                    if(event.isAttending(uid)){
+//                        adapter.add(event);
+//                    }
+//                }
+//                adapter.notifyDataSetChanged();
+//                swipeContainer.setRefreshing(false);
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.e(TAG, "onCancelled", databaseError.toException());
+//            }
+//        });
+//    }
 
     //upload the image to firebase storage, can also use listener to get download url
-    public static void uploadImage( Uri filePath, final Context context ){
+    public static void uploadImage(OnCompleteListener<Uri> listener, Uri filePath, final Context context ){
         if(filePath != null)
         {
             final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -190,12 +202,7 @@ public class DatabaseClient {
                     // Continue with the task to get the download URL
                     return ref.getDownloadUrl();
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    HostEventFragment.setDownloadUri(task.getResult());
-                }
-            });
+            }).addOnCompleteListener(listener);
 
         }
     }

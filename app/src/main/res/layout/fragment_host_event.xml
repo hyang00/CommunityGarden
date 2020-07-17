@@ -51,7 +51,8 @@
         app:srcCompat="@drawable/ic_baseline_add_box_24"
         tools:src="@tools:sample/avatars" />
     <com.google.android.material.textfield.TextInputLayout
-        app:startIconDrawable="@drawable/ic_baseline_event_24"
+
+        app:startIconDrawable="@drawable/ic_baseline_location_on_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="false"
@@ -75,7 +76,7 @@
     <!--        android:layout_height="wrap_content"-->
     <!--        android:datePickerMode="calendar"/>-->
     <com.google.android.material.textfield.TextInputLayout
-        app:startIconDrawable="@drawable/ic_baseline_location_on_24"
+        app:startIconDrawable="@drawable/ic_baseline_event_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="false"

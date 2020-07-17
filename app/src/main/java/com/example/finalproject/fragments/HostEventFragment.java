@@ -67,7 +67,7 @@ public class HostEventFragment extends Fragment {
 
     public static final  String TAG = "Event Fragment";
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
-    private static Uri downloadUri;
+    //private static Uri downloadUri;
 
     private TextInputEditText etTitle;
     private EditText etDescription;
@@ -77,7 +77,7 @@ public class HostEventFragment extends Fragment {
     private EditText etTime;
     private Button btnPost;
     private Uri imageToUpload;
-    //private Uri downloadUri;
+    private Uri downloadUri;
 
 
     public HostEventFragment() {
@@ -228,11 +228,16 @@ public class HostEventFragment extends Fragment {
             }
             imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
             //uploadImage(imageToUpload);
-            DatabaseClient.uploadImage(imageToUpload, getContext());
+            DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    downloadUri =  task.getResult();
+                }
+            }, imageToUpload, getContext());
         }
     }
-    public static void setDownloadUri(Uri uri){
-        downloadUri = uri;
-    }
+//    public static void setDownloadUri(Uri uri){
+//        downloadUri = uri;
+//    }
 }
 
