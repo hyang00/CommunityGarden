@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.ImageFormatter;
 import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
@@ -66,6 +67,7 @@ public class HostEventFragment extends Fragment {
 
     public static final  String TAG = "Event Fragment";
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
+    private static Uri downloadUri;
 
     private TextInputEditText etTitle;
     private EditText etDescription;
@@ -75,10 +77,7 @@ public class HostEventFragment extends Fragment {
     private EditText etTime;
     private Button btnPost;
     private Uri imageToUpload;
-    private Uri downloadUri;
-
-    FirebaseAuth firebaseAuth;
-    private DatabaseReference mDatabase;
+    //private Uri downloadUri;
 
 
     public HostEventFragment() {
@@ -96,8 +95,6 @@ public class HostEventFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         etTitle = view.findViewById(R.id.etTitle);
         etDescription = view.findViewById(R.id.etDescription);
@@ -155,24 +152,9 @@ public class HostEventFragment extends Fragment {
                     Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String uid = firebaseAuth.getInstance().getCurrentUser().getUid();
-                postEvent(uid, title, description, address, time);
+                DatabaseClient.postEvent(getContext(), title, description, address, time, downloadUri);
             }
         });
-    }
-
-    public void postEvent(String author, String title, String description, String location, String time){
-
-        String key = mDatabase.child("Posts").push().getKey();
-        Event event = new Event(key, author, title, description, downloadUri.toString(), location, time);
-        mDatabase.child("Posts").child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.i(TAG, "posted successfully");
-            }
-        });
-        mDatabase.child("UserEvents").child(author).child("eventsHosting").child(key).setValue(true);
-        //mDatabase.child("UserEvents").child(author).child("eventsHosting").push().setValue(key);
     }
     // Takes in hours/24 and minutes/60 and formats it as 1:00 PM form
     public String formatTime(int hour, int min) {
@@ -222,6 +204,7 @@ public class HostEventFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if(resultCode != RESULT_CANCELED) {
             Bitmap bm = null;
             switch (requestCode) {
@@ -244,69 +227,12 @@ public class HostEventFragment extends Fragment {
                     break;
             }
             imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
-            uploadImage(imageToUpload);
+            //uploadImage(imageToUpload);
+            DatabaseClient.uploadImage(imageToUpload, getContext());
         }
     }
-
-
-
-    private void uploadImage(Uri filePath) {
-        FirebaseStorage storage;
-        StorageReference storageReference;
-
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-
-        if(filePath != null)
-        {
-            final ProgressDialog progressDialog = new ProgressDialog(getContext());
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-
-            final StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
-            ref.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
-                        }
-                    }).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-                            // Continue with the task to get the download URL
-                            return ref.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                downloadUri = task.getResult();
-                                Log.i(TAG, downloadUri.toString());
-                            } else {
-                            }
-                        }
-                    });
-
-        }
+    public static void setDownloadUri(Uri uri){
+        downloadUri = uri;
     }
 }
 

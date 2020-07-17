@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
@@ -86,31 +87,9 @@ public class EventFragment extends Fragment {
         rvEvents.addOnScrollListener(scrollListener);
         queryEvents();
     }
-
-    private void loadNextDataFromApi(int page, int totalItemsCount) {
+    protected void queryEvents(){
+        DatabaseClient.queryEvents(adapter, swipeContainer);
     }
-
-    protected void queryEvents() {
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        Query ref = database.child("Posts").orderByKey();
-        //Query phoneQuery = ref.orderByChild(phoneNo).equalTo("+923336091371");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                adapter.clear();
-                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                    Event event = singleSnapshot.getValue(Event.class);
-                    event.setEventId(singleSnapshot.getKey());
-                    adapter.add(event);
-                    Log.i(TAG, event.getTitle() + ": " + event.getEventId());
-                }
-                adapter.notifyDataSetChanged();
-                swipeContainer.setRefreshing(false);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled", databaseError.toException());
-            }
-        });
+    private void loadNextDataFromApi(int page, int totalItemsCount) {
     }
 }

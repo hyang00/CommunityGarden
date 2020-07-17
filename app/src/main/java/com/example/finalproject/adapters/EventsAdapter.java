@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EventDetailsActivity;
 import com.example.finalproject.LoginActivity;
 import com.example.finalproject.MainActivity;
@@ -92,27 +93,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 public void onClick(View view) {
                     int position = getAdapterPosition();
                     Event event = events.get(position);
+                    DatabaseClient.rsvpUser(event, context);
                     Log.i("adapter", "event key: " + event.getEventId());
-                    //if(position !=RecyclerView.NO_POSITION)
-                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                    DatabaseReference eventRef = database.child("Posts").child(event.getEventId());
-                    DatabaseReference userEventRef = database.child("User");//.child(uid);
-
-                    // check if the user has already rsvp'd
-                    if (!event.isAttending(uid)){
-                        database.child("Posts").child(event.getEventId()).child("attendees").child(uid).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.i("hi", "here");
-                            }
-                        });
-                        Toast.makeText(context, "Successfully Registered", Toast.LENGTH_SHORT).show();
-                        //database.child("UserEvents").child(uid).child("eventsAttending").child(event.getEventId()).setValue(true);
-
-                    } else {
-                        Toast.makeText(context, "Already Registered", Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
             itemView.setOnClickListener(this);
