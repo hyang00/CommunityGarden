@@ -54,9 +54,14 @@ public class DatabaseClient {
         //database.child("UserEvents").child(author).child("eventsHosting").child(key).setValue(true);
     }
 
+    public static void isNewUser(ValueEventListener listener){
+        database.child(KEY_PROFILE).child(uid).addValueEventListener(listener);
+
+    }
+
     // Add a new user profile to the database
-    public static void createUser(String name, String bio, String address){
-        User user = new User (name, bio, address);
+    public static void createUser(String name, String address, String bio, String profileImageUrl){
+        User user = new User (name, address, bio, profileImageUrl);
         database.child(KEY_PROFILE).child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

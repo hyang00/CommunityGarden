@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".SignUpActivity">
 
+
     <EditText
         android:id="@+id/etBio"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/etName"
         android:layout_alignParentStart="true"
         android:layout_marginTop="0dp"
@@ -22,9 +23,9 @@
         android:id="@+id/etAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/etBio"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="328dp"
+        android:layout_marginTop="0dp"
         android:ems="10"
         android:hint="Location"
         android:inputType="textPostalAddress" />
@@ -44,7 +45,7 @@
         android:id="@+id/etName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/ivProfilePic"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="0dp"
@@ -62,5 +63,24 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="14dp"
         android:text="Finish" />
+
+    <ImageView
+        android:id="@+id/ivProfilePic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        app:srcCompat="@drawable/ic_baseline_person_24" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="98dp"
+        android:layout_marginEnd="40dp"
+        android:text="Button" />
 
 </RelativeLayout>

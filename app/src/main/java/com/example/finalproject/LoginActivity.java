@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.finalproject.R;
+import com.example.finalproject.models.Event;
+import com.example.finalproject.models.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -35,6 +37,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import org.parceler.Parcels;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -101,15 +108,13 @@ public class LoginActivity extends AppCompatActivity {
                         public void onSuccess(LoginResult loginResult) {
                             handleFacebookAccessToken(loginResult.getAccessToken());
                         }
-
                         @Override
                         public void onCancel() {
                             // App code
                         }
-
                         @Override
                         public void onError(FacebookException exception) {
-                            // App code
+                            Log.e(TAG, exception.toString());
                         }
                     });
         }
@@ -138,8 +143,21 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            goToMainActivity();
+                            final FirebaseUser user = firebaseAuth.getCurrentUser();
+                            DatabaseClient.isNewUser(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        goToMainActivity();
+                                    } else {
+                                        createFacebookUser(user);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -147,11 +165,17 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
-
-                        // ...
                     }
                 });
     }
+
+    private void createFacebookUser(FirebaseUser firebaseUser){
+        String firebaseUserDisplayName = firebaseUser.getDisplayName();
+        String firebaseUserProfilePhotoURL = "https://graph.facebook.com" + firebaseUser.getPhotoUrl().getPath() + "?type=large";
+        User user = new User(firebaseUserDisplayName, null, null,firebaseUserProfilePhotoURL);
+        goToSignUpActivity(user);
+    }
+
     // Create new user using email/password method w/ firebase auth
     private void createUser(String email, String password) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -162,9 +186,6 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             goToSignUpActivity();
-                            //FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                            // TODO: Register user in database
                         } else {
                             // Show failure message
                             Toast toast = Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT);
@@ -213,6 +234,14 @@ public class LoginActivity extends AppCompatActivity {
     // Launch intent to go to page that creates new user profile
     private void goToSignUpActivity() {
         Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    // Launch intent to go to page that creates new user profile w/ some info
+    private void goToSignUpActivity(User user) {
+        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+        intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
         startActivity(intent);
         finish();
     }

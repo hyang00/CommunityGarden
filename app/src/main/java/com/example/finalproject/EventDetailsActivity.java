@@ -59,7 +59,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 tvName.setText(user.getScreenName());
-                tvName.setText(user.getBio());
+                tvBio.setText(user.getBio());
                 // TODO: Set profile pic
             }
             @Override
