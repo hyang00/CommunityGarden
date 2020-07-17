@@ -23,6 +23,7 @@ public class Event {
     private String description;
     private String imageUrl;
     private String address;
+    private String date;
     private String time;
     private Map<String, Boolean> attendees = new HashMap<>();
     //private ArrayList<String> attendees = new ArrayList<>();
@@ -31,14 +32,23 @@ public class Event {
 
     }
 
-    public Event(String eventId, String author, String title, String description, String imageUrl, String address, String time){
+    public Event(String eventId, String author, String title, String description, String imageUrl, String address, String date, String time){
         //this.eventId = eventId;
         this.author = author;
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
         this.address = address;
+        this.date = date;
         this.time = time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getEventId() {

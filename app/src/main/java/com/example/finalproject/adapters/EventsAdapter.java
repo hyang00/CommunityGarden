@@ -79,14 +79,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         private TextView tvTitle;
         private ImageView ivEventPhoto;
+        private TextView tvTime;
         private TextView tvDescription;
+        private TextView tvLocation;
         private Button btnRSVP;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             ivEventPhoto = itemView.findViewById(R.id.ivEventPhoto);
+            tvTime = itemView.findViewById(R.id.tvTime);
             tvDescription = itemView.findViewById(R.id.tvDescription);
+            tvLocation = itemView.findViewById(R.id.tvLocation);
             btnRSVP = itemView.findViewById(R.id.btnRSVP);
             btnRSVP.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,6 +112,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             if(event.getImageUrl()!=null){
                Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
             }
+            tvTime.setText(event.getDate() + " | " + event.getTime());
+            tvLocation.setText(event.getAddress());
         }
 
         @Override

@@ -42,9 +42,9 @@ public class DatabaseClient {
     private final static StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
     // Add a new event to the database
-    public static void postEvent(final Context context, String title, String description, String location, String time, Uri downloadUri){
+    public static void postEvent(final Context context, String title, String description, String location, String date, String time, Uri downloadUri){
         String key = database.child(KEY_POSTS).push().getKey();
-        Event event = new Event(key, uid, title, description, downloadUri.toString(), location, time);
+        Event event = new Event(key, uid, title, description, downloadUri.toString(), location, date, time);
         database.child(KEY_POSTS).child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

@@ -152,7 +152,7 @@ public class HostEventFragment extends Fragment {
                     Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                DatabaseClient.postEvent(getContext(), title, description, address, time, downloadUri);
+                DatabaseClient.postEvent(getContext(), title, description, address, date, time, downloadUri);
             }
         });
     }
