@@ -129,7 +129,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void setGoogleMapThumbnail(String address){
         Log.i(TAG, getString(R.string.google_api_key));
-        String url = Common.MAP_STATIC_URL_KEY+ convertAddressToSearchQuery(address) + "zoom=14&size=400x300&key=" + getString(R.string.api_key);
+        String url = Common.MAP_STATIC_URL_KEY+ convertAddressToSearchQuery(address) + "zoom=14&size=400x300&markers=color:red%7C"+ convertAddressToSearchQuery(address) +"&key=" + getString(R.string.api_key);
         Log.i(TAG, url);
         final Request request = new Request.Builder().url(url).build();
         OkHttpClient okHttpClient = new OkHttpClient();
