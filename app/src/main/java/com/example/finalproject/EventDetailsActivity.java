@@ -100,6 +100,12 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
         setGoogleMapThumbnail(event.getAddress());
+        ivMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchGoogleMaps();
+            }
+        });
     }
 
     // Q: is it worth it to separate this out into a method?
