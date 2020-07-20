@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -32,7 +34,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView tvTime;
     private TextView tvDescription;
     private TextView tvAddress;
-    private Button btnRSVP;
+    private ExtendedFloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvTime = findViewById(R.id.tvTime);
         tvDescription = findViewById(R.id.tvDescription);
         tvAddress = findViewById(R.id.tvAddress);
+        fab = findViewById(R.id.fab);
 
         tvTitle.setText(event.getTitle());
         if(event.getImageUrl()!=null){
@@ -60,6 +63,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 User user = snapshot.getValue(User.class);
                 tvName.setText(user.getScreenName());
                 tvBio.setText(user.getBio());
+                if(user.getProfileImageUrl()!=null){
+                    Glide.with(EventDetailsActivity.this).load(user.getProfileImageUrl()).into(ivProfilePic);
+                }
                 // TODO: Set profile pic
             }
             @Override
@@ -71,6 +77,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvTime.setText(event.getTime());
         tvDescription.setText(event.getDescription());
         tvAddress.setText(event.getAddress());
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseClient.rsvpUser(event, EventDetailsActivity.this);
+            }
+        });
     }
 //    public static void setUser(User user1){
 //        user = user1;

@@ -103,4 +103,17 @@
 
         </RelativeLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Register"
+        android:text="Register"
+        android:textAlignment="viewEnd"
+        app:useCompatPadding="false" />
 </FrameLayout>
