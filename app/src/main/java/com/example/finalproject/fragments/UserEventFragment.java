@@ -53,7 +53,6 @@ public class UserEventFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tlUserEvents);
         viewPager = view.findViewById(R.id.viewPager);
-
         final FragmentManager thisfragmentManager = getChildFragmentManager();
 
         adapter = new UserEventsTabAdapter(thisfragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, tabLayout.getTabCount());

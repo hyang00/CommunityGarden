@@ -6,6 +6,4 @@
     <!-- For facebook sdk -->
     <string name="facebook_app_id">706356949942267</string>
     <string name="fb_login_protocol_scheme">fb706356949942267</string>
-
-
 </resources>

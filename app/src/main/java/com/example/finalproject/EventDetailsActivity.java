@@ -3,6 +3,8 @@ package com.example.finalproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +36,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView tvTime;
     private TextView tvDescription;
     private TextView tvAddress;
+    private ImageView ivMap;
     private ExtendedFloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tvDescription);
         tvAddress = findViewById(R.id.tvAddress);
         fab = findViewById(R.id.fab);
+        ivMap = findViewById(R.id.ivMap);
 
         tvTitle.setText(event.getTitle());
         if(event.getImageUrl()!=null){
@@ -66,7 +70,6 @@ public class EventDetailsActivity extends AppCompatActivity {
                 if(user.getProfileImageUrl()!=null){
                     Glide.with(EventDetailsActivity.this).load(user.getProfileImageUrl()).into(ivProfilePic);
                 }
-                // TODO: Set profile pic
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -78,6 +81,15 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvDescription.setText(event.getDescription());
         tvAddress.setText(event.getAddress());
 
+        // Launch google maps w/ address inputed when address is clicked
+        tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Common.MAP_SEARCH_URL_KEY + convertAddressToSearchQuery(event.getAddress())));
+                startActivity(intent);
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,6 +97,23 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+    //Takes standard address format and converts it into maps query preferred format (spaces -> +, commas -> %2C)
+    private String convertAddressToSearchQuery(String address){
+        String searchQuery = "";
+        for (int i= 0; i<address.length(); ++i){
+            char currLetter = address.charAt(i);
+            if (currLetter == ' '){
+                searchQuery+="+";
+            } else if (currLetter == ','){
+                searchQuery+="%2C";
+            } else {
+                searchQuery += currLetter;
+            }
+        }
+        return searchQuery;
+    }
+
 //    public static void setUser(User user1){
 //        user = user1;
 //    }
