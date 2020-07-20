@@ -42,8 +42,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
         event = (Event) Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
-        Log.i(TAG, event.getTitle());
 
         tvTitle = findViewById(R.id.tvTitle);
         ivEventPhoto = findViewById(R.id.ivEventPhoto);
@@ -57,10 +57,32 @@ public class EventDetailsActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         ivMap = findViewById(R.id.ivMap);
 
+        setHostProfileFields();
         tvTitle.setText(event.getTitle());
         if(event.getImageUrl()!=null){
             Glide.with(EventDetailsActivity.this).load(event.getImageUrl()).into(ivEventPhoto);
         }
+        tvDate.setText(event.getDate());
+        tvTime.setText(event.getTime());
+        tvDescription.setText(event.getDescription());
+        tvAddress.setText(event.getAddress());
+        tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchGoogleMaps();
+            }
+        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseClient.rsvpUser(event, EventDetailsActivity.this);
+            }
+        });
+    }
+
+    // Q: is it worth it to separate this out into a method?
+    private void setHostProfileFields(){
+        // Populate host user fields
         DatabaseClient.getUserProfile(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -75,29 +97,15 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         }, event.getAuthor());
-
-        tvDate.setText(event.getDate());
-        tvTime.setText(event.getTime());
-        tvDescription.setText(event.getDescription());
-        tvAddress.setText(event.getAddress());
-
-        // Launch google maps w/ address inputed when address is clicked
-        tvAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Common.MAP_SEARCH_URL_KEY + convertAddressToSearchQuery(event.getAddress())));
-                startActivity(intent);
-            }
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatabaseClient.rsvpUser(event, EventDetailsActivity.this);
-            }
-        });
     }
 
+    // Q: is it worth it to separate this out into a method?
+    private void launchGoogleMaps(){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Common.MAP_SEARCH_URL_KEY + convertAddressToSearchQuery(event.getAddress())));
+        startActivity(intent);
+    }
+
+    // Q: Should this go in it's own file?
     //Takes standard address format and converts it into maps query preferred format (spaces -> +, commas -> %2C)
     private String convertAddressToSearchQuery(String address){
         String searchQuery = "";
@@ -113,9 +121,5 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
         return searchQuery;
     }
-
-//    public static void setUser(User user1){
-//        user = user1;
-//    }
 
 }
