@@ -14,11 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.models.Event;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,14 +35,41 @@ public class EventFragment extends Fragment {
 
     private static final  String TAG = "Event Fragment";
 
+    // fragment initialization parameter (determine whether standard event feed, hosting event feed, attending feed)
+    private static final String ARG_EVENT_TYPE = "Event Type";
+
     private RecyclerView rvEvents;
     protected EventsAdapter adapter;
     protected List<Event> allEvents;
     protected SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
+    protected String eventType;
 
     public EventFragment() {
         // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param eventType Parameter 1.
+     * @return A new instance of fragment UserPostFragment.
+     */
+    public static EventFragment newInstance(String eventType) {
+        EventFragment fragment = new EventFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_EVENT_TYPE, eventType);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            eventType = getArguments().getString(ARG_EVENT_TYPE);
+        }
     }
 
     @Override
@@ -57,7 +86,7 @@ public class EventFragment extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         allEvents = new ArrayList<>();
-        adapter = new EventsAdapter(getContext(), allEvents);
+        adapter = new EventsAdapter(getContext(), allEvents, eventType);
 
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
@@ -88,8 +117,52 @@ public class EventFragment extends Fragment {
         queryEvents();
     }
     protected void queryEvents(){
-        DatabaseClient.queryEvents(adapter, swipeContainer);
+        //DatabaseClient.queryEvents(adapter, swipeContainer);
+        DatabaseClient.queryEvents(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                adapter.clear();
+                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                    Event event = singleSnapshot.getValue(Event.class);
+                    event.setEventId(singleSnapshot.getKey());
+                    if (isValid(event)){
+                        adapter.add(event);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
+
+    // check whether the event should be added to the feed depending on which feed it is
+    private boolean isValid(Event event){
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        switch (eventType){
+            case Common.EVENT_FEED_KEY:
+                if (!event.getAuthor().equals(uid) && !event.isAttending(uid)){
+                    return true;
+                }
+                break;
+            case Common.EVENT_ATTENDING_KEY:
+                if(event.isAttending(uid)){
+                    return true;
+                }
+                break;
+            case Common.EVENT_HOSTING_KEY:
+                if (event.getAuthor().equals(uid)){
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    // TODO: limit initial query and implement infinite scrolling
     private void loadNextDataFromApi(int page, int totalItemsCount) {
     }
 }

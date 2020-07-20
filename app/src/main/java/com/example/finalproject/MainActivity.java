@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                         Fragment fragment;
                         switch (item.getItemId()) {
                             case R.id.action_home:
-                                fragment = new EventFragment();
+                                fragment = EventFragment.newInstance(Common.EVENT_FEED_KEY);
                                 break;
                             case R.id.action_host:
                                 fragment = new HostEventFragment();

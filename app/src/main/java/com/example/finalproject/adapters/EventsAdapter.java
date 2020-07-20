@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EventDetailsActivity;
 import com.example.finalproject.LoginActivity;
@@ -43,10 +44,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     private Context context;
     private List<Event> events;
+    private String eventType = "";
 
-    public EventsAdapter(Context context, List<Event> events) {
+    public EventsAdapter(Context context, List<Event> events, String eventType) {
         this.context = context;
         this.events = events;
+        this.eventType = eventType;
     }
 
     @NonNull
@@ -101,6 +104,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     Log.i("adapter", "event key: " + event.getEventId());
                 }
             });
+            if(eventType.equals(Common.EVENT_HOSTING_KEY) || eventType.equals(Common.EVENT_ATTENDING_KEY)){
+                btnRSVP.setVisibility(View.GONE);
+            }
             itemView.setOnClickListener(this);
 
         }
@@ -119,7 +125,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            //Log.i("myApp", "on click");
             // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
                 // get the event at the position
