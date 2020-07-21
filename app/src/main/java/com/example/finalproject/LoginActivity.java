@@ -141,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             final FirebaseUser user = firebaseAuth.getCurrentUser();
+                            // Q: should it just be returning true/false, TODO: also so so slow, how to fix or just add loading bar
                             DatabaseClient.isNewUser(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -169,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
     private void createFacebookUser(FirebaseUser firebaseUser){
         String firebaseUserDisplayName = firebaseUser.getDisplayName();
         String firebaseUserProfilePhotoURL = "https://graph.facebook.com" + firebaseUser.getPhotoUrl().getPath() + "?type=large";
-        User user = new User(firebaseUserDisplayName, null, null,firebaseUserProfilePhotoURL);
+        User user = new User(firebaseUserDisplayName,  firebaseUserProfilePhotoURL);
         goToSignUpActivity(user);
     }
 

@@ -1,25 +1,35 @@
 package com.example.finalproject.models;
 
+import android.content.Context;
+import android.location.Address;
+
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import org.parceler.Parcel;
 
+@IgnoreExtraProperties
 @Parcel
 public class User {
     private String uid;
     private String screenName;
-    private String location;
     private String bio;
     private String profileImageUrl;
+    private Location location;
 
     public User(){
 
     }
 
-    public User(String screenName, String location, String bio, String profileImageUrl){
-        //this.uid = uid;
+    public User(String screenName, String profileImageUrl){
         this.screenName = screenName;
-        this.location = location;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public User(String screenName, String bio, String profileImageUrl, String address, Context context){
+        this.screenName = screenName;
         this.bio = bio;
         this.profileImageUrl = profileImageUrl;
+        this.location = new Location(address, context);
     }
 
     public String getUid() {
@@ -38,14 +48,6 @@ public class User {
         this.screenName = screenName;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getBio() {
         return bio;
     }
@@ -61,4 +63,14 @@ public class User {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
+
+

@@ -1,5 +1,7 @@
 package com.example.finalproject.models;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -22,25 +24,24 @@ public class Event {
     private String title;
     private String description;
     private String imageUrl;
-    private String address;
     private String date;
     private String time;
     private Map<String, Boolean> attendees = new HashMap<>();
-    //private ArrayList<String> attendees = new ArrayList<>();
+    private Location location;
 
     public Event(){
 
     }
 
-    public Event(String eventId, String author, String title, String description, String imageUrl, String address, String date, String time){
+    public Event(String eventId, String author, String title, String description, String imageUrl, String date, String time, String address, Context context){
         //this.eventId = eventId;
         this.author = author;
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.address = address;
         this.date = date;
         this.time = time;
+        this.location = new Location(address, context);
     }
 
     public String getDate() {
@@ -83,14 +84,6 @@ public class Event {
         this.description = description;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getTime() {
         return time;
     }
@@ -121,5 +114,13 @@ public class Event {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

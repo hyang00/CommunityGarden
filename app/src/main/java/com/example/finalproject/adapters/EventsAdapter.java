@@ -119,7 +119,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
             }
             tvTime.setText(event.getDate() + " | " + event.getTime());
-            tvLocation.setText(event.getAddress());
+            tvLocation.setText(event.getLocation().getLocality());
         }
 
         @Override

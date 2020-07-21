@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +44,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -86,7 +90,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvDate.setText(event.getDate());
         tvTime.setText(event.getTime());
         tvDescription.setText(event.getDescription());
-        tvAddress.setText(event.getAddress());
+        tvAddress.setText(event.getLocation().getWrittenAddress());
         tvAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,7 +103,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 DatabaseClient.rsvpUser(event, EventDetailsActivity.this);
             }
         });
-        setGoogleMapThumbnail(event.getAddress());
+        setGoogleMapThumbnail(event.getLocation().getWrittenAddress());
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,6 +124,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 if(user.getProfileImageUrl()!=null){
                     Glide.with(EventDetailsActivity.this).load(user.getProfileImageUrl()).into(ivProfilePic);
                 }
+                if(user.getLocation()!=null){
+                    Log.i(TAG, user.getLocation().getWrittenAddress());
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -129,11 +136,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     // Q: is it worth it to separate this out into a method?
     private void launchGoogleMaps(){
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Common.MAP_SEARCH_URL_KEY + convertAddressToSearchQuery(event.getAddress())));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Common.MAP_SEARCH_URL_KEY + convertAddressToSearchQuery(event.getLocation().getWrittenAddress())));
         startActivity(intent);
     }
 
-    public void setGoogleMapThumbnail(String address){
+    private void setGoogleMapThumbnail(String address){
         Log.i(TAG, getString(R.string.google_api_key));
         String url = Common.MAP_STATIC_URL_KEY+ convertAddressToSearchQuery(address) + "zoom=14&size=400x300&markers=color:red%7C"+ convertAddressToSearchQuery(address) +"&key=" + getString(R.string.api_key);
         Log.i(TAG, url);

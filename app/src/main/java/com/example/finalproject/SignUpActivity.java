@@ -3,6 +3,8 @@ package com.example.finalproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.finalproject.models.Event;
+import com.example.finalproject.models.Location;
 import com.example.finalproject.models.User;
 import com.example.finalproject.models.UserEvents;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +24,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.parceler.Parcels;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -62,8 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
                 String address = etAddress.getText().toString();
-                // Create user profile in database
-                DatabaseClient.createUser(name, address, bio, profileImageUrl);
+                DatabaseClient.createUser(name, bio, profileImageUrl, address, SignUpActivity.this);
                 // Go to main page after finished registering new user
                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                 startActivity(intent);
