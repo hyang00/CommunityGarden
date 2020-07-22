@@ -1,10 +1,16 @@
 package com.example.finalproject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +20,15 @@ import android.widget.ImageView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.models.Event;
 import com.example.finalproject.models.Location;
 import com.example.finalproject.models.User;
 import com.example.finalproject.models.UserEvents;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -41,6 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
     private String profileImageUrl;
+    private FloatingActionButton fabAddProfilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +65,10 @@ public class SignUpActivity extends AppCompatActivity {
         etAddress = findViewById(R.id.etAddress);
         ivProfilePic = findViewById(R.id.ivProfilePic);
         btnFinish = findViewById(R.id.btnFinish);
+        fabAddProfilePic = findViewById(R.id.fabAddProfilePic);
 
         // If user making account w/ Facebook, prepopulate fields
-        if (getIntent().hasExtra(User.class.getSimpleName())){
+        if (getIntent().hasExtra(User.class.getSimpleName())) {
             User user = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             etName.setText(user.getScreenName());
             profileImageUrl = user.getProfileImageUrl();
@@ -76,5 +88,74 @@ public class SignUpActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        fabAddProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectImage(SignUpActivity.this);
+            }
+        });
+    }
+
+    //Pops up a dialog to ask the user whether they would like to get a photo from camera or gallery
+    private void selectImage(Context context) {
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Choose a photo for your event");
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (options[item].equals("Take Photo")) {
+                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, 0);
+
+                } else if (options[item].equals("Choose from Gallery")) {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto, 1);
+
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Uri imageToUpload;
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_CANCELED) {
+            Bitmap bm = null;
+            switch (requestCode) {
+                case 0:  // If photo from Camera
+                    if (resultCode == RESULT_OK && data != null) {
+                        bm = (Bitmap) data.getExtras().get("data");
+                    }
+                    break;
+                case 1:     // If photo from Gallery
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage = data.getData();
+                        bm = ImageFormatter.getImageResized(SignUpActivity.this, selectedImage);
+                        int rotation = ImageFormatter.getRotation(SignUpActivity.this, selectedImage, false);
+                        bm = ImageFormatter.rotate(bm, rotation);
+                    }
+                    break;
+            }
+            Glide.with(SignUpActivity.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
+            //ivProfilePic.setImageBitmap(bm);
+            imageToUpload = ImageFormatter.getImageUri(SignUpActivity.this, bm);
+            DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    profileImageUrl = task.getResult().toString();
+                }
+            }, imageToUpload, SignUpActivity.this);
+        }
     }
 }
