@@ -20,6 +20,7 @@ import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.models.Event;
+import com.example.finalproject.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -114,8 +115,36 @@ public class EventFragment extends Fragment {
             }
         };
         rvEvents.addOnScrollListener(scrollListener);
-        queryEvents();
+        if (eventType == Common.EVENT_FEED_KEY){
+            queryEventsNearby();
+        } else {
+            queryEvents();
+        }
     }
+
+    private void queryEventsNearby(){
+        DatabaseClient.queryEventsNearby(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                adapter.clear();
+                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                    Event event = singleSnapshot.getValue(Event.class);
+                    event.setEventId(singleSnapshot.getKey());
+                    if (isValid(event)){
+                        adapter.add(event);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     protected void queryEvents(){
         //DatabaseClient.queryEvents(adapter, swipeContainer);
         DatabaseClient.queryEvents(new ValueEventListener() {

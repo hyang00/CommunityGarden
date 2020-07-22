@@ -94,17 +94,41 @@ public class DatabaseClient {
 
     }
 
+    // Get logged in user profile
+    public static void getCurrUserProfile(ValueEventListener listener){
+        getUserProfile(listener, uid);
+    }
+
     // Get User profile
     public static void getUserProfile(ValueEventListener listener, String userId) {
         Query ref = database.child(KEY_PROFILE).child(userId);
         ref.addListenerForSingleValueEvent(listener);
     }
 
-    // Query events for events that User is attending
+    // Query events
     public static void queryEvents(ValueEventListener listener) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         Query ref = database.child(KEY_POSTS).orderByKey();
         ref.addListenerForSingleValueEvent(listener);
+    }
+
+    // Query events w/ same locale as current user
+    public static void queryEventsNearby(final ValueEventListener listener) {
+        getCurrUserProfile(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User currUser = snapshot.getValue(User.class);
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                Query ref = database.child(KEY_POSTS).orderByChild("locality").equalTo(currUser.getLocation().getLocality());
+                ref.addListenerForSingleValueEvent(listener);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     //upload the image to firebase storage, can also use listener to get download url
