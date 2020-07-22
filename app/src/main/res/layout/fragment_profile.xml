@@ -17,11 +17,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <include
+                android:id="@+id/toolBar"
+                layout="@layout/toolbar_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp" />
+
             <ImageView
                 android:id="@+id/ivProfilePic"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/toolBar"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="0dp"
                 android:scaleType="center"

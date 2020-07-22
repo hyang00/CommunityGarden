@@ -11,11 +11,13 @@ import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -42,6 +44,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvLocation;
     private Button btnEditProfile;
     private Button btnLogout;
+    private Toolbar toolbar;
 
     FirebaseAuth firebaseAuth;
 
@@ -67,9 +70,26 @@ public class ProfileFragment extends Fragment {
         tvLocation = view.findViewById(R.id.tvLocation);
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
         btnLogout = view.findViewById(R.id.btnLogout);
+        toolbar = view.findViewById(R.id.toolBar);
 
         setProfileFields();
-
+        toolbar.inflateMenu(R.menu.menu_profile);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.miLogout:
+                        firebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
