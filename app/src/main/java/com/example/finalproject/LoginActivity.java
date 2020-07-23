@@ -3,9 +3,6 @@ package com.example.finalproject;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -16,9 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
-import com.example.finalproject.R;
-import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -27,9 +21,6 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-//import com.firebase.ui.auth.AuthUI;
-//import com.firebase.ui.auth.IdpResponse;
-//import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -44,8 +35,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
+//import com.firebase.ui.auth.AuthUI;
+//import com.firebase.ui.auth.IdpResponse;
+//import com.google.android.gms.auth.api.Auth;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -108,10 +101,12 @@ public class LoginActivity extends AppCompatActivity {
                         public void onSuccess(LoginResult loginResult) {
                             handleFacebookAccessToken(loginResult.getAccessToken());
                         }
+
                         @Override
                         public void onCancel() {
                             // App code
                         }
+
                         @Override
                         public void onError(FacebookException exception) {
                             Log.e(TAG, exception.toString());
@@ -145,12 +140,13 @@ public class LoginActivity extends AppCompatActivity {
                             DatabaseClient.isNewUser(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()){
+                                    if (snapshot.exists()) {
                                         goToMainActivity(); // if a returning user go to home page
                                     } else {
                                         createFacebookUser(user);  // otherwise populate user profile in database
                                     }
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
 
@@ -167,10 +163,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // Create new user profile in firebase when new user logs in through facebook
-    private void createFacebookUser(FirebaseUser firebaseUser){
+    private void createFacebookUser(FirebaseUser firebaseUser) {
         String firebaseUserDisplayName = firebaseUser.getDisplayName();
         String firebaseUserProfilePhotoURL = "https://graph.facebook.com" + firebaseUser.getPhotoUrl().getPath() + "?type=large";
-        User user = new User(firebaseUserDisplayName,  firebaseUserProfilePhotoURL);
+        User user = new User(firebaseUserDisplayName, firebaseUserProfilePhotoURL);
         goToSignUpActivity(user);
     }
 
@@ -187,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // Show failure message
                             Toast toast = Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+                            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
                             toast.show();
                             // reset email/password fields
                             etEmail.setText("");
@@ -212,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // Show failure message
                             Toast toast = Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+                            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
                             toast.show();
                             // reset email/password fields
                             etEmail.setText("");
@@ -223,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // Launch intent to go to main activity (home page w/ feed + etc)
-    public void goToMainActivity(){
+    public void goToMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

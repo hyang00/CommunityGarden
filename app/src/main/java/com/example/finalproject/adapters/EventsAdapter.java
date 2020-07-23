@@ -2,8 +2,6 @@ package com.example.finalproject.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,25 +17,14 @@ import com.bumptech.glide.Glide;
 import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EventDetailsActivity;
-import com.example.finalproject.LoginActivity;
-import com.example.finalproject.MainActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.parceler.Parcels;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static com.example.finalproject.TimeAndDateFormatter.formatDateWithDayOfWeek;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
@@ -71,14 +57,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     public void add(Event event) {
-        events.add( event);
+        events.add(event);
     }
 
     public void clear() {
         events.clear();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvTitle;
         private ImageView ivEventPhoto;
@@ -104,7 +90,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     Log.i("adapter", "event key: " + event.getEventId());
                 }
             });
-            if(eventType.equals(Common.EVENT_HOSTING_KEY) || eventType.equals(Common.EVENT_ATTENDING_KEY)){
+            if (eventType.equals(Common.EVENT_HOSTING_KEY) || eventType.equals(Common.EVENT_ATTENDING_KEY)) {
                 btnRSVP.setVisibility(View.GONE);
             }
             itemView.setOnClickListener(this);
@@ -115,10 +101,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             // bind the event data to the view elements
             tvTitle.setText(event.getTitle());
             tvDescription.setText(event.getDescription());
-            if(event.getImageUrl()!=null){
-               Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
+            if (event.getImageUrl() != null) {
+                Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
             }
-            tvTime.setText(event.getDate() + " | " + event.getTime());
+            tvTime.setText(formatDateWithDayOfWeek(event.getDate()) + " | " + event.getTime());
             tvLocation.setText(event.getLocation().getLocality());
         }
 

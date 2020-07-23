@@ -3,9 +3,6 @@ package com.example.finalproject.models;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.util.Log;
-
-import com.example.finalproject.SignUpActivity;
 
 import org.parceler.Parcel;
 

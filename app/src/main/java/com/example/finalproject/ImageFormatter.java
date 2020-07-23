@@ -18,7 +18,7 @@ import java.io.FileNotFoundException;
 
 public class ImageFormatter {
 
-    public static final  String TAG = "Image Formatter";
+    public static final String TAG = "Image Formatter";
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
 
     //convert bitmap to uri

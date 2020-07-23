@@ -8,11 +8,11 @@ public class UserEvents {
     private List<String> eventsHosting;
 
 
-    public UserEvents(){
+    public UserEvents() {
 
     }
 
-    public UserEvents(boolean mine){
+    public UserEvents(boolean mine) {
         eventsAttending = new ArrayList<>();
         //eventsAttending.add("hi");
         eventsHosting = new ArrayList<>();

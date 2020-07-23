@@ -2,19 +2,13 @@ package com.example.finalproject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.location.Address;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.finalproject.adapters.EventsAdapter;
-import com.example.finalproject.fragments.HostEventFragment;
 import com.example.finalproject.models.Event;
-
-import com.example.finalproject.models.Location;
 import com.example.finalproject.models.User;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,13 +35,13 @@ public class DatabaseClient {
     private static final String KEY_PROFILE = "Profiles";
     private static final String TAG = "Database Client";
     private final static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    private final static String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private final static StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
     // Add a new event to the database
     //  TODO: reduce method parameters
     public static void postEvent(final Context context, String title, String description, String location, String date, String time, Uri downloadUri) {
         String key = database.child(KEY_POSTS).push().getKey();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Event event = new Event(key, uid, title, description, downloadUri.toString(), date, time, location, context);
         database.child(KEY_POSTS).child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -58,13 +52,15 @@ public class DatabaseClient {
     }
 
     public static void isNewUser(ValueEventListener listener) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         database.child(KEY_PROFILE).child(uid).addValueEventListener(listener);
     }
 
     // Add a new user profile to the database
     public static void createUser(String name, String bio, String profileImageUrl, String address, Context context) {
-
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         User user = new User(name, bio, profileImageUrl, address, context);
+        Log.i(TAG, "curr User uid: " + uid);
         database.child(KEY_PROFILE).child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -75,6 +71,7 @@ public class DatabaseClient {
 
     // Adds user to attendees section of post
     public static void rsvpUser(final Event event, Context context) {
+        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference attendeesRef = database.child(KEY_POSTS).child(event.getEventId()).child(KEY_ATTENDEES);
         // check if the user has already rsvp'd
         if (!event.isAttending(uid)) {
@@ -95,7 +92,8 @@ public class DatabaseClient {
     }
 
     // Get logged in user profile
-    public static void getCurrUserProfile(ValueEventListener listener){
+    public static void getCurrUserProfile(ValueEventListener listener) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getUserProfile(listener, uid);
     }
 
@@ -119,7 +117,28 @@ public class DatabaseClient {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User currUser = snapshot.getValue(User.class);
                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                Query ref = database.child(KEY_POSTS).orderByChild("locality").equalTo(currUser.getLocation().getLocality());
+                Query ref = database.child(KEY_POSTS).orderByChild("location/locality").equalTo(currUser.getLocation().getLocality());
+                Log.i(TAG, currUser.getLocation().getLocality());
+                ref.addListenerForSingleValueEvent(listener);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    // Query events w/ same locale as current user
+    public static void testQueryEventsNearby(final ValueEventListener listener) {
+        getCurrUserProfile(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User currUser = snapshot.getValue(User.class);
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                Query ref = database.child(KEY_POSTS).orderByChild("location/locality").equalTo(currUser.getLocation().getLocality());
+                Log.i(TAG, currUser.getLocation().getLocality());
                 ref.addListenerForSingleValueEvent(listener);
             }
 

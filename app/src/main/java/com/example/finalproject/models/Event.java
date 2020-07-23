@@ -2,19 +2,10 @@ package com.example.finalproject.models;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.firebase.database.IgnoreExtraProperties;
-
 import org.parceler.Parcel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //@IgnoreExtraProperties
 @Parcel
@@ -29,11 +20,11 @@ public class Event {
     private Map<String, Boolean> attendees = new HashMap<>();
     private Location location;
 
-    public Event(){
+    public Event() {
 
     }
 
-    public Event(String eventId, String author, String title, String description, String imageUrl, String date, String time, String address, Context context){
+    public Event(String eventId, String author, String title, String description, String imageUrl, String date, String time, String address, Context context) {
         //this.eventId = eventId;
         this.author = author;
         this.title = title;
@@ -56,7 +47,7 @@ public class Event {
         return eventId;
     }
 
-    public void setEventId(String eventId){
+    public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 
@@ -100,11 +91,11 @@ public class Event {
         this.attendees = attendees;
     }
 
-    public boolean isAttending(String uid){
+    public boolean isAttending(String uid) {
         return attendees.containsKey(uid);
     }
 
-    public void addAttendee(String uid){
+    public void addAttendee(String uid) {
         attendees.put(uid, true);
     }
 

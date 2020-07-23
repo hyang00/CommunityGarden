@@ -18,8 +18,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etTitle"
-            />
+            android:id="@+id/etTitle" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -42,6 +41,7 @@
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_baseline_add_box_24"
         tools:src="@tools:sample/avatars" />
+
     <com.google.android.material.textfield.TextInputLayout
 
         app:startIconDrawable="@drawable/ic_baseline_location_on_24"
@@ -55,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         app:startIconDrawable="@drawable/ic_baseline_event_24"
         android:layout_width="match_parent"

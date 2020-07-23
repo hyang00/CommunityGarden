@@ -1,7 +1,6 @@
 package com.example.finalproject.models;
 
 import android.content.Context;
-import android.location.Address;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -16,16 +15,16 @@ public class User {
     private String profileImageUrl;
     private Location location;
 
-    public User(){
+    public User() {
 
     }
 
-    public User(String screenName, String profileImageUrl){
+    public User(String screenName, String profileImageUrl) {
         this.screenName = screenName;
         this.profileImageUrl = profileImageUrl;
     }
 
-    public User(String screenName, String bio, String profileImageUrl, String address, Context context){
+    public User(String screenName, String bio, String profileImageUrl, String address, Context context) {
         this.screenName = screenName;
         this.bio = bio;
         this.profileImageUrl = profileImageUrl;

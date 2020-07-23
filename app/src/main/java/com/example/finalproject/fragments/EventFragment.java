@@ -1,6 +1,11 @@
 package com.example.finalproject.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,24 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.models.Event;
-import com.example.finalproject.models.User;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -34,7 +31,7 @@ import java.util.List;
 
 public class EventFragment extends Fragment {
 
-    private static final  String TAG = "Event Fragment";
+    private static final String TAG = "Event Fragment";
 
     // fragment initialization parameter (determine whether standard event feed, hosting event feed, attending feed)
     private static final String ARG_EVENT_TYPE = "Event Type";
@@ -45,6 +42,8 @@ public class EventFragment extends Fragment {
     protected SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
     protected String eventType;
+    private TextView tvDefaultMessage;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     public EventFragment() {
         // Required empty public constructor
@@ -85,6 +84,10 @@ public class EventFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rvEvents = view.findViewById(R.id.rvEvents);
 
+        tvDefaultMessage = view.findViewById(R.id.tvDefaultMessage);
+        collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle("Community Garden");
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         allEvents = new ArrayList<>();
         adapter = new EventsAdapter(getContext(), allEvents, eventType);
@@ -95,7 +98,7 @@ public class EventFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                queryEvents();
+                queryEventsNearby();
             }
         });
         // Configure the refreshing colors
@@ -115,22 +118,29 @@ public class EventFragment extends Fragment {
             }
         };
         rvEvents.addOnScrollListener(scrollListener);
-        if (eventType == Common.EVENT_FEED_KEY){
+        if (eventType == Common.EVENT_FEED_KEY) {
             queryEventsNearby();
+            if (adapter.getItemCount() == 0) {
+                Log.i(TAG, "itemCount: " + adapter.getItemCount());
+                tvDefaultMessage.setVisibility(View.VISIBLE);
+            } else {
+                tvDefaultMessage.setVisibility(View.GONE);
+            }
         } else {
             queryEvents();
+
         }
     }
 
-    private void queryEventsNearby(){
+    private void queryEventsNearby() {
         DatabaseClient.queryEventsNearby(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 adapter.clear();
-                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
                     Event event = singleSnapshot.getValue(Event.class);
                     event.setEventId(singleSnapshot.getKey());
-                    if (isValid(event)){
+                    if (isValid(event)) {
                         adapter.add(event);
                     }
                 }
@@ -145,16 +155,15 @@ public class EventFragment extends Fragment {
         });
     }
 
-    protected void queryEvents(){
-        //DatabaseClient.queryEvents(adapter, swipeContainer);
+    private void queryEvents() {
         DatabaseClient.queryEvents(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 adapter.clear();
-                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
                     Event event = singleSnapshot.getValue(Event.class);
                     event.setEventId(singleSnapshot.getKey());
-                    if (isValid(event)){
+                    if (isValid(event)) {
                         adapter.add(event);
                     }
                 }
@@ -170,21 +179,21 @@ public class EventFragment extends Fragment {
     }
 
     // check whether the event should be added to the feed depending on which feed it is
-    private boolean isValid(Event event){
+    private boolean isValid(Event event) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        switch (eventType){
+        switch (eventType) {
             case Common.EVENT_FEED_KEY:
-                if (!event.getAuthor().equals(uid) && !event.isAttending(uid)){
+                if (!event.getAuthor().equals(uid) && !event.isAttending(uid)) {
                     return true;
                 }
                 break;
             case Common.EVENT_ATTENDING_KEY:
-                if(event.isAttending(uid)){
+                if (event.isAttending(uid)) {
                     return true;
                 }
                 break;
             case Common.EVENT_HOSTING_KEY:
-                if (event.getAuthor().equals(uid)){
+                if (event.getAuthor().equals(uid)) {
                     return true;
                 }
         }

@@ -1,4 +1,5 @@
 package com.example.finalproject;
+
 //
 public class Common {
     public static final String EVENT_FEED_KEY = "feed";

@@ -1,13 +1,12 @@
 package com.example.finalproject;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 
 import com.example.finalproject.fragments.EventFragment;
 import com.example.finalproject.fragments.HostEventFragment;
@@ -16,9 +15,9 @@ import com.example.finalproject.fragments.UserEventFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    public static final  String TAG = "MainActivity";
+    public static final String TAG = "MainActivity";
 
-    private  BottomNavigationView bottomNavigationView;
+    private BottomNavigationView bottomNavigationView;
 
 
     @Override
