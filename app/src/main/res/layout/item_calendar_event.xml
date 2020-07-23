@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <include
+        android:id="@+id/vCalendarTime"
+        layout="@layout/item_calendar_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/vCalendarTime"
+        android:padding="4dp"
+        android:textSize="24sp"
+        tools:text="The Greatest Garden Tour" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTitle"
+        android:layout_alignStart="@+id/tvTitle"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:drawableLeft="@drawable/ic_baseline_access_time_24"
+        android:drawablePadding="4dp"
+        android:padding="4dp"
+        tools:text="1:00 PM" />
+
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_alignStart="@+id/tvTitle"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:drawableLeft="@drawable/ic_baseline_location_on_24"
+        android:drawablePadding="4dp"
+        android:padding="4dp"
+        android:text="TextView" />
+</RelativeLayout>
