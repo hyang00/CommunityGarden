@@ -18,6 +18,9 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import static com.example.finalproject.TimeAndDateFormatter.getDay;
+import static com.example.finalproject.TimeAndDateFormatter.getMonth;
+
 public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAdapter.ViewHolder> {
 
 
@@ -25,11 +28,12 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
     private List<Event> events;
     private String eventType = "";
 
-    public CalendarEventsAdapter(Context context, List<Event> events, String eventType){
+    public CalendarEventsAdapter(Context context, List<Event> events, String eventType) {
         this.context = context;
         this.events = events;
         this.eventType = eventType;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -57,7 +61,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
         events.clear();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvDay;
         private TextView tvMonth;
@@ -74,10 +78,9 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
             tvLocation = itemView.findViewById(R.id.tvLocation);
         }
 
-        public void bind(Event event){
-            //TODO: Parse day/month from date
-            tvDay.setText(event.getDate());
-            tvMonth.setText(event.getDate());
+        public void bind(Event event) {
+            tvDay.setText(getDay(event.getDate()));
+            tvMonth.setText(getMonth(event.getDate()));
             tvTitle.setText(event.getTitle());
             tvTime.setText(event.getTime());
             tvLocation.setText(event.getLocation().getWrittenAddress());

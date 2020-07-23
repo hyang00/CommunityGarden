@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.finalproject.Common;
-import com.example.finalproject.fragments.EventFragment;
+import com.example.finalproject.fragments.CalendarEventFragment;
 
 public class UserEventsTabAdapter extends FragmentPagerAdapter {
 
@@ -22,12 +22,10 @@ public class UserEventsTabAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                EventFragment attendingFragment = EventFragment.newInstance(Common.EVENT_ATTENDING_KEY);
-                //EventsAttendingFragment attendingFragment = (EventsAttendingFragment) EventsAttendingFragment.newInstance(Common.EVENT_ATTENDING_KEY); //new EventsAttendingFragment();
+                CalendarEventFragment attendingFragment = CalendarEventFragment.newInstance(Common.EVENT_ATTENDING_KEY);
                 return attendingFragment;
             case 1:
-                EventFragment hostingFragment = EventFragment.newInstance(Common.EVENT_HOSTING_KEY);
-                //EventsHostingFragment hostingFragment = new EventsHostingFragment();
+                CalendarEventFragment hostingFragment = CalendarEventFragment.newInstance(Common.EVENT_HOSTING_KEY);
                 return hostingFragment;
             default:
                 return null;
