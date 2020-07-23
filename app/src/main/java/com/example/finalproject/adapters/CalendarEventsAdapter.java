@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.AttendingEventDetailsActivity;
-import com.example.finalproject.EventDetailsActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
 

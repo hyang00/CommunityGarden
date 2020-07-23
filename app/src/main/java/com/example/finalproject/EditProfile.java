@@ -7,10 +7,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,66 +19,69 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 
 import org.parceler.Parcels;
 
-public class SignUpActivity extends AppCompatActivity {
+public class EditProfile extends AppCompatActivity {
 
-    public static final String TAG = "SignUpActivity";
+    public static final String TAG = "EditProfile";
 
     private EditText etName;
     private EditText etBio;
     private EditText etAddress;
     private ImageView ivProfilePic;
-    private Button btnFinish;
-    private String profileImageUrl;
     private FloatingActionButton fabAddProfilePic;
+    private ExtendedFloatingActionButton fabSave;
+    private ExtendedFloatingActionButton fabCancel;
+    private String profileImageUrl;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_edit_profile);
 
-        //mDatabase = FirebaseDatabase.getInstance().getReference();
+        user = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
 
         etName = findViewById(R.id.etName);
         etBio = findViewById(R.id.etBio);
         etAddress = findViewById(R.id.etAddress);
         ivProfilePic = findViewById(R.id.ivProfilePic);
-        btnFinish = findViewById(R.id.btnFinish);
         fabAddProfilePic = findViewById(R.id.fabAddProfilePic);
+        fabSave = findViewById(R.id.fabSave);
+        fabCancel = findViewById(R.id.fabCancel);
 
-
-        // If user making account w/ Facebook, prepopulate fields
-        if (getIntent().hasExtra(User.class.getSimpleName())) {
-            User user = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
-            etName.setText(user.getScreenName());
-            profileImageUrl = user.getProfileImageUrl();
-            Glide.with(SignUpActivity.this).load(profileImageUrl).into(ivProfilePic);
-        }
-
-        btnFinish.setOnClickListener(new View.OnClickListener() {
+        etName.setText(user.getScreenName());
+        etBio.setText(user.getBio());
+        etAddress.setText(user.getLocation().getWrittenAddress());
+        profileImageUrl = user.getProfileImageUrl();
+        Glide.with(EditProfile.this).load(profileImageUrl).into(ivProfilePic);
+        fabAddProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectImage(EditProfile.this);
+            }
+        });
+        fabSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
                 String address = etAddress.getText().toString();
-                DatabaseClient.createUser(name, bio, profileImageUrl, address, SignUpActivity.this);
+                DatabaseClient.createUser(name, bio, profileImageUrl, address, EditProfile.this);
                 // Go to main page after finished registering new user
-                Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(EditProfile.this, MainActivity.class);
+                //startActivity(intent);
                 finish();
             }
         });
-
-        fabAddProfilePic.setOnClickListener(new View.OnClickListener() {
+        fabCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectImage(SignUpActivity.this);
+                finish();
             }
         });
     }
@@ -129,21 +130,21 @@ public class SignUpActivity extends AppCompatActivity {
                 case 1:     // If photo from Gallery
                     if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage = data.getData();
-                        bm = ImageFormatter.getImageResized(SignUpActivity.this, selectedImage);
-                        int rotation = ImageFormatter.getRotation(SignUpActivity.this, selectedImage, false);
+                        bm = ImageFormatter.getImageResized(EditProfile.this, selectedImage);
+                        int rotation = ImageFormatter.getRotation(EditProfile.this, selectedImage, false);
                         bm = ImageFormatter.rotate(bm, rotation);
                     }
                     break;
             }
-            Glide.with(SignUpActivity.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
+            Glide.with(EditProfile.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
             //ivProfilePic.setImageBitmap(bm);
-            imageToUpload = ImageFormatter.getImageUri(SignUpActivity.this, bm);
+            imageToUpload = ImageFormatter.getImageUri(EditProfile.this, bm);
             DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     profileImageUrl = task.getResult().toString();
                 }
-            }, imageToUpload, SignUpActivity.this);
+            }, imageToUpload, EditProfile.this);
         }
     }
 }

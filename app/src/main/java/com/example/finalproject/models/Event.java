@@ -99,7 +99,9 @@ public class Event {
         attendees.put(uid, true);
     }
 
-    public void removeAttendee(String uid) {attendees.remove(uid);}
+    public void removeAttendee(String uid) {
+        attendees.remove(uid);
+    }
 
     public String getImageUrl() {
         return imageUrl;

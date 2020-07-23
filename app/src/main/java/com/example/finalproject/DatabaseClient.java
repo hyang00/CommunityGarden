@@ -157,26 +157,6 @@ public class DatabaseClient {
 
     }
 
-    // Query events w/ same locale as current user
-    public static void testQueryEventsNearby(final ValueEventListener listener) {
-        getCurrUserProfile(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User currUser = snapshot.getValue(User.class);
-                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                Query ref = database.child(KEY_POSTS).orderByChild("location/locality").equalTo(currUser.getLocation().getLocality());
-                Log.i(TAG, currUser.getLocation().getLocality());
-                ref.addListenerForSingleValueEvent(listener);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-
     //upload the image to firebase storage, can also use listener to get download url
     public static void uploadImage(OnCompleteListener<Uri> listener, Uri filePath, final Context context) {
         if (filePath != null) {

@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcel;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +31,8 @@ import com.squareup.okhttp.Response;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+
+import static com.example.finalproject.TimeAndDateFormatter.formatDateWithDayOfWeek;
 
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -74,7 +75,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         if (event.getImageUrl() != null) {
             Glide.with(EventDetailsActivity.this).load(event.getImageUrl()).into(ivEventPhoto);
         }
-        tvDate.setText(event.getDate());
+        tvDate.setText(formatDateWithDayOfWeek(event.getDate()));
         tvTime.setText(event.getTime());
         tvDescription.setText(event.getDescription());
         tvAddress.setText(event.getLocation().getWrittenAddress());
@@ -94,7 +95,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         setUpRegistrationButton();
     }
 
-    protected void setUpRegistrationButton(){
+    protected void setUpRegistrationButton() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

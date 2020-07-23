@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         int intentFragment = getIntent().getIntExtra(MAIN_ACT_FRG_TO_LOAD_KEY, 0);
 
-        if (intentFragment!=0){
-            switch (intentFragment){
+        if (intentFragment != 0) {
+            switch (intentFragment) {
                 case HOME_FRAGMENT:
                     defaultFragment = R.id.action_home;
                     break;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     defaultFragment = R.id.action_host;
                     break;
                 case USER_EVENTS_FRAGMENT:
-                   defaultFragment = R.id.action_user_events;
+                    defaultFragment = R.id.action_user_events;
                     break;
                 case PROFILE_FRAGMENT:
                     defaultFragment = R.id.action_profile;
