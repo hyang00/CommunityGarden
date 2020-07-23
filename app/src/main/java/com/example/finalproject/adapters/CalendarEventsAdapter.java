@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.finalproject.AttendingEventDetailsActivity;
 import com.example.finalproject.EventDetailsActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
@@ -76,6 +77,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvTime = itemView.findViewById(R.id.tvTime);
             tvLocation = itemView.findViewById(R.id.tvLocation);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Event event) {
@@ -88,17 +90,13 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
 
         @Override
         public void onClick(View view) {
-            //TODO: Change to diffent activity details
+            //TODO: Change to diffent activity details for events hosting
             int position = getAdapterPosition();
             // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
-                // get the event at the position
                 Event event = events.get(position);
-                // create intent for the new activity
-                Intent intent = new Intent(context, EventDetailsActivity.class);
-                // serialize the movie using parceler, use its short name as a key
+                Intent intent = new Intent(context, AttendingEventDetailsActivity.class);
                 intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                // show the activity
                 context.startActivity(intent);
             }
         }

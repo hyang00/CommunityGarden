@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcel;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,7 +36,7 @@ import java.io.IOException;
 
 public class EventDetailsActivity extends AppCompatActivity {
     public static final String TAG = "EventDetailsActivity";
-    private Event event;
+    protected Event event;
     //private static  User user;
     private TextView tvTitle;
     private ImageView ivEventPhoto;
@@ -47,7 +48,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView tvDescription;
     private TextView tvAddress;
     private ImageView ivMap;
-    private ExtendedFloatingActionButton fab;
+    protected ExtendedFloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,17 +84,21 @@ public class EventDetailsActivity extends AppCompatActivity {
                 launchGoogleMaps();
             }
         });
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatabaseClient.rsvpUser(event, EventDetailsActivity.this);
-            }
-        });
         setGoogleMapThumbnail(event.getLocation().getWrittenAddress());
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launchGoogleMaps();
+            }
+        });
+        setUpRegistrationButton();
+    }
+
+    protected void setUpRegistrationButton(){
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseClient.rsvpUser(event, EventDetailsActivity.this);
             }
         });
     }

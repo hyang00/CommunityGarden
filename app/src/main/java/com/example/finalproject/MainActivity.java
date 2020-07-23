@@ -14,10 +14,17 @@ import com.example.finalproject.fragments.ProfileFragment;
 import com.example.finalproject.fragments.UserEventFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import static com.example.finalproject.Common.HOME_FRAGMENT;
+import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
+import static com.example.finalproject.Common.PROFILE_FRAGMENT;
+import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
+
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     private BottomNavigationView bottomNavigationView;
+    private Fragment fragment;
+    private int defaultFragment = R.id.action_home;
 
 
     @Override
@@ -28,13 +35,30 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
+        int intentFragment = getIntent().getIntExtra(MAIN_ACT_FRG_TO_LOAD_KEY, 0);
+
+        if (intentFragment!=0){
+            switch (intentFragment){
+                case HOME_FRAGMENT:
+                    defaultFragment = R.id.action_home;
+                    break;
+                case Common.HOST_FRAGMENT:
+                    defaultFragment = R.id.action_host;
+                    break;
+                case USER_EVENTS_FRAGMENT:
+                   defaultFragment = R.id.action_user_events;
+                    break;
+                case PROFILE_FRAGMENT:
+                    defaultFragment = R.id.action_profile;
+                    break;
+            }
+        }
 
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment fragment;
                         switch (item.getItemId()) {
                             case R.id.action_home:
                                 fragment = EventFragment.newInstance(Common.EVENT_FEED_KEY);
@@ -57,6 +81,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_home);
+        bottomNavigationView.setSelectedItemId(defaultFragment);
     }
 }

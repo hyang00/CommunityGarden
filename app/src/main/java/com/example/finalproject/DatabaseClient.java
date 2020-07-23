@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,6 +29,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
+
+import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
+import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
 
 public class DatabaseClient {
     private static final String KEY_POSTS = "Posts";
@@ -88,7 +92,30 @@ public class DatabaseClient {
         } else {
             Toast.makeText(context, "Already Registered", Toast.LENGTH_SHORT).show();
         }
+    }
 
+    // removes user from attendees section of post
+    public static void cancelUserRegistration(final Event event, final Context context) {
+        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference attendeesRef = database.child(KEY_POSTS).child(event.getEventId()).child(KEY_ATTENDEES);
+        // check if the user has already rsvp'd
+        if (event.isAttending(uid)) {
+            attendeesRef.child(uid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    // update local if successful in updating database
+                    Toast.makeText(context, "Successfully Removed Registration", Toast.LENGTH_SHORT).show();
+                    event.removeAttendee(uid);
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra(MAIN_ACT_FRG_TO_LOAD_KEY, USER_EVENTS_FRAGMENT);
+                    context.startActivity(intent);
+                }
+            });
+
+
+        } else {
+            Toast.makeText(context, "Not Registered", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Get logged in user profile

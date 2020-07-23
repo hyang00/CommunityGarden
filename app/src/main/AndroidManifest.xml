@@ -40,6 +40,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".EventDetailsActivity" />
+        <activity android:name=".AttendingEventDetailsActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
