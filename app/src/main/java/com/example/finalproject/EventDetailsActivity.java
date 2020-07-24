@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -54,6 +55,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView tvDescription;
     private TextView tvAddress;
     private ImageView ivMap;
+    private int position;
     protected ExtendedFloatingActionButton fab;
 
     @Override
@@ -62,6 +64,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
 
         event = (Event) Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
+        position = getIntent().getIntExtra("position", 0);
 
         tvTitle = findViewById(R.id.tvTitle);
         ivEventPhoto = findViewById(R.id.ivEventPhoto);
@@ -107,7 +110,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 DatabaseClient.rsvpUser(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(EventDetailsActivity.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EventDetailsActivity.this, "Successfully Registered", Toast.LENGTH_SHORT).show(); .
+                        Intent intent = new Intent(EventDetailsActivity.this, MainActivity.class);
+                        startActivity(intent);
                         finish();
                     }
                 }, event, EventDetailsActivity.this);

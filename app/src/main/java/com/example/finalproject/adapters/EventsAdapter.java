@@ -1,5 +1,6 @@
 package com.example.finalproject.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -31,6 +32,7 @@ import static com.example.finalproject.TimeAndDateFormatter.formatDateWithDayOfW
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
+    private static final String TAG = "EventsAdapter";
     private Context context;
     private List<Event> events;
     private String eventType = "";
@@ -69,6 +71,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     public boolean isEmpty() {
         return events.isEmpty();
+    }
+
+    public void removeAt(int position) {
+        events.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, events.size());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -124,23 +132,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
-                // get the event at the position
                 Event event = events.get(position);
-                // create intent for the new activity
                 Intent intent = new Intent(context, EventDetailsActivity.class);
-                // serialize the movie using parceler, use its short name as a key
                 intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                // show the activity
                 context.startActivity(intent);
             }
 
         }
-        public void removeAt(int position) {
-            events.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, events.size());
-        }
+
     }
+
 }

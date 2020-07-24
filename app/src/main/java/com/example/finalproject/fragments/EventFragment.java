@@ -1,5 +1,7 @@
 package com.example.finalproject.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,10 +141,6 @@ public class EventFragment extends Fragment {
         }
     }
 
-    private void queryUserLocality() {
-
-    }
-
     private void queryEventsNearby() {
 
         DatabaseClient.getCurrUserProfile(new ValueEventListener() {
@@ -226,4 +226,5 @@ public class EventFragment extends Fragment {
     // TODO: limit initial query and implement infinite scrolling
     private void loadNextDataFromApi(int page, int totalItemsCount) {
     }
+
 }
