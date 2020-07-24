@@ -32,6 +32,8 @@ import org.parceler.Parcels;
 
 import java.io.IOException;
 
+import static com.example.finalproject.MapsUrlClient.launchGoogleMaps;
+import static com.example.finalproject.MapsUrlClient.setGoogleMapThumbnail;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateWithDayOfWeek;
 
 
@@ -82,14 +84,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchGoogleMaps();
+                launchGoogleMaps(EventDetailsActivity.this, event);
             }
         });
-        setGoogleMapThumbnail(event.getLocation().getWrittenAddress());
+        setGoogleMapThumbnail(EventDetailsActivity.this, event.getLocation().getWrittenAddress(), ivMap);
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchGoogleMaps();
+                launchGoogleMaps(EventDetailsActivity.this, event);
             }
         });
         setUpRegistrationButton();
@@ -126,55 +128,5 @@ public class EventDetailsActivity extends AppCompatActivity {
         }, event.getAuthor());
     }
 
-    private void launchGoogleMaps() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Common.MAP_SEARCH_URL_KEY + convertAddressToSearchQuery(event.getLocation().getWrittenAddress())));
-        startActivity(intent);
-    }
-
-    private void setGoogleMapThumbnail(String address) {
-        Log.i(TAG, getString(R.string.google_api_key));
-        String url = Common.MAP_STATIC_URL_KEY + convertAddressToSearchQuery(address) + "zoom=14&size=400x300&markers=color:red%7C" + convertAddressToSearchQuery(address) + "&key=" + getString(R.string.api_key);
-        Log.i(TAG, url);
-        final Request request = new Request.Builder().url(url).build();
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    Log.i(TAG, response.toString());
-                    final Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ivMap.setImageBitmap(bitmap);
-                        }
-                    });
-                } else {
-                    //Handle the error
-                }
-            }
-        });
-    }
-
-    //Takes standard address format and converts it into maps query preferred format (spaces -> +, commas -> %2C)
-    private static String convertAddressToSearchQuery(String address) {
-        String searchQuery = "";
-        for (int i = 0; i < address.length(); ++i) {
-            char currLetter = address.charAt(i);
-            if (currLetter == ' ') {
-                searchQuery += "+";
-            } else if (currLetter == ',') {
-                searchQuery += "%2C";
-            } else {
-                searchQuery += currLetter;
-            }
-        }
-        return searchQuery;
-    }
 
 }
