@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,8 @@ import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EventDetailsActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.parceler.Parcels;
 
@@ -88,9 +91,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             btnRSVP.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    Event event = events.get(position);
-                    DatabaseClient.rsvpUser(event, context);
+                    final int position = getAdapterPosition();
+                    final Event event = events.get(position);
+                    DatabaseClient.rsvpUser(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(context, "Successfully Registered", Toast.LENGTH_SHORT).show();
+                            removeAt(position);
+                        }
+                    }, event, context);
                     Log.i("adapter", "event key: " + event.getEventId());
                 }
             });
@@ -127,6 +136,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 context.startActivity(intent);
             }
 
+        }
+        public void removeAt(int position) {
+            events.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, events.size());
         }
     }
 }

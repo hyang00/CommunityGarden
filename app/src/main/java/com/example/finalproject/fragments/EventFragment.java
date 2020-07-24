@@ -176,28 +176,6 @@ public class EventFragment extends Fragment {
 
             }
         });
-
-//        DatabaseClient.queryEventsNearby(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                adapter.clear();
-//                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-//                    Event event = singleSnapshot.getValue(Event.class);
-//                    event.setEventId(singleSnapshot.getKey());
-//                    if (isValid(event)) {
-//                        adapter.add(event);
-//                    }
-//                }
-//                setDefaultIfEmpty();
-//                adapter.notifyDataSetChanged();
-//                swipeContainer.setRefreshing(false);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
     }
 
     private void queryEvents() {

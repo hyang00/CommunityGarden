@@ -74,21 +74,12 @@ public class DatabaseClient {
     }
 
     // Adds user to attendees section of post
-    public static void rsvpUser(final Event event, Context context) {
+    public static void rsvpUser(OnCompleteListener<Void> listener, final Event event, final Context context) {
         final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference attendeesRef = database.child(KEY_POSTS).child(event.getEventId()).child(KEY_ATTENDEES);
         // check if the user has already rsvp'd
         if (!event.isAttending(uid)) {
-            attendeesRef.child(uid).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    // update local if successful in updating database
-                    event.addAttendee(uid);
-                }
-            });
-            Toast.makeText(context, "Successfully Registered", Toast.LENGTH_SHORT).show();
-            //database.child("UserEvents").child(uid).child("eventsAttending").child(event.getEventId()).setValue(true);
-
+            attendeesRef.child(uid).setValue(true).addOnCompleteListener(listener);
         } else {
             Toast.makeText(context, "Already Registered", Toast.LENGTH_SHORT).show();
         }
