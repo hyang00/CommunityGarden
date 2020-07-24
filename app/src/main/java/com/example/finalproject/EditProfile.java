@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-
 import org.parceler.Parcels;
 
 public class EditProfile extends AppCompatActivity {

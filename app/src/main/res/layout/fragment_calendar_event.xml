@@ -17,4 +17,13 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <TextView
+        android:id="@+id/tvDefaultMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/no_events_default_message"
+        android:textSize="36sp"
+        android:visibility="gone" />
+
 </FrameLayout>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,6 +44,7 @@ public class CalendarEventFragment extends Fragment {
     private List<Event> events;
     private SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private TextView tvDefaultMessage;
     private String eventType;
 
     public CalendarEventFragment() {
@@ -79,6 +81,8 @@ public class CalendarEventFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        tvDefaultMessage = view.findViewById(R.id.tvDefaultMessage);
         rvEvents = view.findViewById(R.id.rvEvents);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -114,6 +118,16 @@ public class CalendarEventFragment extends Fragment {
         queryEvents();
     }
 
+    private void setDefaultIfEmpty(){
+        if (adapter.isEmpty()){
+            rvEvents.setVisibility(View.GONE);
+            tvDefaultMessage.setVisibility(View.VISIBLE);
+        } else{
+            rvEvents.setVisibility(View.VISIBLE);
+            tvDefaultMessage.setVisibility(View.GONE);
+        }
+    }
+
     private void queryEvents() {
         DatabaseClient.queryEvents(new ValueEventListener() {
             @Override
@@ -126,6 +140,7 @@ public class CalendarEventFragment extends Fragment {
                         adapter.add(event);
                     }
                 }
+                setDefaultIfEmpty();
                 adapter.notifyDataSetChanged();
                 swipeContainer.setRefreshing(false);
             }

@@ -61,6 +61,8 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
         events.clear();
     }
 
+    public boolean isEmpty() { return events.isEmpty();}
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvDay;

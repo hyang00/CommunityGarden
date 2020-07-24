@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
@@ -118,17 +119,17 @@ public class EventFragment extends Fragment {
             }
         };
         rvEvents.addOnScrollListener(scrollListener);
-        if (eventType == Common.EVENT_FEED_KEY) {
-            queryEventsNearby();
-            if (adapter.getItemCount() == 0) {
-                Log.i(TAG, "itemCount: " + adapter.getItemCount());
-                tvDefaultMessage.setVisibility(View.VISIBLE);
-            } else {
-                tvDefaultMessage.setVisibility(View.GONE);
-            }
-        } else {
-            queryEvents();
+        queryEventsNearby();
 
+    }
+
+    private void setDefaultIfEmpty(){
+        if (adapter.isEmpty()){
+            rvEvents.setVisibility(View.GONE);
+            tvDefaultMessage.setVisibility(View.VISIBLE);
+        } else{
+            rvEvents.setVisibility(View.VISIBLE);
+            tvDefaultMessage.setVisibility(View.GONE);
         }
     }
 
@@ -144,6 +145,7 @@ public class EventFragment extends Fragment {
                         adapter.add(event);
                     }
                 }
+                setDefaultIfEmpty();
                 adapter.notifyDataSetChanged();
                 swipeContainer.setRefreshing(false);
             }

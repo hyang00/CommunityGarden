@@ -64,6 +64,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         events.clear();
     }
 
+    public boolean isEmpty() {
+        return events.isEmpty();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvTitle;
