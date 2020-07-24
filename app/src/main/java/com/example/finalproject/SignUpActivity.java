@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -65,6 +66,9 @@ public class SignUpActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
                 String address = etAddress.getText().toString();
+                if (!checkIfFieldsAreFilled(name, bio, address, profileImageUrl)){
+                    return;
+                }
                 DatabaseClient.createUser(name, bio, profileImageUrl, address, SignUpActivity.this);
                 // Go to main page after finished registering new user
                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
@@ -79,6 +83,27 @@ public class SignUpActivity extends AppCompatActivity {
                 selectImage(SignUpActivity.this);
             }
         });
+    }
+
+    // TODO: Clean this up
+    private boolean checkIfFieldsAreFilled(String name, String bio, String address, String profileImageUrl) {
+        if (name.isEmpty()) {
+            Toast.makeText(SignUpActivity.this, "Name cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (bio.isEmpty()) {
+            Toast.makeText(SignUpActivity.this, "Bio cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (address.isEmpty()) {
+            Toast.makeText(SignUpActivity.this, "Address cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (profileImageUrl==null) {
+            Toast.makeText(SignUpActivity.this, "No profile picture selected", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     //Pops up a dialog to ask the user whether they would like to get a photo from camera or gallery
@@ -132,7 +157,6 @@ public class SignUpActivity extends AppCompatActivity {
                     break;
             }
             Glide.with(SignUpActivity.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
-            //ivProfilePic.setImageBitmap(bm);
             imageToUpload = ImageFormatter.getImageUri(SignUpActivity.this, bm);
             DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
                 @Override

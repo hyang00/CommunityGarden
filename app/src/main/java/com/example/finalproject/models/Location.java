@@ -3,6 +3,7 @@ package com.example.finalproject.models;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.widget.Toast;
 
 import org.parceler.Parcel;
 
@@ -31,6 +32,7 @@ public class Location {
             this.lat = myAddress.get(0).getLatitude();
             this.longitude = myAddress.get(0).getLongitude();
         } catch (IOException e) {
+            Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT);
             e.printStackTrace();
         }
     }

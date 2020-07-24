@@ -1,6 +1,7 @@
 package com.example.finalproject.models;
 
 import android.content.Context;
+import android.net.Uri;
 
 import org.parceler.Parcel;
 
@@ -33,6 +34,16 @@ public class Event {
         this.date = date;
         this.time = time;
         this.location = new Location(address, context);
+    }
+
+    public Event(String title, String description, String address, String date, String time, Uri downloadUri, Context context) {
+        this.title = title;
+        this.description = description;
+        this.imageUrl = downloadUri.toString();
+        this.date = date;
+        this.time = time;
+        this.location = new Location(address, context);
+
     }
 
     public String getDate() {

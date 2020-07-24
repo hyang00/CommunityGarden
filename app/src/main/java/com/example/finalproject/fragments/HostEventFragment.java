@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.ImageFormatter;
 import com.example.finalproject.R;
+import com.example.finalproject.models.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -123,27 +124,55 @@ public class HostEventFragment extends Fragment {
                 String title = etTitle.getText().toString();
                 String description = etDescription.getText().toString();
                 String address = etAddress.getText().toString();
-                String date = formatDateForStorage(etDate.getText().toString());
+                String date = etDate.getText().toString();
                 String time = etTime.getText().toString();
-                if (description.isEmpty()) {
-                    Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
+                if (!checkIfFieldsAreFilled(title, description, address, date, time, downloadUri)){
                     return;
                 }
-
-                // post event to realtime db
+                date = formatDateForStorage(date);
                 DatabaseClient.postEvent(getContext(), title, description, address, date, time, downloadUri);
-
-                // reset fields TODO: Maybe go to another page when done posting?
-                etTitle.setText("");
-                etDescription.setText("");
-                etAddress.setText("");
-                etDate.setText("");
-                etTime.setText("");
-                ivPhoto.setImageResource(R.drawable.ic_baseline_add_box_24);
+                //  TODO: Maybe go to another page when done posting?
+                resetFields();
             }
         });
     }
 
+    private void resetFields(){
+        etTitle.setText("");
+        etDescription.setText("");
+        etAddress.setText("");
+        etDate.setText("");
+        etTime.setText("");
+        ivPhoto.setImageResource(R.drawable.ic_baseline_add_box_24);
+    }
+
+    private boolean checkIfFieldsAreFilled(String title, String description, String address, String date, String time, Uri downloadUri){
+        if (title.isEmpty()) {
+            Toast.makeText(getContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (description.isEmpty()) {
+            Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (address.isEmpty()) {
+            Toast.makeText(getContext(), "Address cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (date.isEmpty()) {
+            Toast.makeText(getContext(), "Date cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (time.isEmpty()){
+            Toast.makeText(getContext(), "Time cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (downloadUri == null){
+            Toast.makeText(getContext(), "No photo selected", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 
     //Pops up a dialog to ask the user whether they would like to get a photo from camera or gallery
     private void selectImage(Context context) {
