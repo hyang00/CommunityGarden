@@ -110,7 +110,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 DatabaseClient.rsvpUser(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(EventDetailsActivity.this, "Successfully Registered", Toast.LENGTH_SHORT).show(); .
+                        Toast.makeText(EventDetailsActivity.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(EventDetailsActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
