@@ -44,7 +44,6 @@ import static com.example.finalproject.TimeAndDateFormatter.formatDateWithDayOfW
 public class EventDetailsActivity extends AppCompatActivity {
     public static final String TAG = "EventDetailsActivity";
     protected Event event;
-    //private static  User user;
     private TextView tvTitle;
     private ImageView ivEventPhoto;
     private ImageView ivProfilePic;
@@ -55,7 +54,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView tvDescription;
     private TextView tvAddress;
     private ImageView ivMap;
-    private int position;
     protected ExtendedFloatingActionButton fab;
 
     @Override
@@ -64,7 +62,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
 
         event = (Event) Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
-        position = getIntent().getIntExtra("position", 0);
 
         tvTitle = findViewById(R.id.tvTitle);
         ivEventPhoto = findViewById(R.id.ivEventPhoto);

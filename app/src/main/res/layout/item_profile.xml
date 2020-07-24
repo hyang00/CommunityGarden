@@ -36,6 +36,8 @@
         android:layout_alignStart="@+id/tvName"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/button"
         android:text="TextView"
         tools:text="A little bit about my self" />
 

@@ -66,7 +66,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
                 String address = etAddress.getText().toString();
-                if (!checkIfFieldsAreFilled(name, bio, address, profileImageUrl)){
+                if (!checkIfFieldsAreFilled(name, bio, address, profileImageUrl)) {
                     return;
                 }
                 DatabaseClient.createUser(name, bio, profileImageUrl, address, SignUpActivity.this);
@@ -99,7 +99,7 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this, "Address cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (profileImageUrl==null) {
+        if (profileImageUrl == null) {
             Toast.makeText(SignUpActivity.this, "No profile picture selected", Toast.LENGTH_SHORT).show();
             return false;
         }

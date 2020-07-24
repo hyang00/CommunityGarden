@@ -11,11 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.AttendingEventDetailsActivity;
+import com.example.finalproject.Common;
+import com.example.finalproject.HostEventActivityDetails;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
 
 import org.parceler.Parcels;
 
+import java.io.InputStream;
 import java.util.List;
 
 import static com.example.finalproject.TimeAndDateFormatter.getDay;
@@ -98,7 +101,12 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
             // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
                 Event event = events.get(position);
-                Intent intent = new Intent(context, AttendingEventDetailsActivity.class);
+                Intent intent;
+                if (eventType == Common.EVENT_ATTENDING_KEY){
+                    intent = new Intent(context, AttendingEventDetailsActivity.class);
+                } else {
+                    intent = new Intent(context, HostEventActivityDetails.class);
+                }
                 intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
                 context.startActivity(intent);
             }

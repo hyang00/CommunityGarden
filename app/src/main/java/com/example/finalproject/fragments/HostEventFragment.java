@@ -126,7 +126,7 @@ public class HostEventFragment extends Fragment {
                 String address = etAddress.getText().toString();
                 String date = etDate.getText().toString();
                 String time = etTime.getText().toString();
-                if (!checkIfFieldsAreFilled(title, description, address, date, time, downloadUri)){
+                if (!checkIfFieldsAreFilled(title, description, address, date, time, downloadUri)) {
                     return;
                 }
                 date = formatDateForStorage(date);
@@ -137,7 +137,7 @@ public class HostEventFragment extends Fragment {
         });
     }
 
-    private void resetFields(){
+    private void resetFields() {
         etTitle.setText("");
         etDescription.setText("");
         etAddress.setText("");
@@ -146,7 +146,7 @@ public class HostEventFragment extends Fragment {
         ivPhoto.setImageResource(R.drawable.ic_baseline_add_box_24);
     }
 
-    private boolean checkIfFieldsAreFilled(String title, String description, String address, String date, String time, Uri downloadUri){
+    private boolean checkIfFieldsAreFilled(String title, String description, String address, String date, String time, Uri downloadUri) {
         if (title.isEmpty()) {
             Toast.makeText(getContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
@@ -163,11 +163,11 @@ public class HostEventFragment extends Fragment {
             Toast.makeText(getContext(), "Date cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (time.isEmpty()){
+        if (time.isEmpty()) {
             Toast.makeText(getContext(), "Time cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (downloadUri == null){
+        if (downloadUri == null) {
             Toast.makeText(getContext(), "No photo selected", Toast.LENGTH_SHORT).show();
             return false;
         }
