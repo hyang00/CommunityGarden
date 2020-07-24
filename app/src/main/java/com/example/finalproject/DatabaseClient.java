@@ -154,7 +154,14 @@ public class DatabaseClient {
 
             }
         });
+    }
 
+    // Query events given a locality
+    public static void queryEventsNearby(final ValueEventListener listener, String locality) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        Query ref = database.child(KEY_POSTS).orderByChild("location/locality").equalTo(locality);
+        Log.i(TAG, locality);
+        ref.addListenerForSingleValueEvent(listener);
     }
 
     //upload the image to firebase storage, can also use listener to get download url

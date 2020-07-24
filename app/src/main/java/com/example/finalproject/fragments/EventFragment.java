@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.models.Event;
+import com.example.finalproject.models.User;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -45,6 +47,7 @@ public class EventFragment extends Fragment {
     protected String eventType;
     private TextView tvDefaultMessage;
     private CollapsingToolbarLayout collapsingToolbar;
+    private EditText etLocation;
 
     public EventFragment() {
         // Required empty public constructor
@@ -87,7 +90,8 @@ public class EventFragment extends Fragment {
 
         tvDefaultMessage = view.findViewById(R.id.tvDefaultMessage);
         collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle("Community Garden");
+        etLocation = view.findViewById(R.id.etLocation);
+        //collapsingToolbar.setTitle("Community Garden");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         allEvents = new ArrayList<>();
@@ -123,31 +127,48 @@ public class EventFragment extends Fragment {
 
     }
 
-    private void setDefaultIfEmpty(){
-        if (adapter.isEmpty()){
+    private void setDefaultIfEmpty() {
+        if (adapter.isEmpty()) {
             rvEvents.setVisibility(View.GONE);
             tvDefaultMessage.setVisibility(View.VISIBLE);
-        } else{
+        } else {
             rvEvents.setVisibility(View.VISIBLE);
             tvDefaultMessage.setVisibility(View.GONE);
         }
     }
 
+    private void queryUserLocality() {
+
+    }
+
     private void queryEventsNearby() {
-        DatabaseClient.queryEventsNearby(new ValueEventListener() {
+
+        DatabaseClient.getCurrUserProfile(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                adapter.clear();
-                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                    Event event = singleSnapshot.getValue(Event.class);
-                    event.setEventId(singleSnapshot.getKey());
-                    if (isValid(event)) {
-                        adapter.add(event);
+                final User user = snapshot.getValue(User.class);
+                DatabaseClient.queryEventsNearby(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        adapter.clear();
+                        for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                            Event event = singleSnapshot.getValue(Event.class);
+                            event.setEventId(singleSnapshot.getKey());
+                            if (isValid(event)) {
+                                adapter.add(event);
+                            }
+                        }
+                        setDefaultIfEmpty();
+                        adapter.notifyDataSetChanged();
+                        etLocation.setText(user.getLocation().getLocality());
+                        swipeContainer.setRefreshing(false);
                     }
-                }
-                setDefaultIfEmpty();
-                adapter.notifyDataSetChanged();
-                swipeContainer.setRefreshing(false);
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                }, user.getLocation().getLocality());
             }
 
             @Override
@@ -155,6 +176,28 @@ public class EventFragment extends Fragment {
 
             }
         });
+
+//        DatabaseClient.queryEventsNearby(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                adapter.clear();
+//                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+//                    Event event = singleSnapshot.getValue(Event.class);
+//                    event.setEventId(singleSnapshot.getKey());
+//                    if (isValid(event)) {
+//                        adapter.add(event);
+//                    }
+//                }
+//                setDefaultIfEmpty();
+//                adapter.notifyDataSetChanged();
+//                swipeContainer.setRefreshing(false);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
     private void queryEvents() {

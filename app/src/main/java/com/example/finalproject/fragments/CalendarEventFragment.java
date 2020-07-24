@@ -118,11 +118,11 @@ public class CalendarEventFragment extends Fragment {
         queryEvents();
     }
 
-    private void setDefaultIfEmpty(){
-        if (adapter.isEmpty()){
+    private void setDefaultIfEmpty() {
+        if (adapter.isEmpty()) {
             rvEvents.setVisibility(View.GONE);
             tvDefaultMessage.setVisibility(View.VISIBLE);
-        } else{
+        } else {
             rvEvents.setVisibility(View.VISIBLE);
             tvDefaultMessage.setVisibility(View.GONE);
         }
