@@ -5,6 +5,7 @@
 <!--    tools:context=".fragments.EventFragment">-->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:shimmer="http://schemas.android.com/apk/res-auto">
@@ -46,6 +47,18 @@
                     android:textSize="30sp"
                     android:hint="" />
 
+                <ImageView
+                    android:id="@+id/ivSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/etLocation"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="19dp"
+                    android:layout_toEndOf="@+id/etLocation"
+                    shimmer:srcCompat="@drawable/ic_baseline_search_24"
+                    tools:visibility="gone" />
+
             </RelativeLayout>
 
 
@@ -75,12 +88,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <include layout="@layout/data_placeholder_layout" />
+
             <include layout="@layout/data_placeholder_layout" />
+
             <include layout="@layout/data_placeholder_layout" />
+
             <include layout="@layout/data_placeholder_layout" />
+
             <include layout="@layout/data_placeholder_layout" />
+
             <include layout="@layout/data_placeholder_layout" />
+
             <include layout="@layout/data_placeholder_layout" />
         </LinearLayout>
 
@@ -98,7 +118,6 @@
             android:layout_height="match_parent"
             android:visibility="visible" />
 
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
@@ -110,7 +129,6 @@
         android:textSize="36sp"
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,7 +49,9 @@ public class EventFragment extends Fragment {
     private TextView tvDefaultMessage;
     private CollapsingToolbarLayout collapsingToolbar;
     private EditText etLocation;
+    private ImageView ivSearch;
     private ShimmerFrameLayout mShimmerViewContainer;
+    private String searchLocation;
 
     public EventFragment() {
         // Required empty public constructor
@@ -93,6 +96,7 @@ public class EventFragment extends Fragment {
         collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
         etLocation = view.findViewById(R.id.etLocation);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
+        ivSearch = view.findViewById(R.id.ivSearch);
         //collapsingToolbar.setTitle("Community Garden");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -105,7 +109,7 @@ public class EventFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                queryEventsNearby();
+                queryEventsNearby(searchLocation);
             }
         });
         // Configure the refreshing colors
@@ -113,6 +117,23 @@ public class EventFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+        etLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ivSearch.setVisibility(View.VISIBLE);
+            }
+        });
+
+        ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchLocation = etLocation.getText().toString();
+                queryEventsNearby(searchLocation);
+                ivSearch.setVisibility(View.GONE);
+
+            }
+        });
 
         // set the adapter on the recycler view
         rvEvents.setAdapter(adapter);
@@ -125,7 +146,7 @@ public class EventFragment extends Fragment {
             }
         };
         rvEvents.addOnScrollListener(scrollListener);
-        queryEventsNearby();
+        queryEventsNearby(searchLocation);
 
     }
 
@@ -151,8 +172,37 @@ public class EventFragment extends Fragment {
         }
     }
 
-    private void queryEventsNearby() {
+    private void queryEventsNearby(String searchLocation) {
+        if (searchLocation == null) {
+            queryEventsWithDefaultUserLocation();
+        } else {
+            DatabaseClient.queryEventsNearby(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    adapter.clear();
+                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                        Event event = singleSnapshot.getValue(Event.class);
+                        event.setEventId(singleSnapshot.getKey());
+                        if (isValid(event)) {
+                            adapter.add(event);
+                        }
+                    }
+                    setDefaultIfEmpty();
+                    adapter.notifyDataSetChanged();
+                    swipeContainer.setRefreshing(false);
+                    mShimmerViewContainer.stopShimmerAnimation();
+                    mShimmerViewContainer.setVisibility(View.GONE);
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            }, searchLocation);
+        }
+    }
+
+    private void queryEventsWithDefaultUserLocation() {
         DatabaseClient.getCurrUserProfile(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -190,48 +240,11 @@ public class EventFragment extends Fragment {
         });
     }
 
-
-    private void queryEvents() {
-        DatabaseClient.queryEvents(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                adapter.clear();
-                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                    Event event = singleSnapshot.getValue(Event.class);
-                    event.setEventId(singleSnapshot.getKey());
-                    if (isValid(event)) {
-                        adapter.add(event);
-                    }
-                }
-                adapter.notifyDataSetChanged();
-                swipeContainer.setRefreshing(false);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     // check whether the event should be added to the feed depending on which feed it is
     private boolean isValid(Event event) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        switch (eventType) {
-            case Common.EVENT_FEED_KEY:
-                if (!event.getAuthor().equals(uid) && !event.isAttending(uid)) {
-                    return true;
-                }
-                break;
-            case Common.EVENT_ATTENDING_KEY:
-                if (event.isAttending(uid)) {
-                    return true;
-                }
-                break;
-            case Common.EVENT_HOSTING_KEY:
-                if (event.getAuthor().equals(uid)) {
-                    return true;
-                }
+        if (!event.getAuthor().equals(uid) && !event.isAttending(uid)) {
+            return true;
         }
         return false;
     }
