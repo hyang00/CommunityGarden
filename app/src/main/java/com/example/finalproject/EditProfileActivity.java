@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,16 +18,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.models.User;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.annotations.NotNull;
 
 import org.parceler.Parcels;
 
-public class EditProfile extends AppCompatActivity {
+import java.util.Arrays;
+
+public class EditProfileActivity extends AppCompatActivity {
 
     public static final String TAG = "EditProfile";
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 190;
 
     private EditText etName;
     private EditText etBio;
@@ -36,7 +49,9 @@ public class EditProfile extends AppCompatActivity {
     private ExtendedFloatingActionButton fabSave;
     private ExtendedFloatingActionButton fabCancel;
     private String profileImageUrl;
+    private String address;
     private User user;
+    private AutocompleteSupportFragment autocompleteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +62,50 @@ public class EditProfile extends AppCompatActivity {
 
         etName = findViewById(R.id.etName);
         etBio = findViewById(R.id.etBio);
-        etAddress = findViewById(R.id.etAddress);
+        //etAddress = findViewById(R.id.etAddress);
         ivProfilePic = findViewById(R.id.ivProfilePic);
         fabAddProfilePic = findViewById(R.id.fabAddProfilePic);
         fabSave = findViewById(R.id.fabSave);
         fabCancel = findViewById(R.id.fabCancel);
 
+        if (!Places.isInitialized()) {
+            Places.initialize(EditProfileActivity.this, getString(R.string.api_key));
+        }
+        PlacesClient placesClient = Places.createClient(EditProfileActivity.this);
+
+        // Initialize the AutocompleteSupportFragment.
+        autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NotNull Place place) {
+                address = place.getAddress();
+                autocompleteFragment.setText(place.getAddress());
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            }
+
+            @Override
+            public void onError(@NotNull Status status) {
+                Log.e(TAG, "An error occurred: " + status);
+            }
+        });
+
+
         etName.setText(user.getScreenName());
         etBio.setText(user.getBio());
-        etAddress.setText(user.getLocation().getWrittenAddress());
+        autocompleteFragment.setText(user.getLocation().getWrittenAddress());
+        //etAddress.setText(user.getLocation().getWrittenAddress());
         profileImageUrl = user.getProfileImageUrl();
-        Glide.with(EditProfile.this).load(profileImageUrl).into(ivProfilePic);
+        Glide.with(EditProfileActivity.this).load(profileImageUrl).into(ivProfilePic);
         fabAddProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectImage(EditProfile.this);
+                selectImage(EditProfileActivity.this);
             }
         });
         fabSave.setOnClickListener(new View.OnClickListener() {
@@ -69,11 +113,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View view) {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
-                String address = etAddress.getText().toString();
-                DatabaseClient.createUser(name, bio, profileImageUrl, address, EditProfile.this);
-                // Go to main page after finished registering new user
-                //Intent intent = new Intent(EditProfile.this, MainActivity.class);
-                //startActivity(intent);
+                DatabaseClient.createUser(name, bio, profileImageUrl, address, EditProfileActivity.this);
                 finish();
             }
         });
@@ -119,31 +159,34 @@ public class EditProfile extends AppCompatActivity {
         Uri imageToUpload;
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_CANCELED) {
-            Bitmap bm = null;
-            switch (requestCode) {
-                case 0:  // If photo from Camera
-                    if (resultCode == RESULT_OK && data != null) {
-                        bm = (Bitmap) data.getExtras().get("data");
-                    }
-                    break;
-                case 1:     // If photo from Gallery
-                    if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage = data.getData();
-                        bm = ImageFormatter.getImageResized(EditProfile.this, selectedImage);
-                        int rotation = ImageFormatter.getRotation(EditProfile.this, selectedImage, false);
-                        bm = ImageFormatter.rotate(bm, rotation);
-                    }
-                    break;
-            }
-            Glide.with(EditProfile.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
-            //ivProfilePic.setImageBitmap(bm);
-            imageToUpload = ImageFormatter.getImageUri(EditProfile.this, bm);
-            DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    profileImageUrl = task.getResult().toString();
+            if (requestCode == 0 || requestCode == 1) {
+                Bitmap bm = null;
+                switch (requestCode) {
+                    case 0:  // If photo from Camera
+                        if (resultCode == RESULT_OK && data != null) {
+                            bm = (Bitmap) data.getExtras().get("data");
+                        }
+                        break;
+                    case 1:     // If photo from Gallery
+                        if (resultCode == RESULT_OK && data != null) {
+                            Uri selectedImage = data.getData();
+                            bm = ImageFormatter.getImageResized(EditProfileActivity.this, selectedImage);
+                            int rotation = ImageFormatter.getRotation(EditProfileActivity.this, selectedImage, false);
+                            bm = ImageFormatter.rotate(bm, rotation);
+                        }
+                        break;
                 }
-            }, imageToUpload, EditProfile.this);
+                Glide.with(EditProfileActivity.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
+                //ivProfilePic.setImageBitmap(bm);
+                imageToUpload = ImageFormatter.getImageUri(EditProfileActivity.this, bm);
+                DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        profileImageUrl = task.getResult().toString();
+                    }
+                }, imageToUpload, EditProfileActivity.this);
+            }
+
         }
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,11 +20,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.models.User;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.parceler.Parcels;
+
+import java.util.Arrays;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -31,11 +40,11 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText etName;
     private EditText etBio;
-    private EditText etAddress;
     private ImageView ivProfilePic;
     private Button btnFinish;
     private String profileImageUrl;
     private FloatingActionButton fabAddProfilePic;
+    private String address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +55,40 @@ public class SignUpActivity extends AppCompatActivity {
 
         etName = findViewById(R.id.etName);
         etBio = findViewById(R.id.etBio);
-        etAddress = findViewById(R.id.etAddress);
         ivProfilePic = findViewById(R.id.ivProfilePic);
         btnFinish = findViewById(R.id.btnFinish);
         fabAddProfilePic = findViewById(R.id.fabAddProfilePic);
+
+        if (!Places.isInitialized()) {
+            Places.initialize(SignUpActivity.this, getString(R.string.api_key));
+        }
+        PlacesClient placesClient = Places.createClient(SignUpActivity.this);
+
+        // change default icon on places autocomplete
+        ImageView searchIcon = findViewById(R.id.places_autocomplete_search_button);
+        //TODO: image not loading properly
+        Glide.with(SignUpActivity.this).load(R.drawable.ic_baseline_location_on_24).into(searchIcon);
+
+        // Initialize the AutocompleteSupportFragment.
+        final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME));
+        autocompleteFragment.setHint("Address");
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                address = place.getAddress();
+                //TODO: fix bug where address isn't showing
+                autocompleteFragment.setHint(address);
+                Log.i(TAG, "Place: " + place.getAddress());
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.e(TAG, "An error occurred: " + status);
+            }
+        });
 
 
         // If user making account w/ Facebook, prepopulate fields
@@ -65,7 +104,6 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
-                String address = etAddress.getText().toString();
                 if (!checkIfFieldsAreFilled(name, bio, address, profileImageUrl)) {
                     return;
                 }
@@ -140,30 +178,33 @@ public class SignUpActivity extends AppCompatActivity {
         Uri imageToUpload;
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_CANCELED) {
-            Bitmap bm = null;
-            switch (requestCode) {
-                case 0:  // If photo from Camera
-                    if (resultCode == RESULT_OK && data != null) {
-                        bm = (Bitmap) data.getExtras().get("data");
-                    }
-                    break;
-                case 1:     // If photo from Gallery
-                    if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage = data.getData();
-                        bm = ImageFormatter.getImageResized(SignUpActivity.this, selectedImage);
-                        int rotation = ImageFormatter.getRotation(SignUpActivity.this, selectedImage, false);
-                        bm = ImageFormatter.rotate(bm, rotation);
-                    }
-                    break;
-            }
-            Glide.with(SignUpActivity.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
-            imageToUpload = ImageFormatter.getImageUri(SignUpActivity.this, bm);
-            DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    profileImageUrl = task.getResult().toString();
+            if (requestCode == 0 || requestCode == 1) {
+                Bitmap bm = null;
+                switch (requestCode) {
+                    case 0:  // If photo from Camera
+                        if (resultCode == RESULT_OK && data != null) {
+                            bm = (Bitmap) data.getExtras().get("data");
+                        }
+                        break;
+                    case 1:     // If photo from Gallery
+                        if (resultCode == RESULT_OK && data != null) {
+                            Uri selectedImage = data.getData();
+                            bm = ImageFormatter.getImageResized(SignUpActivity.this, selectedImage);
+                            int rotation = ImageFormatter.getRotation(SignUpActivity.this, selectedImage, false);
+                            bm = ImageFormatter.rotate(bm, rotation);
+                        }
+                        break;
                 }
-            }, imageToUpload, SignUpActivity.this);
+                Glide.with(SignUpActivity.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
+                imageToUpload = ImageFormatter.getImageUri(SignUpActivity.this, bm);
+                DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        profileImageUrl = task.getResult().toString();
+                    }
+                }, imageToUpload, SignUpActivity.this);
+            }
+
         }
     }
 }

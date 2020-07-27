@@ -51,7 +51,7 @@ import static com.example.finalproject.TimeAndDateFormatter.formatTime;
 
 public class HostEventFragment extends Fragment {
 
-    public static final String TAG = "Event Fragment";
+    public static final String TAG = "Host Event Fragment";
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
     //private static Uri downloadUri;
 
@@ -81,7 +81,7 @@ public class HostEventFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (!Places.isInitialized()){
+        if (!Places.isInitialized()) {
             Places.initialize(getContext(), getString(R.string.api_key));
         }
 
@@ -94,22 +94,24 @@ public class HostEventFragment extends Fragment {
         etTime = view.findViewById(R.id.etTime);
         btnPost = view.findViewById(R.id.btnPost);
 
-        // change default icon on places autocomplete
-        ImageView searchIcon = view.findViewById(R.id.places_autocomplete_search_button);
-        //TODO: image not loading properly
-        Glide.with(getContext()).load(R.drawable.ic_baseline_location_on_24).into(searchIcon);
+//        // change default icon on places autocomplete
+//        ImageView searchIcon = view.findViewById(R.id.places_autocomplete_search_button);
+//        //TODO: image not loading properly
+//        Glide.with(getContext()).load(R.drawable.ic_baseline_location_on_24).into(searchIcon);
 
 
         // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-               getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME));
         autocompleteFragment.setHint("Address");
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 address = place.getAddress();
+                autocompleteFragment.setText(address);
+                //autocompleteFragment.setHint(address);
                 Log.i(TAG, "Place: " + place.getAddress());
             }
 
