@@ -24,6 +24,7 @@ import com.example.finalproject.EditProfile;
 import com.example.finalproject.LoginActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.User;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +42,6 @@ public class ProfileFragment extends Fragment {
     private TextView tvBio;
     private TextView tvLocation;
     private Button btnEditProfile;
-    private Button btnLogout;
     private Toolbar toolbar;
     private User user;
 
@@ -68,7 +68,6 @@ public class ProfileFragment extends Fragment {
         tvBio = view.findViewById(R.id.tvBio);
         tvLocation = view.findViewById(R.id.tvLocation);
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
-        btnLogout = view.findViewById(R.id.btnLogout);
         toolbar = view.findViewById(R.id.toolBar);
 
         setProfileFields();
@@ -79,6 +78,7 @@ public class ProfileFragment extends Fragment {
                 switch (menuItem.getItemId()) {
                     case R.id.miLogout:
                         firebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
                         Intent intent = new Intent(getContext(), LoginActivity.class);
                         startActivity(intent);
                         getActivity().finish();
@@ -95,15 +95,6 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getContext(), EditProfile.class);
                 intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
                 startActivity(intent);
-            }
-        });
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
             }
         });
     }
