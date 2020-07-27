@@ -1,9 +1,6 @@
 package com.example.finalproject.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
@@ -25,17 +21,17 @@ import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import org.parceler.Parcels;
-
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class EventFragment extends Fragment {
 
     private static final String TAG = "Event Fragment";
@@ -52,6 +48,7 @@ public class EventFragment extends Fragment {
     private TextView tvDefaultMessage;
     private CollapsingToolbarLayout collapsingToolbar;
     private EditText etLocation;
+    private ShimmerFrameLayout mShimmerViewContainer;
 
     public EventFragment() {
         // Required empty public constructor
@@ -95,6 +92,7 @@ public class EventFragment extends Fragment {
         tvDefaultMessage = view.findViewById(R.id.tvDefaultMessage);
         collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
         etLocation = view.findViewById(R.id.etLocation);
+        mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         //collapsingToolbar.setTitle("Community Garden");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -131,6 +129,18 @@ public class EventFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShimmerViewContainer.startShimmerAnimation();
+    }
+
+    @Override
+    public void onPause() {
+        mShimmerViewContainer.stopShimmerAnimation();
+        super.onPause();
+    }
+
     private void setDefaultIfEmpty() {
         if (adapter.isEmpty()) {
             rvEvents.setVisibility(View.GONE);
@@ -162,6 +172,8 @@ public class EventFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                         etLocation.setText(user.getLocation().getLocality());
                         swipeContainer.setRefreshing(false);
+                        mShimmerViewContainer.stopShimmerAnimation();
+                        mShimmerViewContainer.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -177,6 +189,7 @@ public class EventFragment extends Fragment {
             }
         });
     }
+
 
     private void queryEvents() {
         DatabaseClient.queryEvents(new ValueEventListener() {

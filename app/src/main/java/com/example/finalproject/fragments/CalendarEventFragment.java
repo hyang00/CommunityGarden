@@ -19,6 +19,7 @@ import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.CalendarEventsAdapter;
 import com.example.finalproject.models.Event;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,6 +47,7 @@ public class CalendarEventFragment extends Fragment {
     private EndlessRecyclerViewScrollListener scrollListener;
     private TextView tvDefaultMessage;
     private String eventType;
+    private ShimmerFrameLayout mShimmerViewContainer;
 
     public CalendarEventFragment() {
         // Required empty public constructor
@@ -84,6 +86,7 @@ public class CalendarEventFragment extends Fragment {
 
         tvDefaultMessage = view.findViewById(R.id.tvDefaultMessage);
         rvEvents = view.findViewById(R.id.rvEvents);
+        mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         events = new ArrayList<>();
@@ -118,6 +121,18 @@ public class CalendarEventFragment extends Fragment {
         queryEvents();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShimmerViewContainer.startShimmerAnimation();
+    }
+
+    @Override
+    public void onPause() {
+        mShimmerViewContainer.stopShimmerAnimation();
+        super.onPause();
+    }
+
     private void setDefaultIfEmpty() {
         if (adapter.isEmpty()) {
             rvEvents.setVisibility(View.GONE);
@@ -143,6 +158,8 @@ public class CalendarEventFragment extends Fragment {
                 setDefaultIfEmpty();
                 adapter.notifyDataSetChanged();
                 swipeContainer.setRefreshing(false);
+                mShimmerViewContainer.stopShimmerAnimation();
+                mShimmerViewContainer.setVisibility(View.GONE);
             }
 
             @Override
