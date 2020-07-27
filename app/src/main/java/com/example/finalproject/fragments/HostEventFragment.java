@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -23,14 +25,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.ImageFormatter;
 import com.example.finalproject.R;
-import com.example.finalproject.models.Event;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -49,12 +58,12 @@ public class HostEventFragment extends Fragment {
     private TextInputEditText etTitle;
     private EditText etDescription;
     private ImageView ivPhoto;
-    private EditText etAddress;
     private EditText etDate;
     private EditText etTime;
     private Button btnPost;
     private Uri imageToUpload;
     private Uri downloadUri;
+    private String address;
 
 
     public HostEventFragment() {
@@ -72,13 +81,44 @@ public class HostEventFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (!Places.isInitialized()){
+            Places.initialize(getContext(), getString(R.string.api_key));
+        }
+
+        PlacesClient placesClient = Places.createClient(getContext());
+
         etTitle = view.findViewById(R.id.etTitle);
         etDescription = view.findViewById(R.id.etDescription);
         ivPhoto = view.findViewById(R.id.ivPhoto);
-        etAddress = view.findViewById(R.id.etAddress);
         etDate = view.findViewById(R.id.etDate);
         etTime = view.findViewById(R.id.etTime);
         btnPost = view.findViewById(R.id.btnPost);
+
+        // change default icon on places autocomplete
+        ImageView searchIcon = view.findViewById(R.id.places_autocomplete_search_button);
+        //TODO: image not loading properly
+        Glide.with(getContext()).load(R.drawable.ic_baseline_location_on_24).into(searchIcon);
+
+
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+               getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS));
+        autocompleteFragment.setHint("Address");
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                address = place.getAddress();
+                Log.i(TAG, "Place: " + place.getAddress());
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.e(TAG, "An error occurred: " + status);
+            }
+        });
+
         // launch an option to either add photo to post from camera/gallery
         ivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +163,7 @@ public class HostEventFragment extends Fragment {
             public void onClick(View view) {
                 String title = etTitle.getText().toString();
                 String description = etDescription.getText().toString();
-                String address = etAddress.getText().toString();
+                //String address = etAddress.getText().toString();
                 String date = etDate.getText().toString();
                 String time = etTime.getText().toString();
                 if (!checkIfFieldsAreFilled(title, description, address, date, time, downloadUri)) {
@@ -140,7 +180,6 @@ public class HostEventFragment extends Fragment {
     private void resetFields() {
         etTitle.setText("");
         etDescription.setText("");
-        etAddress.setText("");
         etDate.setText("");
         etTime.setText("");
         ivPhoto.setImageResource(R.drawable.ic_baseline_add_box_24);
@@ -204,7 +243,7 @@ public class HostEventFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_CANCELED) {
             Bitmap bm = null;
             switch (requestCode) {

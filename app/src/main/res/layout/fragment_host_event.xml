@@ -40,21 +40,14 @@
         android:layout_height="200dp"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_baseline_add_box_24"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@tools:sample/avatars"
+        android:contentDescription="TODO" />
 
-    <com.google.android.material.textfield.TextInputLayout
-
-        app:startIconDrawable="@drawable/ic_baseline_location_on_24"
+    <fragment android:id="@+id/autocomplete_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="false"
-        android:hint="Address">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        />
 
     <com.google.android.material.textfield.TextInputLayout
         app:startIconDrawable="@drawable/ic_baseline_event_24"
