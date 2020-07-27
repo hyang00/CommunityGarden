@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
+
+import static nl.dionsegijn.konfetti.models.Shape.*;
 
 @SuppressWarnings("ALL")
 public class EventFragment extends Fragment {
@@ -99,11 +106,13 @@ public class EventFragment extends Fragment {
         etLocation = view.findViewById(R.id.etLocation);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         ivSearch = view.findViewById(R.id.ivSearch);
-        //collapsingToolbar.setTitle("Community Garden");
+        final KonfettiView konfettiView = view.findViewById(R.id.viewKonfetti);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         allEvents = new ArrayList<>();
-        adapter = new EventsAdapter(getContext(), allEvents, eventType);
+
+        //adapter = new EventsAdapter(getContext(), allEvents, eventType);
+        adapter = new EventsAdapter(getContext(), allEvents, eventType, konfettiView);
 
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
@@ -135,7 +144,6 @@ public class EventFragment extends Fragment {
                 Log.i(TAG, searchLocation);
                 queryEventsNearby(searchLocation);
                 ivSearch.setVisibility(View.GONE);
-
             }
         });
 
