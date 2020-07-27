@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.models.Event;
+import com.example.finalproject.models.Location;
 import com.example.finalproject.models.User;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -128,7 +130,9 @@ public class EventFragment extends Fragment {
         ivSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchLocation = etLocation.getText().toString();
+                Location location = new Location(etLocation.getText().toString(), getContext());
+                searchLocation = location.getLocality();
+                Log.i(TAG, searchLocation);
                 queryEventsNearby(searchLocation);
                 ivSearch.setVisibility(View.GONE);
 
