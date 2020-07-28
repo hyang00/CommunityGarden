@@ -34,10 +34,12 @@ import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
 import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
 
 public class DatabaseClient {
+    private static final String TAG = "Database Client";
     private static final String KEY_POSTS = "Posts";
     private static final String KEY_ATTENDEES = "attendees";
     private static final String KEY_PROFILE = "Profiles";
-    private static final String TAG = "Database Client";
+    private static final String KEY_EVENT_DATE = "date";
+    private static final String KEY_LOCALITY = "location/locality";
     private final static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private final static StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
@@ -121,10 +123,10 @@ public class DatabaseClient {
         ref.addListenerForSingleValueEvent(listener);
     }
 
-    // Query events
+    // Query events (sorted by event date)
     public static void queryEvents(ValueEventListener listener) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        Query ref = database.child(KEY_POSTS).orderByKey();
+        Query ref = database.child(KEY_POSTS).orderByChild(KEY_EVENT_DATE);
         ref.addListenerForSingleValueEvent(listener);
     }
 
@@ -135,7 +137,7 @@ public class DatabaseClient {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User currUser = snapshot.getValue(User.class);
                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                Query ref = database.child(KEY_POSTS).orderByChild("location/locality").equalTo(currUser.getLocation().getLocality());
+                Query ref = database.child(KEY_POSTS).orderByChild(KEY_LOCALITY).equalTo(currUser.getLocation().getLocality());
                 Log.i(TAG, currUser.getLocation().getLocality());
                 ref.addListenerForSingleValueEvent(listener);
             }
@@ -150,7 +152,7 @@ public class DatabaseClient {
     // Query events given a locality
     public static void queryEventsNearby(final ValueEventListener listener, String locality) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        Query ref = database.child(KEY_POSTS).orderByChild("location/locality").equalTo(locality);
+        Query ref = database.child(KEY_POSTS).orderByChild(KEY_LOCALITY).equalTo(locality);
         Log.i(TAG, locality);
         ref.addListenerForSingleValueEvent(listener);
     }
@@ -195,9 +197,6 @@ public class DatabaseClient {
                     return ref.getDownloadUrl();
                 }
             }).addOnCompleteListener(listener);
-
         }
     }
-
-
 }
