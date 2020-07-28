@@ -1,13 +1,7 @@
 package com.example.finalproject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,14 +21,8 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.parceler.Parcels;
-
-import java.io.IOException;
 
 import static com.example.finalproject.MapsUrlClient.launchGoogleMaps;
 import static com.example.finalproject.MapsUrlClient.setGoogleMapThumbnail;
@@ -54,6 +42,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView tvDescription;
     private TextView tvAddress;
     private ImageView ivMap;
+    private TextView tvGoing;
     protected ExtendedFloatingActionButton fab;
 
     @Override
@@ -74,6 +63,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvAddress = findViewById(R.id.tvAddress);
         fab = findViewById(R.id.fab);
         ivMap = findViewById(R.id.ivMap);
+        tvGoing = findViewById(R.id.tvGoing);
 
         setHostProfileFields();
         tvTitle.setText(event.getTitle());
@@ -97,6 +87,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 launchGoogleMaps(EventDetailsActivity.this, event);
             }
         });
+        if (event.getNumberofAttendees()>0){
+            tvGoing.setText(event.getNumberofAttendees() + " going");
+        }
         setUpRegistrationButton();
     }
 
