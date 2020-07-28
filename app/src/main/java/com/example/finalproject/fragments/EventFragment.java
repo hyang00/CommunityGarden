@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,13 @@ import com.example.finalproject.models.Event;
 import com.example.finalproject.models.Location;
 import com.example.finalproject.models.User;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,12 +41,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 import static nl.dionsegijn.konfetti.models.Shape.*;
 
 @SuppressWarnings("ALL")
@@ -48,6 +59,7 @@ public class EventFragment extends Fragment {
 
     // fragment initialization parameter (determine whether standard event feed, hosting event feed, attending feed)
     private static final String ARG_EVENT_TYPE = "Event Type";
+    private static int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     private RecyclerView rvEvents;
     protected EventsAdapter adapter;
@@ -57,7 +69,7 @@ public class EventFragment extends Fragment {
     protected String eventType;
     private TextView tvDefaultMessage;
     private CollapsingToolbarLayout collapsingToolbar;
-    private EditText etLocation;
+    private TextView tvLocation;
     private ImageView ivSearch;
     private ShimmerFrameLayout mShimmerViewContainer;
     private String searchLocation;
@@ -99,11 +111,17 @@ public class EventFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getContext(), getString(R.string.api_key));
+        }
+        PlacesClient placesClient = Places.createClient(getContext());
+
         rvEvents = view.findViewById(R.id.rvEvents);
 
         tvDefaultMessage = view.findViewById(R.id.tvDefaultMessage);
         collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
-        etLocation = view.findViewById(R.id.etLocation);
+        tvLocation = view.findViewById(R.id.tvLocation);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         ivSearch = view.findViewById(R.id.ivSearch);
         final KonfettiView konfettiView = view.findViewById(R.id.viewKonfetti);
@@ -129,23 +147,16 @@ public class EventFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        etLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ivSearch.setVisibility(View.VISIBLE);
-            }
-        });
-
         ivSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Location location = new Location(etLocation.getText().toString(), getContext());
-                searchLocation = location.getLocality();
-                Log.i(TAG, searchLocation);
-                queryEventsNearby(searchLocation);
-                ivSearch.setVisibility(View.GONE);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(getContext());
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
+
 
         // set the adapter on the recycler view
         rvEvents.setAdapter(adapter);
@@ -173,6 +184,28 @@ public class EventFragment extends Fragment {
         mShimmerViewContainer.stopShimmerAnimation();
         super.onPause();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Location location = new Location(place.getAddress(), getContext());
+                searchLocation = location.getLocality();
+                tvLocation.setText(searchLocation);
+                queryEventsNearby(searchLocation);
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.e(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     private void setDefaultIfEmpty() {
         if (adapter.isEmpty()) {
@@ -232,7 +265,7 @@ public class EventFragment extends Fragment {
                         }
                         setDefaultIfEmpty();
                         adapter.notifyDataSetChanged();
-                        etLocation.setText(user.getLocation().getLocality());
+                        tvLocation.setText(user.getLocation().getLocality());
                         swipeContainer.setRefreshing(false);
                         mShimmerViewContainer.stopShimmerAnimation();
                         mShimmerViewContainer.setVisibility(View.GONE);

@@ -37,27 +37,26 @@
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_collapseMode="parallax" />
 
-                <EditText
-                    android:id="@+id/etLocation"
+                <TextView
+                    android:id="@+id/tvLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvTitle"
                     android:drawablePadding="16dp"
+                    android:padding="4dp"
                     android:textColor="@color/white"
-                    android:textSize="30sp"
-                    android:hint="" />
+                    android:textSize="30sp" />
 
                 <ImageView
                     android:id="@+id/ivSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/etLocation"
+                    android:layout_alignTop="@+id/tvLocation"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="19dp"
-                    android:layout_toEndOf="@+id/etLocation"
-                    shimmer:srcCompat="@drawable/ic_baseline_search_24"
-                    tools:visibility="gone" />
+                    android:layout_marginStart="21dp"
+                    android:layout_marginTop="11dp"
+                    android:layout_toEndOf="@+id/tvLocation"
+                    shimmer:srcCompat="@drawable/ic_baseline_search_24" />
 
             </RelativeLayout>
 
