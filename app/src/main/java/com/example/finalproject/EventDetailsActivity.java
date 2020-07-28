@@ -87,13 +87,16 @@ public class EventDetailsActivity extends AppCompatActivity {
                 launchGoogleMaps(EventDetailsActivity.this, event);
             }
         });
-        if (event.getNumberofAttendees()>0){
+        if (event.getNumberofAttendees() > 0) {
             tvGoing.setText(event.getNumberofAttendees() + " going");
         }
         setUpRegistrationButton();
     }
 
     protected void setUpRegistrationButton() {
+        if (event.isEventFull()) {
+            fab.setText(R.string.rsvp_button_event_full);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

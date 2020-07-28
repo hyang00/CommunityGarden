@@ -84,7 +84,7 @@ public class DatabaseClient {
         if (event.isAttending(uid)) {
             Toast.makeText(context, "Already Registered", Toast.LENGTH_SHORT).show();
 
-        } else if (event.getMaxAttendees() != NO_ATTENDEES_CAP_SET && event.getNumberofAttendees() >= event.getMaxAttendees()) {
+        } else if (event.isEventFull()) {
             Toast.makeText(context, "Event is Full", Toast.LENGTH_SHORT).show();
         } else {
             attendeesRef.child(uid).setValue(true).addOnCompleteListener(listener);

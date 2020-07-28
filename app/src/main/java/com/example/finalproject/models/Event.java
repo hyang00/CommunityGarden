@@ -3,6 +3,7 @@ package com.example.finalproject.models;
 import android.content.Context;
 import android.net.Uri;
 
+import com.example.finalproject.Common;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -10,6 +11,8 @@ import org.parceler.Parcel;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.finalproject.Common.NO_ATTENDEES_CAP_SET;
 
 @IgnoreExtraProperties
 @Parcel
@@ -139,6 +142,17 @@ public class Event {
         return attendees.size();
     }
 
+    public long spotsLeft() {
+        return (maxAttendees - getNumberofAttendees());
+    }
+
+    public boolean isEventFull() {
+        if (maxAttendees != NO_ATTENDEES_CAP_SET) {
+            return (getNumberofAttendees() >= maxAttendees);
+        }
+        return false;
+    }
+
     public Long getMaxAttendees() {
         return maxAttendees;
     }
@@ -146,4 +160,5 @@ public class Event {
     public void setMaxAttendees(Long maxAttendees) {
         this.maxAttendees = maxAttendees;
     }
+
 }

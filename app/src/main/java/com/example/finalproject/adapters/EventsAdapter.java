@@ -137,17 +137,23 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
 
         public void bind(Event event) {
-            // bind the event data to the view elements
             tvTitle.setText(event.getTitle());
             tvDescription.setText(event.getDescription());
             if (event.getNumberofAttendees() > 0) {
-                tvGoing.setText(event.getNumberofAttendees() + " going");
+                if ((!event.isEventFull()) && event.spotsLeft() <= 5) {
+                    tvGoing.setText(event.spotsLeft() + " spots left!");
+                } else {
+                    tvGoing.setText(event.getNumberofAttendees() + " going");
+                }
             }
             if (event.getImageUrl() != null) {
                 Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
             }
             tvTime.setText(formatDateWithDayOfWeek(event.getDate()) + " | " + event.getTime());
             tvLocation.setText(event.getLocation().getLocality());
+            if (event.isEventFull()) {
+                btnRSVP.setText(R.string.rsvp_button_event_full);
+            }
         }
 
         @Override

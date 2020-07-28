@@ -7,6 +7,7 @@
     <string name="fb_login_protocol_scheme">fb706356949942267</string>
     <string name="sign_up_message">Welcome Tell Us A Little Bit About Yourself</string>
     <string name="no_events_default_message">No events found</string>
+    <string name="rsvp_button_event_full">Full</string>
     <string-array name="max_attendees_array">
         <item>None</item>
         <item>5</item>
