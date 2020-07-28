@@ -31,6 +31,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.UUID;
 
 import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
+import static com.example.finalproject.Common.NO_ATTENDEES_CAP_SET;
 import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
 
 public class DatabaseClient {
@@ -45,10 +46,10 @@ public class DatabaseClient {
 
     // Add a new event to the database
     //  TODO: reduce method parameters
-    public static void postEvent(final Context context, String title, String description, String location, String date, String time, Uri downloadUri) {
+    public static void postEvent(final Context context, String title, String description, String location, String date, String time, Long maxAttendees, Uri downloadUri) {
         String key = database.child(KEY_POSTS).push().getKey();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Event event = new Event(key, uid, title, description, downloadUri.toString(), date, time, location, context);
+        Event event = new Event(uid, title, description, downloadUri.toString(), date, time, location, maxAttendees, context);
         database.child(KEY_POSTS).child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -80,10 +81,13 @@ public class DatabaseClient {
         final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference attendeesRef = database.child(KEY_POSTS).child(event.getEventId()).child(KEY_ATTENDEES);
         // check if the user has already rsvp'd
-        if (!event.isAttending(uid)) {
-            attendeesRef.child(uid).setValue(true).addOnCompleteListener(listener);
-        } else {
+        if (event.isAttending(uid)) {
             Toast.makeText(context, "Already Registered", Toast.LENGTH_SHORT).show();
+
+        } else if (event.getMaxAttendees() != NO_ATTENDEES_CAP_SET && event.getNumberofAttendees() >= event.getMaxAttendees()) {
+            Toast.makeText(context, "Event is Full", Toast.LENGTH_SHORT).show();
+        } else {
+            attendeesRef.child(uid).setValue(true).addOnCompleteListener(listener);
         }
     }
 

@@ -3,12 +3,15 @@ package com.example.finalproject.models;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import org.parceler.Parcel;
 
 import java.util.HashMap;
 import java.util.Map;
 
-//@IgnoreExtraProperties
+@IgnoreExtraProperties
 @Parcel
 public class Event {
     private String eventId;
@@ -20,13 +23,13 @@ public class Event {
     private String time;
     private Map<String, Boolean> attendees = new HashMap<>();
     private Location location;
+    private Long maxAttendees;
 
     public Event() {
 
     }
 
-    public Event(String eventId, String author, String title, String description, String imageUrl, String date, String time, String address, Context context) {
-        //this.eventId = eventId;
+    public Event(String author, String title, String description, String imageUrl, String date, String time, String address, Long maxAttendees, Context context) {
         this.author = author;
         this.title = title;
         this.description = description;
@@ -34,6 +37,7 @@ public class Event {
         this.date = date;
         this.time = time;
         this.location = new Location(address, context);
+        this.maxAttendees = maxAttendees;
     }
 
     public Event(String title, String description, String address, String date, String time, Uri downloadUri, Context context) {
@@ -130,7 +134,16 @@ public class Event {
         this.location = location;
     }
 
+    @Exclude
     public int getNumberofAttendees() {
         return attendees.size();
+    }
+
+    public Long getMaxAttendees() {
+        return maxAttendees;
+    }
+
+    public void setMaxAttendees(Long maxAttendees) {
+        this.maxAttendees = maxAttendees;
     }
 }

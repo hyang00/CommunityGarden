@@ -1,5 +1,7 @@
 package com.example.finalproject;
 
+import nl.dionsegijn.konfetti.KonfettiView;
+
 //
 public class Common {
     public static final String EVENT_FEED_KEY = "feed";
@@ -10,6 +12,7 @@ public class Common {
     public static final int HOST_FRAGMENT = 2;
     public static final int USER_EVENTS_FRAGMENT = 3;
     public static final int PROFILE_FRAGMENT = 4;
+    public static final Long NO_ATTENDEES_CAP_SET = (long) 0;
 
 
 }

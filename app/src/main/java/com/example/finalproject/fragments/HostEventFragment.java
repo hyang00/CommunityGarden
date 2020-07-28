@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -44,26 +46,29 @@ import java.util.Calendar;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.example.finalproject.Common.NO_ATTENDEES_CAP_SET;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForStorage;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForView;
 import static com.example.finalproject.TimeAndDateFormatter.formatTime;
 
 
-public class HostEventFragment extends Fragment {
+public class HostEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    public static final String TAG = "Host Event Fragment";
+    private static final String TAG = "Host Event Fragment";
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
-    //private static Uri downloadUri;
+    private static final String NONE_KEY = "None";
 
     private TextInputEditText etTitle;
     private EditText etDescription;
     private ImageView ivPhoto;
     private EditText etDate;
     private EditText etTime;
+    private Spinner spMaxAttendees;
     private Button btnPost;
     private Uri imageToUpload;
     private Uri downloadUri;
     private String address;
+    private Long maxAttendees;
 
 
     public HostEventFragment() {
@@ -84,7 +89,6 @@ public class HostEventFragment extends Fragment {
         if (!Places.isInitialized()) {
             Places.initialize(getContext(), getString(R.string.api_key));
         }
-
         PlacesClient placesClient = Places.createClient(getContext());
 
         etTitle = view.findViewById(R.id.etTitle);
@@ -92,6 +96,7 @@ public class HostEventFragment extends Fragment {
         ivPhoto = view.findViewById(R.id.ivPhoto);
         etDate = view.findViewById(R.id.etDate);
         etTime = view.findViewById(R.id.etTime);
+        spMaxAttendees = view.findViewById(R.id.spMaxAttendees);
         btnPost = view.findViewById(R.id.btnPost);
 
 //        // change default icon on places autocomplete
@@ -159,20 +164,20 @@ public class HostEventFragment extends Fragment {
                 picker.show();
             }
         });
+        spMaxAttendees.setOnItemSelectedListener(this);
         // Save Post to database on click
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String title = etTitle.getText().toString();
                 String description = etDescription.getText().toString();
-                //String address = etAddress.getText().toString();
                 String date = etDate.getText().toString();
                 String time = etTime.getText().toString();
                 if (!checkIfFieldsAreFilled(title, description, address, date, time, downloadUri)) {
                     return;
                 }
                 date = formatDateForStorage(date);
-                DatabaseClient.postEvent(getContext(), title, description, address, date, time, downloadUri);
+                DatabaseClient.postEvent(getContext(), title, description, address, date, time, maxAttendees, downloadUri);
                 //  TODO: Maybe go to another page when done posting?
                 resetFields();
             }
@@ -196,7 +201,7 @@ public class HostEventFragment extends Fragment {
             Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (address.isEmpty()) {
+        if (address == null || address.isEmpty()) {
             Toast.makeText(getContext(), "Address cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -272,6 +277,21 @@ public class HostEventFragment extends Fragment {
                 }
             }, imageToUpload, getContext());
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String selection = adapterView.getItemAtPosition(i).toString();
+        if (selection.equals(NONE_KEY)) {
+            maxAttendees = NO_ATTENDEES_CAP_SET;
+        } else {
+            maxAttendees = Long.valueOf(selection);
+        }
+        Log.i(TAG, "max attendees: " + maxAttendees);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
     }
 }
 
