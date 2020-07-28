@@ -129,4 +129,8 @@ public class Event {
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    public int getNumberofAttendees() {
+        return attendees.size();
+    }
 }

@@ -99,6 +99,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         private TextView tvTime;
         private TextView tvDescription;
         private TextView tvLocation;
+        private TextView tvGoing;
         private Button btnRSVP;
 
         public ViewHolder(@NonNull View itemView) {
@@ -108,6 +109,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             tvTime = itemView.findViewById(R.id.tvTime);
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvLocation = itemView.findViewById(R.id.tvLocation);
+            tvGoing = itemView.findViewById(R.id.tvGoing);
             btnRSVP = itemView.findViewById(R.id.btnRSVP);
             btnRSVP.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -138,6 +140,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             // bind the event data to the view elements
             tvTitle.setText(event.getTitle());
             tvDescription.setText(event.getDescription());
+            if (event.getNumberofAttendees() > 0) {
+                tvGoing.setText(event.getNumberofAttendees() + " going");
+            }
             if (event.getImageUrl() != null) {
                 Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
             }
@@ -169,6 +174,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                     .burst(100);
         }
+
 
     }
 

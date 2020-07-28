@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlItemEvent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -17,22 +16,10 @@
         app:cardUseCompatPadding="true"
         app:contentPadding="0dp">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false">
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:padding="4dp"
-                android:textSize="24sp"
-                tools:text="Cactus Garden Tour" />
 
             <TextView
                 android:id="@+id/tvTime"
@@ -40,31 +27,24 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivEventPhoto"
                 android:padding="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivEventPhoto"
                 tools:text="Thu, Apr 8 2021 * 8:00 AM" />
 
             <TextView
                 android:id="@+id/tvDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="33dp"
-                android:layout_below="@+id/tvTime"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
+                android:maxLines="2"
                 android:padding="4dp"
-                tools:text="Come join us for a cactus garden tour. " />
-
-            <ImageView
-                android:id="@+id/ivEventPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_below="@+id/tvTitle"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:padding="4dp"
-                android:scaleType="center"
-                app:srcCompat="@drawable/ic_baseline_person_24"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="@id/tvGoing"
+                app:layout_constraintRight_toLeftOf="@id/tvGoing"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvGoing"
+                app:layout_constraintVertical_bias="0.56"
+                tools:text="Come join us for a cactus garden tour. And lot of other stuff for testing" />
 
             <Button
                 android:id="@+id/btnRSVP"
@@ -72,10 +52,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/tvDescription"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="8dp"
                 android:text="RSVP"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLocation" />
 
             <TextView
                 android:id="@+id/tvLocation"
@@ -83,15 +63,54 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivEventPhoto"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="14dp"
                 android:padding="4dp"
                 android:text="TextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivEventPhoto"
                 tools:text="Los Altos, CA" />
 
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentTop="false"
+                android:padding="4dp"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLocation"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Cactus Garden Tour" />
 
-        </RelativeLayout>
+            <ImageView
+                android:id="@+id/ivEventPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@+id/tvTitle"
+                android:layout_alignParentStart="true"
+                android:contentDescription="TODO"
+                android:padding="4dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                app:srcCompat="@drawable/ic_baseline_person_24"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+            <TextView
+                android:id="@+id/tvGoing"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@id/btnRSVP"
+                app:layout_constraintRight_toLeftOf="@id/btnRSVP"
+                app:layout_constraintTop_toTopOf="@id/btnRSVP"
+                tools:text="10 going " />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
-</RelativeLayout>
+
+</FrameLayout>
