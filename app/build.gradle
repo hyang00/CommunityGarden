@@ -78,6 +78,4 @@ dependencies {
     implementation 'nl.dionsegijn:konfetti:1.2.2'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72'
 
-    // for gesture recognizer https://github.com/nisrulz/Sensey
-    implementation 'com.github.nisrulz:sensey:1.8.0'
 }
