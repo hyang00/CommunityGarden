@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class TimeAndDateFormatter {
 
-    public static String getTodaysDate(){
+    public static String getTodaysDate() {
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
@@ -75,6 +75,17 @@ public class TimeAndDateFormatter {
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         Date date = cal.getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        return formatter.format(date);
+    }
+
+    // returns date formatted in YYYY/MM/DD
+    public static String formatDateForStorage(int year, int monthOfYear, int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, monthOfYear);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        Date date = cal.getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         return formatter.format(date);
     }
 

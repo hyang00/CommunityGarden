@@ -1,11 +1,14 @@
 package com.example.finalproject.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,12 +49,15 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.example.finalproject.TimeAndDateFormatter.formatDateForStorage;
+import static com.example.finalproject.TimeAndDateFormatter.formatDateForView;
 
 @SuppressWarnings("ALL")
 public class EventFragment extends Fragment {
@@ -72,8 +78,10 @@ public class EventFragment extends Fragment {
     private CollapsingToolbarLayout collapsingToolbar;
     private TextView tvLocation;
     private ImageView ivSearch;
+    private ImageView ivPickDate;
     private ShimmerFrameLayout mShimmerViewContainer;
     private String searchLocation;
+    private String searchDate;
 
     public EventFragment() {
         // Required empty public constructor
@@ -125,6 +133,7 @@ public class EventFragment extends Fragment {
         tvLocation = view.findViewById(R.id.tvLocation);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         ivSearch = view.findViewById(R.id.ivSearch);
+        ivPickDate = view.findViewById(R.id.ivPickDate);
         final KonfettiView konfettiView = view.findViewById(R.id.viewKonfetti);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -158,6 +167,25 @@ public class EventFragment extends Fragment {
             }
         });
 
+        ivPickDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                DatePickerDialog picker = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                Log.i(TAG, formatDateForStorage(year, monthOfYear, dayOfMonth));
+                                searchDate = formatDateForStorage(year, monthOfYear, dayOfMonth);
+                                queryEventsByDate(formatDateForStorage(year, monthOfYear, dayOfMonth));
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
 
         // set the adapter on the recycler view
         rvEvents.setAdapter(adapter);
@@ -202,7 +230,6 @@ public class EventFragment extends Fragment {
         });
 
         queryEventsNearby(searchLocation);
-
     }
 
     @Override
@@ -238,7 +265,92 @@ public class EventFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void queryEventsNearby(final String searchLocation){
+        if (searchLocation == null) {
+            queryEventsWithDefaultUserLocation();
+        } else if (searchDate != null) {
+            queryEventsByDate(searchDate);
+        }else {
+            DatabaseClient.queryEvents(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    loadData(snapshot);
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, error.toString());
+                }
+            });
+        }
+    }
+
+    // Query events w/ User location if search location is unknown
+    private void queryEventsWithDefaultUserLocation() {
+        DatabaseClient.getCurrUserProfile(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                searchLocation = user.getLocation().getLocality();
+                queryEventsNearby(searchLocation);
+                tvLocation.setText(searchLocation);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, error.toString());
+            }
+        });
+    }
+
+    // Filter current events by date
+    private void queryEventsByDate(String date){
+        DatabaseClient.queryEventsOnDate(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                loadData(snapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, error.toString());
+            }
+        }, date);
+    }
+
+    // check whether the event should be added to the feed depending on which feed it is
+    private static boolean isValid(Event event) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (!event.getAuthor().equals(uid) && !event.isAttending(uid)) {
+            return true;
+        }
+        return false;
+    }
+
+    // check if the event is in the same locality as user's search locality
+    private static boolean isNearby(String searchLocation, Event event){
+        return (searchLocation.equals(event.getLocation().getLocality()));
+    }
+
+    // Add queried data into the adapter and check if it is valid
+    // stop refreshing on the swipecontainer, and stop shimmer effect
+    private void loadData(DataSnapshot snapshot){
+        adapter.clear();
+        for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+            Event event = singleSnapshot.getValue(Event.class);
+            event.setEventId(singleSnapshot.getKey());
+            if (isNearby(searchLocation, event) && isValid(event)) {
+                adapter.add(event);
+            }
+        }
+        setDefaultIfEmpty();
+        adapter.notifyDataSetChanged();
+        swipeContainer.setRefreshing(false);
+        mShimmerViewContainer.stopShimmerAnimation();
+        mShimmerViewContainer.setVisibility(View.GONE);
+    }
+
+    // Show default message if no events based on query are found
     private void setDefaultIfEmpty() {
         if (adapter.isEmpty()) {
             rvEvents.setVisibility(View.GONE);
@@ -247,83 +359,6 @@ public class EventFragment extends Fragment {
             rvEvents.setVisibility(View.VISIBLE);
             tvDefaultMessage.setVisibility(View.GONE);
         }
-    }
-
-    private void queryEventsNearby(String searchLocation) {
-        if (searchLocation == null) {
-            queryEventsWithDefaultUserLocation();
-        } else {
-            DatabaseClient.queryEventsNearby(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    adapter.clear();
-                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                        Event event = singleSnapshot.getValue(Event.class);
-                        event.setEventId(singleSnapshot.getKey());
-                        if (isValid(event)) {
-                            adapter.add(event);
-                        }
-                    }
-                    setDefaultIfEmpty();
-                    adapter.notifyDataSetChanged();
-                    swipeContainer.setRefreshing(false);
-                    mShimmerViewContainer.stopShimmerAnimation();
-                    mShimmerViewContainer.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            }, searchLocation);
-        }
-    }
-
-    private void queryEventsWithDefaultUserLocation() {
-        DatabaseClient.getCurrUserProfile(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final User user = snapshot.getValue(User.class);
-                DatabaseClient.queryEventsNearby(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        adapter.clear();
-                        for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                            Event event = singleSnapshot.getValue(Event.class);
-                            event.setEventId(singleSnapshot.getKey());
-                            if (isValid(event)) {
-                                adapter.add(event);
-                            }
-                        }
-                        setDefaultIfEmpty();
-                        adapter.notifyDataSetChanged();
-                        tvLocation.setText(user.getLocation().getLocality());
-                        swipeContainer.setRefreshing(false);
-                        mShimmerViewContainer.stopShimmerAnimation();
-                        mShimmerViewContainer.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                }, user.getLocation().getLocality());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    // check whether the event should be added to the feed depending on which feed it is
-    private boolean isValid(Event event) {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (!event.getAuthor().equals(uid) && !event.isAttending(uid)) {
-            return true;
-        }
-        return false;
     }
 
     // TODO: limit initial query and implement infinite scrolling

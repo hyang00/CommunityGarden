@@ -137,6 +137,13 @@ public class DatabaseClient {
         ref.addListenerForSingleValueEvent(listener);
     }
 
+    // Query events on a given date
+    public static void queryEventsOnDate(ValueEventListener listener, String date) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        Query ref = database.child(KEY_POSTS).orderByChild(KEY_EVENT_DATE).equalTo(date);
+        ref.addListenerForSingleValueEvent(listener);
+    }
+
     // Query events w/ same locale as current user
     public static void queryEventsNearby(final ValueEventListener listener) {
         getCurrUserProfile(new ValueEventListener() {
