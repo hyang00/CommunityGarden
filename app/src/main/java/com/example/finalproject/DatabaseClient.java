@@ -28,10 +28,13 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
 import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
+import static com.example.finalproject.TimeAndDateFormatter.getTodaysDate;
 
 public class DatabaseClient {
     private static final String TAG = "Database Client";
@@ -129,7 +132,8 @@ public class DatabaseClient {
     // Query events (sorted by event date)
     public static void queryEvents(ValueEventListener listener) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        Query ref = database.child(KEY_POSTS).orderByChild(KEY_EVENT_DATE);
+        Query ref = database.child(KEY_POSTS).orderByChild(KEY_EVENT_DATE).startAt(getTodaysDate());
+        Log.i(TAG, getTodaysDate());
         ref.addListenerForSingleValueEvent(listener);
     }
 

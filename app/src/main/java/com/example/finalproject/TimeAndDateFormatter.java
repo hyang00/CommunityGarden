@@ -7,6 +7,13 @@ import java.util.Date;
 
 public class TimeAndDateFormatter {
 
+    public static String getTodaysDate(){
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        return formatter.format(date);
+    }
+
     // Returns day in DD format from YYYY/MM/DD format
     public static String getDay(String storageDate) {
         Date date = null;
