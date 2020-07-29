@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +25,7 @@ import com.example.finalproject.EventDetailsActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.fragments.EventFragment;
 import com.example.finalproject.models.Event;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -33,6 +37,7 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
+import static android.view.GestureDetector.*;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateWithDayOfWeek;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
@@ -92,6 +97,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         notifyItemRangeChanged(position, events.size());
     }
 
+    public void launchConfetti() {
+        konfettiView.build()
+                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                .setDirection(0.0, 359.0)
+                .setSpeed(2f, 10f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(2000L)
+                .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                .addSizes(new Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .burst(100);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvTitle;
@@ -101,6 +119,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         private TextView tvLocation;
         private TextView tvGoing;
         private Button btnRSVP;
+        //private FrameLayout flItemEvent;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,6 +130,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             tvLocation = itemView.findViewById(R.id.tvLocation);
             tvGoing = itemView.findViewById(R.id.tvGoing);
             btnRSVP = itemView.findViewById(R.id.btnRSVP);
+            //flItemEvent = itemView.findViewById(R.id.flItemEvent);
             btnRSVP.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -132,7 +152,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             if (eventType.equals(Common.EVENT_HOSTING_KEY) || eventType.equals(Common.EVENT_ATTENDING_KEY)) {
                 btnRSVP.setVisibility(View.GONE);
             }
-            itemView.setOnClickListener(this);
+            //itemView.setOnClickListener(this);
 
         }
 
@@ -166,19 +186,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 context.startActivity(intent);
             }
 
-        }
-
-        private void launchConfetti() {
-            konfettiView.build()
-                    .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                    .setDirection(0.0, 359.0)
-                    .setSpeed(2f, 10f)
-                    .setFadeOutEnabled(true)
-                    .setTimeToLive(2000L)
-                    .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                    .addSizes(new Size(12, 5f))
-                    .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                    .burst(100);
         }
 
 

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +22,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EndlessRecyclerViewScrollListener;
+import com.example.finalproject.EventDetailsActivity;
+import com.example.finalproject.ItemClickSupport;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EventsAdapter;
 import com.example.finalproject.models.Event;
@@ -28,6 +31,8 @@ import com.example.finalproject.models.Location;
 import com.example.finalproject.models.User;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -39,6 +44,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -169,6 +176,37 @@ public class EventFragment extends Fragment {
             }
         };
         rvEvents.addOnScrollListener(scrollListener);
+
+        ItemClickSupport.addTo(rvEvents).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                if (position != RecyclerView.NO_POSITION) {
+                    Event event = allEvents.get(position);
+                    Intent intent = new Intent(getContext(), EventDetailsActivity.class);
+                    intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+                    getContext().startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onItemDoubleClicked(RecyclerView recyclerView, final int position, View v) {
+                if (position != RecyclerView.NO_POSITION) {
+                    final Event event = allEvents.get(position);
+                    DatabaseClient.rsvpUser(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(getContext(), "Successfully Registered", Toast.LENGTH_SHORT).show();
+                            adapter.removeAt(position);
+                            if (konfettiView != null) {
+                                adapter.launchConfetti();
+                            }
+                        }
+                    }, event, getContext());
+                    Log.i("adapter", "event key: " + event.getEventId());
+                }
+            }
+        });
+
         queryEventsNearby(searchLocation);
 
     }
