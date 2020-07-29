@@ -6,23 +6,23 @@
         android:enabled="true"
         android:icon="@drawable/ic_baseline_home_24"
         android:title="@string/home"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_host"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_edit_24"
         android:title="Host Event"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_user_events"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_event_24"
         android:title="My Events"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_profile"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_person_24"
         android:title="Profile"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

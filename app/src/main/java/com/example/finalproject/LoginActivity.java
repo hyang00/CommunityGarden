@@ -36,10 +36,6 @@ import org.parceler.Parcels;
 
 import java.util.Arrays;
 
-//import com.firebase.ui.auth.AuthUI;
-//import com.firebase.ui.auth.IdpResponse;
-//import com.google.android.gms.auth.api.Auth;
-
 public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LoginActivity";
@@ -104,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancel() {
-                            // App code
                         }
 
                         @Override

@@ -1,7 +1,5 @@
 package com.example.finalproject;
 
-import nl.dionsegijn.konfetti.KonfettiView;
-
 //
 public class Common {
     public static final String EVENT_FEED_KEY = "feed";

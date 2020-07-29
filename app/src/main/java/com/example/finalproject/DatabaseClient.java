@@ -31,7 +31,6 @@ import com.google.firebase.storage.UploadTask;
 import java.util.UUID;
 
 import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
-import static com.example.finalproject.Common.NO_ATTENDEES_CAP_SET;
 import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
 
 public class DatabaseClient {

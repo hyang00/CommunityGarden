@@ -34,6 +34,7 @@ import org.parceler.Parcels;
 
 import java.util.Arrays;
 
+@SuppressWarnings("ALL")
 public class SignUpActivity extends AppCompatActivity {
 
     public static final String TAG = "SignUpActivity";

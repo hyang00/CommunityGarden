@@ -6,7 +6,6 @@
     <include
         android:id="@+id/vEditProfile"
         layout="@layout/item_edit_profile"
-        android:layout_below="@+id/vHostProfile"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
@@ -19,8 +18,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
         android:layout_toStartOf="@+id/fabSave"
-        android:contentDescription="Cancel"
-        android:text="Cancel"
+        android:contentDescription="@string/cancel"
+        android:text="@string/cancel"
         android:textAlignment="center"
         android:textColorLink="@color/colorAccent" />
 
@@ -33,7 +32,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
-        android:contentDescription="Save"
-        android:text="Save"
+        android:contentDescription="@string/save"
+        android:text="@string/save"
         android:textAlignment="center" />
 </RelativeLayout>

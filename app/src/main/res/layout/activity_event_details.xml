@@ -39,7 +39,7 @@
                 android:scaleType="center"
                 app:srcCompat="@drawable/ic_baseline_person_24"
                 tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:contentDescription="TODO" />
+                android:contentDescription="@string/tour_photo" />
 
             <include
                 android:id="@+id/vHostProfile"
@@ -65,10 +65,10 @@
                     android:id="@+id/tvGoing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginEnd="24dp"
                     android:padding="12dp"
-                    android:text="Be the first to register"
+                    android:text="@string/be_the_first_to_register"
                     tools:text="Be the first to register" />
             </RelativeLayout>
 
@@ -81,7 +81,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:text="About"
+                android:text="@string/about"
                 android:textSize="24sp" />
 
             <TextView
@@ -105,7 +105,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:text="Location"
+                android:text="@string/location"
                 android:textSize="24sp" />
 
             <TextView
@@ -129,7 +129,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
                 tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:contentDescription="TODO" />
+                android:contentDescription="@string/static_map" />
 
         </RelativeLayout>
     </ScrollView>
@@ -138,12 +138,10 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="false"
-        android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Register"
-        android:text="Register"
+        android:contentDescription="@string/register"
+        android:text="@string/register"
         android:textAlignment="viewEnd"
         app:useCompatPadding="false" />
 </FrameLayout>

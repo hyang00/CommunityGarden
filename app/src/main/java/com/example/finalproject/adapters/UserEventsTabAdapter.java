@@ -22,11 +22,9 @@ public class UserEventsTabAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                CalendarEventFragment attendingFragment = CalendarEventFragment.newInstance(Common.EVENT_ATTENDING_KEY);
-                return attendingFragment;
+                return CalendarEventFragment.newInstance(Common.EVENT_ATTENDING_KEY);
             case 1:
-                CalendarEventFragment hostingFragment = CalendarEventFragment.newInstance(Common.EVENT_HOSTING_KEY);
-                return hostingFragment;
+                return CalendarEventFragment.newInstance(Common.EVENT_HOSTING_KEY);
             default:
                 return null;
         }

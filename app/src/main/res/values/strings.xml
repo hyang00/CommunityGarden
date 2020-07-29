@@ -1,13 +1,43 @@
 <resources>
     <string name="app_name">FinalProject</string>
     <string name="home">Home</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- For facebook sdk -->
     <string name="facebook_app_id">706356949942267</string>
     <string name="fb_login_protocol_scheme">fb706356949942267</string>
     <string name="sign_up_message">Welcome Tell Us A Little Bit About Yourself</string>
     <string name="no_events_default_message">No events found</string>
     <string name="rsvp_button_event_full">Full</string>
+    <string name="name">Name</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="bio">Bio</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="tour_photo">Tour Photo</string>
+    <string name="be_the_first_to_register">Be the first to register</string>
+    <string name="about">About</string>
+    <string name="location">Location</string>
+    <string name="static_map">Static Map</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="finish">Finish</string>
+    <string name="garden_tours_in">Garden Tours in</string>
+    <string name="search_icon">search icon</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="tour_photo_preview">Tour Photo Preview</string>
+    <string name="mm_dd_yyyy">MM/DD/YYYY</string>
+    <string name="time">Time</string>
+    <string name="max_number_of_attendees">Max Number of Attendees</string>
+    <string name="post">Post</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="event_history">Event History</string>
+    <string name="interests">Interests:</string>
+    <string name="events_attending_tab_header">Events Attending</string>
+    <string name="events_hosting_tab_header">Events Hosting</string>
+    <string name="message_button_label">Message</string>
     <string-array name="max_attendees_array">
         <item>None</item>
         <item>5</item>

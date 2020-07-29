@@ -1,136 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".EventDetailsActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EventDetailsActivity">
+    tools:layout_editor_absoluteX="1dp"
+    tools:layout_editor_absoluteY="1dp">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:padding="4dp"
+            android:textSize="36sp"
+            tools:text="Cactus Garden Tour" />
 
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:padding="4dp"
-                android:textSize="36sp"
-                tools:text="Cactus Garden Tour" />
+        <ImageView
+            android:id="@+id/ivEventPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_below="@+id/tvTitle"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_baseline_person_24"
+            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            android:contentDescription="Tour Photo" />
 
-            <ImageView
-                android:id="@+id/ivEventPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_below="@+id/tvTitle"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:scaleType="center"
-                app:srcCompat="@drawable/ic_baseline_person_24"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:contentDescription="TODO" />
+        <include
+            android:id="@+id/vEventTime"
+            layout="@layout/item_event_time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivEventPhoto" />
 
-            <include
-                android:id="@+id/vEventTime"
-                layout="@layout/item_event_time"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ivEventPhoto" />
+        <TextView
+            android:id="@+id/tvAbout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vEventTime"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:text="About"
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/tvAbout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/vEventTime"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:text="About"
-                android:textSize="24sp" />
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAbout"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:textSize="18sp"
+            tools:text="Hello welcome! Our garden has over 200 varieties of Cacti. The garden is drought tolerant, and was started 5 years ago" />
 
-            <TextView
-                android:id="@+id/tvDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvAbout"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:textSize="18sp"
-                tools:text="Hello welcome! Our garden has over 200 varieties of Cacti. The garden is drought tolerant, and was started 5 years ago" />
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDescription"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:text="Location"
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/tvLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvDescription"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:text="Location"
-                android:textSize="24sp" />
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLocation"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:textSize="18sp"
+            tools:text="1234 Cacti Lane, Arizona" />
 
-            <TextView
-                android:id="@+id/tvAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvLocation"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:textSize="18sp"
-                tools:text="1234 Cacti Lane, Arizona" />
+        <ImageView
+            android:id="@+id/ivMap"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@+id/tvAddress"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            android:contentDescription="Static Map" />
 
-            <ImageView
-                android:id="@+id/ivMap"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_below="@+id/tvAddress"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="0dp"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:contentDescription="TODO" />
+        <TextView
+            android:id="@+id/tvAttendees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivMap"
+            android:padding="8dp"
+            android:text="Attendees"
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/tvAttendees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ivMap"
-                android:padding="8dp"
-                android:text="Attendees"
-                android:textSize="24sp" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivMap"
+            android:layout_alignParentEnd="true"
+            android:text="Message All" />
 
-            <Button
-                android:id="@+id/btnMessageAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ivMap"
-                android:layout_alignParentEnd="true"
-                android:text="Message All" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAttendees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvAttendees" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvAttendees"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvAttendees" />
-
-        </RelativeLayout>
-    </ScrollView>
-
-</FrameLayout>
+    </RelativeLayout>
+</ScrollView>

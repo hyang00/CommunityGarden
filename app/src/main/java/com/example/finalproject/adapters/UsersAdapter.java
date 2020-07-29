@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.finalproject.R;
-import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     private Context context;
     private List<User> users;
 
-    public UsersAdapter(Context context, List<User> users){
+    public UsersAdapter(Context context, List<User> users) {
         this.context = context;
         this.users = users;
     }
@@ -46,7 +45,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         return users.size();
     }
 
-    public void add(User user){
+    public void add(User user) {
         users.add(user);
     }
 

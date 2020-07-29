@@ -13,7 +13,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title">
+        android:hint="@string/title">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="false"
-        android:hint="Description">
+        android:hint="@string/description">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDescription"
@@ -41,7 +41,7 @@
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_baseline_add_box_24"
         tools:src="@tools:sample/avatars"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/tour_photo_preview" />
 
     <fragment
         android:id="@+id/autocomplete_fragment"
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="false"
-        android:hint="MM/DD/YYYY">
+        android:hint="@string/mm_dd_yyyy">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDate"
@@ -68,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="false"
-        android:hint="Time">
+        android:hint="@string/time">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTime"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Max Number of Attendees" />
+            android:text="@string/max_number_of_attendees" />
 
         <Spinner
             android:id="@+id/spMaxAttendees"
@@ -104,5 +104,5 @@
         android:id="@+id/btnPost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Post" />
+        android:text="@string/post" />
 </LinearLayout>

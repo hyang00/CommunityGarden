@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,12 +14,6 @@ import com.bumptech.glide.Glide;
 import com.example.finalproject.adapters.UsersAdapter;
 import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -28,13 +21,13 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.example.finalproject.MapsUrlClient.launchGoogleMaps;
 import static com.example.finalproject.MapsUrlClient.setGoogleMapThumbnail;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateWithDayOfWeek;
 
+@SuppressWarnings("ALL")
 public class HostEventActivityDetails extends AppCompatActivity {
 
     private static final String TAG = "HostEventActDetails";
@@ -52,11 +45,13 @@ public class HostEventActivityDetails extends AppCompatActivity {
     private UsersAdapter adapter;
     private List<User> users;
 
+    @SuppressWarnings("RedundantCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host_event_details);
 
+        //noinspection RedundantCast
         event = (Event) Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
 
         tvTitle = findViewById(R.id.tvTitle);

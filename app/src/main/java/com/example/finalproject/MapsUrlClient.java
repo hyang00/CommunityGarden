@@ -17,7 +17,6 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class MapsUrlClient {
     private static final String TAG = "MapsUrlClient";
@@ -58,8 +57,6 @@ public class MapsUrlClient {
                             ivMap.setImageBitmap(bitmap);
                         }
                     });
-                } else {
-                    // set Image to map not found
                 }
             }
         });

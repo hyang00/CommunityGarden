@@ -18,7 +18,6 @@ import com.example.finalproject.models.Event;
 
 import org.parceler.Parcels;
 
-import java.io.InputStream;
 import java.util.List;
 
 import static com.example.finalproject.TimeAndDateFormatter.getDay;
@@ -29,7 +28,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
 
     private Context context;
     private List<Event> events;
-    private String eventType = "";
+    private String eventType;
 
     public CalendarEventsAdapter(Context context, List<Event> events, String eventType) {
         this.context = context;
@@ -96,13 +95,12 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<CalendarEventsAd
 
         @Override
         public void onClick(View view) {
-            //TODO: Change to diffent activity details for events hosting
             int position = getAdapterPosition();
             // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
                 Event event = events.get(position);
                 Intent intent;
-                if (eventType == Common.EVENT_ATTENDING_KEY){
+                if (eventType.equals(Common.EVENT_ATTENDING_KEY)) {
                     intent = new Intent(context, AttendingEventDetailsActivity.class);
                 } else {
                     intent = new Intent(context, HostEventActivityDetails.class);

@@ -33,6 +33,7 @@ import java.util.List;
  * Use the {@link CalendarEventFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@SuppressWarnings("unused")
 public class CalendarEventFragment extends Fragment {
 
     private static final String TAG = "Calendar Event Fragment";

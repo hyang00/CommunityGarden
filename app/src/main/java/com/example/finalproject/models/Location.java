@@ -32,7 +32,7 @@ public class Location {
             this.lat = myAddress.get(0).getLatitude();
             this.longitude = myAddress.get(0).getLongitude();
         } catch (IOException e) {
-            Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT);
+            Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }

@@ -5,13 +5,11 @@
 <!--    tools:context=".fragments.EventFragment">-->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:shimmer="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -31,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="bottom"
-                    android:text="Garden Tours in "
+                    android:text="@string/garden_tours_in"
                     android:textColor="#FFFFFF"
                     android:textSize="36sp"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -56,13 +54,13 @@
                     android:layout_marginStart="21dp"
                     android:layout_marginTop="11dp"
                     android:layout_toEndOf="@+id/tvLocation"
+                    android:contentDescription="@string/search_icon"
                     shimmer:srcCompat="@drawable/ic_baseline_search_24" />
 
             </RelativeLayout>
 
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="invisible"

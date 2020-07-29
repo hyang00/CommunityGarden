@@ -19,12 +19,12 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Events Attending" />
+            android:text="@string/events_attending_tab_header" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Events Hosting" />
+            android:text="@string/events_hosting_tab_header" />
 
     </com.google.android.material.tabs.TabLayout>
 

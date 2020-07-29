@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
  * <p>
  * Modified by Filippo Beraldo:
  * - Added OnDoubleClickListener in place of the standard OnClickListener.
+ * https://gist.github.com/beraldofilippo/d8d2404bc6f4217fd1a76166cf23e2d0
  */
 
+@SuppressWarnings("UnusedReturnValue")
 public class ItemClickSupport {
     private final RecyclerView mRecyclerView;
     private OnItemClickListener mOnItemClickListener;
@@ -80,6 +82,7 @@ public class ItemClickSupport {
         view.setTag(R.id.item_click_support, null);
     }
 
+    @SuppressWarnings("unused")
     public interface OnItemClickListener {
         void onItemClicked(RecyclerView recyclerView, int position, View v);
 

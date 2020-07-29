@@ -28,7 +28,7 @@ import android.view.ViewConfiguration;
 
 /**
  * Doesn't care about which view is clicked, so should only be used for a single View.
- *
+ * <p>
  * Modified by Filippo Beraldo on 02/02/17:
  * - Added the ability to pass the View v when the click event occurs.
  */

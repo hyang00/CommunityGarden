@@ -1,13 +1,11 @@
 package com.example.finalproject.fragments;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.EventDetailsActivity;
@@ -52,12 +49,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.dionsegijn.konfetti.KonfettiView;
-import nl.dionsegijn.konfetti.models.Shape;
-import nl.dionsegijn.konfetti.models.Size;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
-import static nl.dionsegijn.konfetti.models.Shape.*;
 
 @SuppressWarnings("ALL")
 public class EventFragment extends Fragment {

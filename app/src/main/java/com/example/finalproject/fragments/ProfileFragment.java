@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.DatabaseClient;
-import com.example.finalproject.EditProfile;
+import com.example.finalproject.EditProfileActivity;
 import com.example.finalproject.LoginActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.User;
@@ -92,7 +92,7 @@ public class ProfileFragment extends Fragment {
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), EditProfile.class);
+                Intent intent = new Intent(getContext(), EditProfileActivity.class);
                 intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
                 startActivity(intent);
             }
@@ -112,7 +112,7 @@ public class ProfileFragment extends Fragment {
                 String location = "<b>" + "Location: " + "</b> " + user.getLocation().getLocality();
                 tvLocation.setText(Html.fromHtml(location));
                 if (user.getProfileImageUrl() != null) {
-                    Glide.with(getContext()).load(user.getProfileImageUrl()).transform(new CircleCrop()).into(ivProfilePic);
+                    Glide.with(getActivity()).load(user.getProfileImageUrl()).transform(new CircleCrop()).into(ivProfilePic);
                 }
                 if (user.getLocation() != null) {
                     Log.i(TAG, user.getLocation().getWrittenAddress());

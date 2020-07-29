@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.finalproject.fragments.ProfileFragment;
 import com.example.finalproject.models.User;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,8 +25,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -36,14 +35,16 @@ import org.parceler.Parcels;
 
 import java.util.Arrays;
 
+import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
+import static com.example.finalproject.Common.PROFILE_FRAGMENT;
+import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
+
 public class EditProfileActivity extends AppCompatActivity {
 
     public static final String TAG = "EditProfile";
-    private static final int AUTOCOMPLETE_REQUEST_CODE = 190;
 
     private EditText etName;
     private EditText etBio;
-    private EditText etAddress;
     private ImageView ivProfilePic;
     private FloatingActionButton fabAddProfilePic;
     private ExtendedFloatingActionButton fabSave;
@@ -71,7 +72,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if (!Places.isInitialized()) {
             Places.initialize(EditProfileActivity.this, getString(R.string.api_key));
         }
-        PlacesClient placesClient = Places.createClient(EditProfileActivity.this);
+        @SuppressWarnings("unused") PlacesClient placesClient = Places.createClient(EditProfileActivity.this);
 
         // Initialize the AutocompleteSupportFragment.
         autocompleteFragment = (AutocompleteSupportFragment)
@@ -99,7 +100,7 @@ public class EditProfileActivity extends AppCompatActivity {
         etName.setText(user.getScreenName());
         etBio.setText(user.getBio());
         autocompleteFragment.setText(user.getLocation().getWrittenAddress());
-        //etAddress.setText(user.getLocation().getWrittenAddress());
+        address = user.getLocation().getWrittenAddress();
         profileImageUrl = user.getProfileImageUrl();
         Glide.with(EditProfileActivity.this).load(profileImageUrl).into(ivProfilePic);
         fabAddProfilePic.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +115,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
                 DatabaseClient.createUser(name, bio, profileImageUrl, address, EditProfileActivity.this);
+                Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+                intent.putExtra(MAIN_ACT_FRG_TO_LOAD_KEY, PROFILE_FRAGMENT);
+                startActivity(intent);
                 finish();
             }
         });

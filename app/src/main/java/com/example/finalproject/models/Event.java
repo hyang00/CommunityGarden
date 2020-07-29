@@ -3,7 +3,6 @@ package com.example.finalproject.models;
 import android.content.Context;
 import android.net.Uri;
 
-import com.example.finalproject.Common;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -147,7 +146,7 @@ public class Event {
     }
 
     public boolean isEventFull() {
-        if (maxAttendees != NO_ATTENDEES_CAP_SET) {
+        if (!maxAttendees.equals(NO_ATTENDEES_CAP_SET)) {
             return (getNumberofAttendees() >= maxAttendees);
         }
         return false;
