@@ -169,4 +169,8 @@ public class Event {
     public void setTags(Map<String, Boolean> tags) {
         this.tags = tags;
     }
+
+    public boolean containsTag(String tag){
+        return tags.containsKey(tag);
+    }
 }

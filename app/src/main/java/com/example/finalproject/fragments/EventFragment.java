@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.finalproject.Common;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EndlessRecyclerViewScrollListener;
 import com.example.finalproject.EventDetailsActivity;
@@ -40,6 +42,8 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,6 +54,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import nl.dionsegijn.konfetti.KonfettiView;
@@ -79,8 +84,10 @@ public class EventFragment extends Fragment {
     private ImageView ivSearch;
     private ImageView ivPickDate;
     private ShimmerFrameLayout mShimmerViewContainer;
+    private ChipGroup cgTags;
     private String searchLocation;
     private String searchDate;
+    private HashMap<String, Boolean> selectedTags = new HashMap<>();
 
     public EventFragment() {
         // Required empty public constructor
@@ -120,6 +127,7 @@ public class EventFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Get instance of placesClient to use Places Autocomplete Location
         if (!Places.isInitialized()) {
             Places.initialize(getContext(), getString(R.string.api_key));
         }
@@ -133,29 +141,28 @@ public class EventFragment extends Fragment {
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         ivSearch = view.findViewById(R.id.ivSearch);
         ivPickDate = view.findViewById(R.id.ivPickDate);
+        cgTags = view.findViewById(R.id.cgTags);
         final KonfettiView konfettiView = view.findViewById(R.id.viewKonfetti);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         allEvents = new ArrayList<>();
 
-        //adapter = new EventsAdapter(getContext(), allEvents, eventType);
         adapter = new EventsAdapter(getContext(), allEvents, eventType, konfettiView);
 
-        // Lookup the swipe container view
+        // for refresh on swipe down at top of recycler view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 queryEventsNearby(searchLocation);
             }
         });
-        // Configure the refreshing colors
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        // Allow user to change location that they are searching for events in
         ivSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,6 +173,7 @@ public class EventFragment extends Fragment {
             }
         });
 
+        // Allow user to search for events on specific date
         ivPickDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,9 +194,32 @@ public class EventFragment extends Fragment {
             }
         });
 
-        // set the adapter on the recycler view
+        for (String tag : Common.TAGS) {
+            Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_filter, null, false);
+            chip.setText(tag);
+            cgTags.addView(chip);
+            chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    String tag = compoundButton.getText().toString();
+                    if (checked) {
+                        selectedTags.put(tag, true);
+                    } else {
+                        selectedTags.remove(tag);
+                    }
+                    Log.i(TAG, tag + "boolean: " + checked);
+                    queryEventsNearby(searchLocation);
+                }
+            });
+        }
+
+        cgTags.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId) {
+
+            }
+        });
         rvEvents.setAdapter(adapter);
-        // set the layout manager on the recycler view
         rvEvents.setLayoutManager(linearLayoutManager);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
@@ -198,6 +229,7 @@ public class EventFragment extends Fragment {
         };
         rvEvents.addOnScrollListener(scrollListener);
 
+        // Listener for single and double tap events on recycler view items
         ItemClickSupport.addTo(rvEvents).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -317,13 +349,19 @@ public class EventFragment extends Fragment {
         }, date);
     }
 
-    // check whether the event should be added to the feed
-    private static boolean isValid(Event event) {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (!event.getAuthor().equals(uid) && !event.isAttending(uid)) {
-            return true;
+    private boolean hasTags(Event event) {
+        for (String tag : selectedTags.keySet()) {
+            if (!event.containsTag(tag)) {
+                return false;
+            }
         }
-        return false;
+        return true;
+    }
+
+    // check whether the event should be added to the feed
+    private boolean isValid(Event event) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return (!event.getAuthor().equals(uid) && !event.isAttending(uid) && hasTags(event));
     }
 
     // check if the event is in the same locality as user's search locality
