@@ -19,7 +19,7 @@ public class Common {
     public static Map<String, ArrayList<String>> TAGS = new HashMap<>();
 
     static {
-        TAGS.put("Edible Gardening", new ArrayList<String>(Arrays.asList("vegetable, herb, edible, fruit")));
+        TAGS.put("Edible Gardening", new ArrayList<String>(Arrays.asList("vegetable", "herb", "edible", "fruit")));
         TAGS.put("Flower Garden", new ArrayList<String>(Arrays.asList("flower", "rose", "tulip")));
         TAGS.put("Drought Tolerant", new ArrayList<String>(Arrays.asList("cact", "drought", "rock")));
     }
