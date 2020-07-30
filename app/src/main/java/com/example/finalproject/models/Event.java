@@ -170,7 +170,7 @@ public class Event {
         this.tags = tags;
     }
 
-    public boolean containsTag(String tag){
+    public boolean containsTag(String tag) {
         return tags.containsKey(tag);
     }
 }

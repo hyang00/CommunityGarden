@@ -45,6 +45,7 @@ import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -331,16 +332,20 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
     private void setTags(String info) {
         info = info.toLowerCase();
-        for (String tag : TAGS) {
-            if (info.contains(tag.toLowerCase())) {
-                if (!eventTags.containsKey(tag)) {
-                    eventTags.put(tag, true);
-                    Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_filter, null, false);
-                    chip.setText(tag);
-                    cgTags.addView(chip);
+        for (String tag : TAGS.keySet()) {
+            ArrayList<String> words = TAGS.get(tag);
+            for (String word : words) {
+                if (info.contains(word.toLowerCase())) {
+                    if (!eventTags.containsKey(tag)) {
+                        eventTags.put(tag, true);
+                        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_filter, null, false);
+                        chip.setText(tag);
+                        cgTags.addView(chip);
+                    }
                 }
             }
         }
+
     }
 }
 

@@ -86,7 +86,7 @@
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/cgTags"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/toolBar">
 
                 </com.google.android.material.chip.ChipGroup>
@@ -94,13 +94,13 @@
             </RelativeLayout>
 
 
-<!--            <androidx.appcompat.widget.Toolbar-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:visibility="invisible"-->
-<!--                app:layout_collapseMode="pin">-->
+            <!--            <androidx.appcompat.widget.Toolbar-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:visibility="invisible"-->
+            <!--                app:layout_collapseMode="pin">-->
 
-<!--            </androidx.appcompat.widget.Toolbar>-->
+            <!--            </androidx.appcompat.widget.Toolbar>-->
 
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

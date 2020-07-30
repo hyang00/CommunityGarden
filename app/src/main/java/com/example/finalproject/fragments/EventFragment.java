@@ -194,9 +194,10 @@ public class EventFragment extends Fragment {
             }
         });
 
-        for (String tag : Common.TAGS) {
+        for (String tag : Common.TAGS.keySet()) {
             Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_filter, null, false);
             chip.setText(tag);
+            Log.i(TAG, tag);
             cgTags.addView(chip);
             chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
