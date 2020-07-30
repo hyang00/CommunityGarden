@@ -47,11 +47,10 @@ public class DatabaseClient {
     private final static StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
     // Add a new event to the database
-    //  TODO: reduce method parameters
-    public static void postEvent(final Context context, String title, String description, String location, String date, String time, Long maxAttendees, Uri downloadUri) {
+    public static void postEvent(final Context context, Event event) {
         String key = database.child(KEY_POSTS).push().getKey();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Event event = new Event(uid, title, description, downloadUri.toString(), date, time, location, maxAttendees, context);
+        event.setAuthor(uid);
         database.child(KEY_POSTS).child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

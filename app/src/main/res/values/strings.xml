@@ -38,6 +38,7 @@
     <string name="events_attending_tab_header">Events Attending</string>
     <string name="events_hosting_tab_header">Events Hosting</string>
     <string name="message_button_label">Message</string>
+    <string name="tags">Tags:</string>
     <string-array name="max_attendees_array">
         <item>None</item>
         <item>5</item>

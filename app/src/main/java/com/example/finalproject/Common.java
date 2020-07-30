@@ -1,5 +1,8 @@
 package com.example.finalproject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 //
 public class Common {
     public static final String EVENT_FEED_KEY = "feed";
@@ -11,6 +14,8 @@ public class Common {
     public static final int USER_EVENTS_FRAGMENT = 3;
     public static final int PROFILE_FRAGMENT = 4;
     public static final Long NO_ATTENDEES_CAP_SET = Long.MAX_VALUE;
-
+    public static final ArrayList<String> TAGS = new ArrayList<String>(
+            Arrays.asList("Edibles", "Flower", "Drought Tolerant")
+    );
 
 }

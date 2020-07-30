@@ -57,9 +57,8 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForStorage;
-import static com.example.finalproject.TimeAndDateFormatter.formatDateForView;
 
-@SuppressWarnings("ALL")
+
 public class EventFragment extends Fragment {
 
     private static final String TAG = "Event Fragment";
@@ -265,12 +264,12 @@ public class EventFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void queryEventsNearby(final String searchLocation){
+    private void queryEventsNearby(final String searchLocation) {
         if (searchLocation == null) {
             queryEventsWithDefaultUserLocation();
         } else if (searchDate != null) {
             queryEventsByDate(searchDate);
-        }else {
+        } else {
             DatabaseClient.queryEvents(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -304,7 +303,7 @@ public class EventFragment extends Fragment {
     }
 
     // Filter current events by date
-    private void queryEventsByDate(String date){
+    private void queryEventsByDate(String date) {
         DatabaseClient.queryEventsOnDate(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -318,7 +317,7 @@ public class EventFragment extends Fragment {
         }, date);
     }
 
-    // check whether the event should be added to the feed depending on which feed it is
+    // check whether the event should be added to the feed
     private static boolean isValid(Event event) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (!event.getAuthor().equals(uid) && !event.isAttending(uid)) {
@@ -328,13 +327,13 @@ public class EventFragment extends Fragment {
     }
 
     // check if the event is in the same locality as user's search locality
-    private static boolean isNearby(String searchLocation, Event event){
+    private static boolean isNearby(String searchLocation, Event event) {
         return (searchLocation.equals(event.getLocation().getLocality()));
     }
 
     // Add queried data into the adapter and check if it is valid
     // stop refreshing on the swipecontainer, and stop shimmer effect
-    private void loadData(DataSnapshot snapshot){
+    private void loadData(DataSnapshot snapshot) {
         adapter.clear();
         for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
             Event event = singleSnapshot.getValue(Event.class);

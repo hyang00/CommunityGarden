@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -29,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.ImageFormatter;
 import com.example.finalproject.R;
+import com.example.finalproject.models.Event;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,20 +40,26 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.example.finalproject.Common.NO_ATTENDEES_CAP_SET;
+import static com.example.finalproject.Common.TAGS;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForStorage;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForView;
 import static com.example.finalproject.TimeAndDateFormatter.formatTime;
 
 
-public class HostEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class HostEventFragment extends Fragment implements AdapterView.OnItemSelectedListener,
+        View.OnFocusChangeListener {
 
     private static final String TAG = "Host Event Fragment";
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
@@ -67,6 +76,8 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     private Uri downloadUri;
     private String address;
     private Long maxAttendees;
+    private ChipGroup cgTags;
+    private HashMap<String, Boolean> eventTags;
 
 
     public HostEventFragment() {
@@ -96,12 +107,11 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         etTime = view.findViewById(R.id.etTime);
         spMaxAttendees = view.findViewById(R.id.spMaxAttendees);
         btnPost = view.findViewById(R.id.btnPost);
+        cgTags = view.findViewById(R.id.cgTags);
 
-//        // change default icon on places autocomplete
-//        ImageView searchIcon = view.findViewById(R.id.places_autocomplete_search_button);
-//        //TODO: image not loading properly
-//        Glide.with(getContext()).load(R.drawable.ic_baseline_location_on_24).into(searchIcon);
-
+        etTitle.setOnFocusChangeListener(this);
+        etDescription.setOnFocusChangeListener(this);
+        eventTags = new HashMap<>();
 
         // Initialize the AutocompleteSupportFragment.
         final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -149,6 +159,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                 picker.show();
             }
         });
+
         // launch a time picker when filling out the time
         etTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +173,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                 picker.show();
             }
         });
+
         spMaxAttendees.setOnItemSelectedListener(this);
         // Save Post to database on click
         btnPost.setOnClickListener(new View.OnClickListener() {
@@ -175,8 +187,9 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                     return;
                 }
                 date = formatDateForStorage(date);
-                DatabaseClient.postEvent(getContext(), title, description, address, date, time, maxAttendees, downloadUri);
-                //  TODO: Maybe go to another page when done posting?
+                Event event = new Event(title, description, address, date, time, maxAttendees, downloadUri, getContext());
+                event.setTags(eventTags);
+                DatabaseClient.postEvent(getContext(), event);
                 resetFields();
             }
         });
@@ -290,6 +303,44 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        Log.i(TAG, view.toString() + "has focus: " + hasFocus);
+        if (!hasFocus) {
+            String info;
+            switch (view.getId()) {
+                case R.id.etTitle:
+                    info = etTitle.getText().toString();
+                    break;
+                case R.id.etDescription:
+                    info = etDescription.getText().toString();
+                    break;
+                default:
+                    info = "";
+                    break;
+            }
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+            setTags(info);
+        }
+    }
+
+    private void setTags(String info) {
+        info = info.toLowerCase();
+        for (String tag : TAGS) {
+            if (info.contains(tag.toLowerCase())) {
+                if (!eventTags.containsKey(tag)) {
+                    eventTags.put(tag, true);
+                    Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_filter, null, false);
+                    chip.setText(tag);
+                    cgTags.addView(chip);
+                }
+            }
+        }
     }
 }
 

@@ -24,6 +24,7 @@ public class Event {
     private String date;
     private String time;
     private Map<String, Boolean> attendees = new HashMap<>();
+    private Map<String, Boolean> tags = new HashMap<>();
     private Location location;
     private Long maxAttendees;
 
@@ -42,12 +43,13 @@ public class Event {
         this.maxAttendees = maxAttendees;
     }
 
-    public Event(String title, String description, String address, String date, String time, Uri downloadUri, Context context) {
+    public Event(String title, String description, String address, String date, String time, Long maxAttendees, Uri downloadUri, Context context) {
         this.title = title;
         this.description = description;
         this.imageUrl = downloadUri.toString();
         this.date = date;
         this.time = time;
+        this.maxAttendees = maxAttendees;
         this.location = new Location(address, context);
 
     }
@@ -160,4 +162,11 @@ public class Event {
         this.maxAttendees = maxAttendees;
     }
 
+    public Map<String, Boolean> getTags() {
+        return tags;
+    }
+
+    public void setTags(Map<String, Boolean> tags) {
+        this.tags = tags;
+    }
 }

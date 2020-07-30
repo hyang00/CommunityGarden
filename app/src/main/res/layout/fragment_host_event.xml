@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="false"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical"
     android:padding="12dp"
     tools:context=".fragments.HostEventFragment">
@@ -13,20 +15,23 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
         android:hint="@string/title">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etTitle" />
+            android:focusableInTouchMode="true"
+            android:selectAllOnFocus="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        app:startIconDrawable="@drawable/ic_baseline_description_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="false"
-        android:hint="@string/description">
+        android:focusableInTouchMode="true"
+        android:hint="@string/description"
+        app:startIconDrawable="@drawable/ic_baseline_description_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDescription"
@@ -40,6 +45,7 @@
         android:layout_height="200dp"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_baseline_add_box_24"
+        android:focusableInTouchMode="true"
         tools:src="@tools:sample/avatars"
         android:contentDescription="@string/tour_photo_preview" />
 
@@ -82,7 +88,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvMaxAttendees"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -95,9 +101,31 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/textView"
+            android:layout_toEndOf="@+id/tvMaxAttendees"
             android:entries="@array/max_attendees_array"
             android:padding="8dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvTags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/tags" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cgTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_toEndOf="@+id/tvTags" />
     </RelativeLayout>
 
     <Button
