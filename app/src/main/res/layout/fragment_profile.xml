@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="800dp"
         android:orientation="vertical">
 
         <include
@@ -73,6 +73,7 @@
             tools:text="Location: Los Altos, CA" />
 
         <TextView
+            android:id="@+id/tvEventHistory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvInterests"
@@ -92,6 +93,29 @@
             android:layout_marginTop="4dp"
             android:text="@string/interests"
             android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvAttendedCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvEventHistory"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="4dp"
+            android:textAlignment="textStart"
+            android:textSize="36sp"
+            tools:text="10 Events Attended" />
+        <TextView
+            android:id="@+id/tvHostedCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAttendedCount"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="4dp"
+            android:textAlignment="textStart"
+            android:textSize="36sp"
+            tools:text="2 Events Hosted" />
 
     </RelativeLayout>
 </ScrollView>

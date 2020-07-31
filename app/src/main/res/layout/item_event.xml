@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:padding="4dp"
         app:cardBackgroundColor="#FDFCFC"
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp"

@@ -78,6 +78,18 @@ public class TimeAndDateFormatter {
         return formatter.format(date);
     }
 
+    // returns date formatted in MM/dd
+    public static String formatDateForViewShort(String storageDate) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy/MM/dd").parse(storageDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
+        return formatter.format(date);
+    }
+
     // returns date formatted in YYYY/MM/DD
     public static String formatDateForStorage(int year, int monthOfYear, int dayOfMonth) {
         Calendar cal = Calendar.getInstance();

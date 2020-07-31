@@ -102,7 +102,7 @@ public class EditProfileActivity extends AppCompatActivity {
         autocompleteFragment.setText(user.getLocation().getWrittenAddress());
         address = user.getLocation().getWrittenAddress();
         profileImageUrl = user.getProfileImageUrl();
-        Glide.with(EditProfileActivity.this).load(profileImageUrl).into(ivProfilePic);
+        Glide.with(EditProfileActivity.this).load(profileImageUrl).transform(new CircleCrop()).into(ivProfilePic);
         fabAddProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -62,6 +62,7 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForStorage;
+import static com.example.finalproject.TimeAndDateFormatter.formatDateForViewShort;
 
 
 public class EventFragment extends Fragment {
@@ -81,8 +82,9 @@ public class EventFragment extends Fragment {
     private TextView tvDefaultMessage;
     private CollapsingToolbarLayout collapsingToolbar;
     private TextView tvLocation;
-    private ImageView ivSearch;
+    private TextView tvDate;
     private ImageView ivPickDate;
+    private ImageView ivFilter;
     private ShimmerFrameLayout mShimmerViewContainer;
     private ChipGroup cgTags;
     private String searchLocation;
@@ -139,8 +141,9 @@ public class EventFragment extends Fragment {
         collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
         tvLocation = view.findViewById(R.id.tvLocation);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
-        ivSearch = view.findViewById(R.id.ivSearch);
+        tvDate = view.findViewById(R.id.tvDate);
         ivPickDate = view.findViewById(R.id.ivPickDate);
+        ivFilter = view.findViewById(R.id.ivFilter);
         cgTags = view.findViewById(R.id.cgTags);
         final KonfettiView konfettiView = view.findViewById(R.id.viewKonfetti);
 
@@ -163,7 +166,7 @@ public class EventFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         // Allow user to change location that they are searching for events in
-        ivSearch.setOnClickListener(new View.OnClickListener() {
+        tvLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
@@ -187,10 +190,32 @@ public class EventFragment extends Fragment {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 Log.i(TAG, formatDateForStorage(year, monthOfYear, dayOfMonth));
                                 searchDate = formatDateForStorage(year, monthOfYear, dayOfMonth);
+                                tvDate.setText(formatDateForViewShort(searchDate));
                                 queryEventsByDate(formatDateForStorage(year, monthOfYear, dayOfMonth));
                             }
                         }, year, month, day);
                 picker.show();
+            }
+        });
+
+        tvDate.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                tvDate.setText("");
+                searchDate = null;
+                queryEventsNearby(searchLocation);
+                return false;
+            }
+        });
+
+        ivFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cgTags.getVisibility()==View.GONE){
+                    cgTags.setVisibility(View.VISIBLE);
+                } else{
+                    cgTags.setVisibility(View.GONE);
+                }
             }
         });
 
