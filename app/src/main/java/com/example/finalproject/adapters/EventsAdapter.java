@@ -44,6 +44,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         this.context = context;
         this.events = events;
         this.eventType = eventType;
+        setHasStableIds(true);
     }
 
     public EventsAdapter(Context context, List<Event> events, String eventType, KonfettiView konfettiView) {
@@ -51,6 +52,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         this.events = events;
         this.eventType = eventType;
         this.konfettiView = konfettiView;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -100,6 +102,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 .addSizes(new Size(12, 5f))
                 .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                 .burst(100);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
