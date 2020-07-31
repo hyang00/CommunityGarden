@@ -141,15 +141,5 @@
             android:textSize="30sp"
             tools:text="2 Events Hosted" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvHostedCount"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="false"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp" />
-
     </RelativeLayout>
 </ScrollView>
