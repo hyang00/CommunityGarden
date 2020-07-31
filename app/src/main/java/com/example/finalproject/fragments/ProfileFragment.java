@@ -168,13 +168,13 @@ public class ProfileFragment extends Fragment {
     }
 
     // check whether the event should be added to the feed
-    private boolean attended(Event event) {
+    private boolean hosted(Event event) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         return event.getAuthor().equals(uid);
     }
 
     // check whether the event should be added to the feed
-    private boolean hosted(Event event) {
+    private boolean attended(Event event) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         return event.isAttending(uid);
     }

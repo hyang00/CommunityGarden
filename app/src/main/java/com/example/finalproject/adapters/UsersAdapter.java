@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.R;
 import com.example.finalproject.models.User;
 
@@ -70,7 +71,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             tvName.setText(user.getScreenName());
             tvBio.setText(user.getBio());
             if (user.getProfileImageUrl() != null) {
-                Glide.with(context).load(user.getProfileImageUrl()).into(ivProfilePic);
+                Glide.with(context).load(user.getProfileImageUrl()).transform(new CircleCrop()).into(ivProfilePic);
             }
         }
     }

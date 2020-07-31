@@ -201,6 +201,8 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         etDescription.setText("");
         etDate.setText("");
         etTime.setText("");
+        cgTags.removeAllViews();
+        eventTags.clear();
         ivPhoto.setImageResource(R.drawable.ic_baseline_add_box_24);
     }
 
