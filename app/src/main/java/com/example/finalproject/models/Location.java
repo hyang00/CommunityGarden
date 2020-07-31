@@ -3,6 +3,7 @@ package com.example.finalproject.models;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.parceler.Parcel;
