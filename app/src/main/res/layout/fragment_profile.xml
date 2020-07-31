@@ -58,6 +58,7 @@
             android:layout_below="@+id/btnEditProfile"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
+            android:padding="4dp"
             android:textSize="24sp"
             tools:text="Bio: Hi I am Hannah" />
 
@@ -69,6 +70,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
+            android:padding="4dp"
             android:textSize="24sp"
             tools:text="Location: Los Altos, CA" />
 
@@ -81,7 +83,9 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
             android:text="@string/event_history"
-            android:textSize="24sp" />
+            android:padding="4dp"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvInterests"
@@ -91,6 +95,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
+            android:padding="4dp"
             android:text="@string/interests"
             android:textSize="24sp" />
 
@@ -102,9 +107,12 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
+            android:padding="4dp"
+            android:paddingStart="12dp"
             android:textAlignment="textStart"
-            android:textSize="36sp"
+            android:textSize="30sp"
             tools:text="10 Events Attended" />
+
         <TextView
             android:id="@+id/tvHostedCount"
             android:layout_width="match_parent"
@@ -113,9 +121,35 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
+            android:padding="4dp"
+            android:paddingStart="12dp"
             android:textAlignment="textStart"
-            android:textSize="36sp"
+            android:textSize="30sp"
             tools:text="2 Events Hosted" />
+
+        <TextView
+            android:id="@+id/tvUsersMet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvHostedCount"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="4dp"
+            android:padding="4dp"
+            android:paddingStart="12dp"
+            android:textAlignment="textStart"
+            android:textSize="30sp"
+            tools:text="2 Events Hosted" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvHostedCount"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp" />
 
     </RelativeLayout>
 </ScrollView>

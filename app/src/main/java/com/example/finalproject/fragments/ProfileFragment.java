@@ -23,6 +23,7 @@ import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.EditProfileActivity;
 import com.example.finalproject.LoginActivity;
 import com.example.finalproject.R;
+import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,6 +43,9 @@ public class ProfileFragment extends Fragment {
     private TextView tvBio;
     private TextView tvLocation;
     private Button btnEditProfile;
+    private TextView tvAttendedCount;
+    private TextView tvHostedCount;
+    private TextView tvUsersMet;
     private Toolbar toolbar;
     private User user;
 
@@ -68,9 +72,13 @@ public class ProfileFragment extends Fragment {
         tvBio = view.findViewById(R.id.tvBio);
         tvLocation = view.findViewById(R.id.tvLocation);
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
+        tvAttendedCount = view.findViewById(R.id.tvAttendedCount);
+        tvHostedCount = view.findViewById(R.id.tvHostedCount);
+        tvUsersMet = view.findViewById(R.id.tvUsersMet);
         toolbar = view.findViewById(R.id.toolBar);
 
         setProfileFields();
+        countAttendedAndHosted();
         toolbar.inflateMenu(R.menu.menu_profile);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -95,6 +103,39 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getContext(), EditProfileActivity.class);
                 intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void countAttendedAndHosted() {
+        DatabaseClient.queryPastEvents(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int attended = 0;
+                int hosted = 0;
+                int usersMet = 0;
+                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                    Event event = singleSnapshot.getValue(Event.class);
+                    event.setEventId(singleSnapshot.getKey());
+                    if (hosted(event)) {
+                        hosted++;
+                        usersMet += event.getNumberofAttendees();
+                    } else if (attended(event)) {
+                        attended++;
+                        usersMet += (event.getNumberofAttendees() - 1);
+                    }
+                }
+                String strAttended = "<big>" + attended + "</big>" + "<small> Events Attended</small>";
+                String strHosted = "<big>" + hosted + "</big>" + "<small> Events Hosted</small>";
+                String strUsersMet = "<big>" + usersMet + "</big>" + "<small> Gardeners Met</small>";
+                tvAttendedCount.setText(Html.fromHtml(strAttended));
+                tvHostedCount.setText(Html.fromHtml(strHosted));
+                tvUsersMet.setText(Html.fromHtml(strUsersMet));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
@@ -124,5 +165,17 @@ public class ProfileFragment extends Fragment {
                 Log.e(TAG, error.toString());
             }
         });
+    }
+
+    // check whether the event should be added to the feed
+    private boolean attended(Event event) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return event.getAuthor().equals(uid);
+    }
+
+    // check whether the event should be added to the feed
+    private boolean hosted(Event event) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return event.isAttending(uid);
     }
 }

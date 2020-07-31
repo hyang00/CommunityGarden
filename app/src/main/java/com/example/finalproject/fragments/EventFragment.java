@@ -211,9 +211,9 @@ public class EventFragment extends Fragment {
         ivFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cgTags.getVisibility()==View.GONE){
+                if (cgTags.getVisibility() == View.GONE) {
                     cgTags.setVisibility(View.VISIBLE);
-                } else{
+                } else {
                     cgTags.setVisibility(View.GONE);
                 }
             }
