@@ -26,6 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivEventPhoto"
+                android:layout_marginStart="4dp"
                 android:padding="4dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ivEventPhoto"
@@ -36,13 +37,14 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_margin="4dp"
                 android:maxLines="2"
                 android:padding="4dp"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="@id/tvGoing"
                 app:layout_constraintRight_toLeftOf="@id/tvGoing"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvGoing"
+                app:layout_constraintTop_toBottomOf="@+id/tvTime"
                 app:layout_constraintVertical_bias="0.56"
                 tools:text="Come join us for a cactus garden tour. And lot of other stuff for testing" />
 
@@ -52,8 +54,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/tvDescription"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
                 android:text="RSVP"
                 android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvLocation" />
 
@@ -63,11 +67,30 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivEventPhoto"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="4dp"
                 android:padding="4dp"
                 android:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ivEventPhoto"
                 tools:text="Los Altos, CA" />
+
+
+            <ImageView
+                android:id="@+id/ivEventPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_below="@+id/tvTitle"
+                android:layout_alignParentStart="true"
+                android:contentDescription="Tour Photo"
+                android:padding="4dp"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_person_24"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -75,27 +98,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="false"
                 android:layout_alignParentTop="false"
+                android:layout_marginStart="4dp"
+                android:background="#BFDDDDDD"
                 android:padding="4dp"
-                android:textSize="24sp"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/ivEventPhoto"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvLocation"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0"
                 tools:text="Cactus Garden Tour" />
-
-            <ImageView
-                android:id="@+id/ivEventPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_below="@+id/tvTitle"
-                android:layout_alignParentStart="true"
-                android:contentDescription="Tour Photo"
-                android:padding="4dp"
-                android:scaleType="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvTitle"
-                app:srcCompat="@drawable/ic_baseline_person_24"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <TextView
                 android:id="@+id/tvGoing"
@@ -105,6 +118,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/btnRSVP"
                 app:layout_constraintRight_toLeftOf="@id/btnRSVP"
                 app:layout_constraintTop_toTopOf="@id/btnRSVP"
+                app:layout_constraintVertical_bias="0.769"
                 tools:text="10 going " />
 
 

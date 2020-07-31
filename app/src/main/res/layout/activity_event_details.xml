@@ -20,33 +20,34 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/ivEventPhoto"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:padding="4dp"
+                android:padding="8dp"
                 android:textSize="36sp"
+                android:textStyle="bold"
                 tools:text="Cactus Garden Tour" />
 
             <ImageView
                 android:id="@+id/ivEventPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_below="@+id/tvTitle"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
+                android:contentDescription="@string/tour_photo"
                 android:scaleType="center"
                 app:srcCompat="@drawable/ic_baseline_person_24"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:contentDescription="@string/tour_photo" />
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <include
                 android:id="@+id/vHostProfile"
                 layout="@layout/item_profile"
-                android:layout_below="@+id/ivEventPhoto"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvTitle" />
 
             <RelativeLayout
                 android:id="@+id/rlTimeAndGoing"
@@ -81,8 +82,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
+                android:padding="4dp"
                 android:text="@string/about"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDescription"
@@ -93,6 +96,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
+                android:padding="3dp"
                 android:textSize="18sp"
                 tools:text="Hello welcome! Our garden has over 200 varieties of Cacti. The garden is drought tolerant, and was started 5 years ago" />
 
@@ -105,8 +109,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
+                android:padding="4dp"
                 android:text="@string/location"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvAddress"
@@ -117,6 +123,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
+                android:drawableStart="@drawable/ic_baseline_location_on_24"
+                android:drawablePadding="4dp"
+                android:padding="4dp"
                 android:textSize="18sp"
                 tools:text="1234 Cacti Lane, Arizona" />
 
@@ -128,8 +137,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:contentDescription="@string/static_map" />
+                android:contentDescription="@string/static_map"
+                android:padding="4dp"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         </RelativeLayout>
     </ScrollView>
