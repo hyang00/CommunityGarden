@@ -27,25 +27,24 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivEventPhoto"
                 android:layout_marginStart="4dp"
+                android:layout_marginBottom="2dp"
                 android:padding="4dp"
+                app:layout_constraintBottom_toTopOf="@+id/tvDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ivEventPhoto"
                 tools:text="Thu, Apr 8 2021 * 8:00 AM" />
 
             <TextView
                 android:id="@+id/tvDescription"
-                android:layout_width="250dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_margin="4dp"
                 android:maxLines="2"
                 android:padding="4dp"
                 app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="@id/tvGoing"
-                app:layout_constraintRight_toLeftOf="@id/tvGoing"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTime"
-                app:layout_constraintVertical_bias="0.56"
                 tools:text="Come join us for a cactus garden tour. And lot of other stuff for testing" />
 
             <Button
@@ -59,7 +58,7 @@
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLocation" />
+                app:layout_constraintTop_toBottomOf="@+id/tvTime" />
 
             <TextView
                 android:id="@+id/tvLocation"
@@ -98,7 +97,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="false"
                 android:layout_alignParentTop="false"
-                android:layout_marginStart="4dp"
                 android:background="#BFDDDDDD"
                 android:padding="4dp"
                 android:textSize="24sp"
@@ -114,11 +112,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/btnRSVP"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btnRSVP"
                 app:layout_constraintTop_toTopOf="@id/btnRSVP"
-                app:layout_constraintVertical_bias="0.769"
-                tools:text="10 going " />
+                app:layout_constraintVertical_bias="0.692"
+                tools:text="10" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
