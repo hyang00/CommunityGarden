@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -44,11 +47,36 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.mlkit.common.model.LocalModel;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.label.ImageLabel;
+import com.google.mlkit.vision.label.ImageLabeler;
+import com.google.mlkit.vision.label.ImageLabeling;
+import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
 
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.support.common.FileUtil;
+import org.tensorflow.lite.support.common.TensorProcessor;
+import org.tensorflow.lite.support.common.ops.NormalizeOp;
+import org.tensorflow.lite.support.image.ImageProcessor;
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.image.ops.ResizeOp;
+import org.tensorflow.lite.support.label.TensorLabel;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -96,11 +124,6 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (!Places.isInitialized()) {
-            Places.initialize(getContext(), getString(R.string.api_key));
-        }
-        PlacesClient placesClient = Places.createClient(getContext());
-
         etTitle = view.findViewById(R.id.etTitle);
         etDescription = view.findViewById(R.id.etDescription);
         ivPhoto = view.findViewById(R.id.ivPhoto);
@@ -113,6 +136,12 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         etTitle.setOnFocusChangeListener(this);
         etDescription.setOnFocusChangeListener(this);
         eventTags = new HashMap<>();
+
+        // Get instance of PlacesClient to use autocomplete support fragment w/ places
+        if (!Places.isInitialized()) {
+            Places.initialize(getContext(), getString(R.string.api_key));
+        }
+        PlacesClient placesClient = Places.createClient(getContext());
 
         // Initialize the AutocompleteSupportFragment.
         final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -283,6 +312,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                     break;
             }
             ivPhoto.setImageBitmap(bm);
+            runLabeler(bm);
             imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
             DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
                 @Override
@@ -293,6 +323,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         }
     }
 
+    // Listener for when user picks option for max # of attendees from the spinner
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String selection = adapterView.getItemAtPosition(i).toString();
@@ -347,7 +378,124 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                 }
             }
         }
+    }
 
+    // Take the uploaded bitmap and run it through the plant classifier data model to find out if it contains any
+    // particularily identifiable plants
+    private void runLabeler(Bitmap bm){
+        Interpreter tflite = null;
+        try {
+            tflite = new Interpreter(loadModelFile(getActivity()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        final float IMAGE_MEAN = 127.5f;
+        final float IMAGE_STD = 127.5f;
+        final int IMAGE_SIZE_X = 224;
+        final int IMAGE_SIZE_Y = 224;
+        final int DIM_BATCH_SIZE = 1;
+        final int DIM_PIXEL_SIZE = 3;
+        //changed from 4 --> 1
+        final int NUM_BYTES_PER_CHANNEL = 4;
+        final int NUM_CLASS = 2102;
+
+        // Initialization code
+        // Create an ImageProcessor with all ops required. For more ops, please
+        // refer to the ImageProcessor Architecture section in this README.
+        ImageProcessor imageProcessor =
+                new ImageProcessor.Builder()
+                        .add(new ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
+                        .build();
+
+        // Create a TensorImage object. This creates the tensor of the corresponding
+        // tensor type (uint8 in this case) that the TensorFlow Lite interpreter needs.
+        TensorImage tImage = new TensorImage(DataType.UINT8);
+
+        // Analysis code for every frame
+// Preprocess the image
+        tImage.load(bm);
+        tImage = imageProcessor.process(tImage);
+
+
+//
+//        // The example uses Bitmap ARGB_8888 format.
+//        Bitmap bitmap = bm.copy(Bitmap.Config.ARGB_8888, true);
+//        bitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, false);
+//
+//        int[] intValues = new int[IMAGE_SIZE_X * IMAGE_SIZE_Y];
+//        bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+//
+//        ByteBuffer imgData =
+//                ByteBuffer.allocateDirect(
+//                        DIM_BATCH_SIZE
+//                                * IMAGE_SIZE_X
+//                                * IMAGE_SIZE_Y
+//                                * DIM_PIXEL_SIZE
+//                                * NUM_BYTES_PER_CHANNEL);
+//        imgData.rewind();
+//
+//        // Quantized model.
+//        int pixel = 0;
+//        for (int i = 0; i < IMAGE_SIZE_X; ++i) {
+//            for (int j = 0; j < IMAGE_SIZE_Y; ++j) {
+//                int pixelValue = intValues[pixel++];
+//                imgData.put((byte) ((((pixelValue >> 16) & 0xFF)+255)/255));
+//                imgData.put((byte) ((((pixelValue >> 8) & 0xFF)+255)/255));
+//                imgData.put((byte) (((pixelValue & 0xFF)+255)/255));
+//            }
+//        }
+
+        // Output label probabilities.
+        //byte [][] labelProbArray = new byte[1][NUM_CLASS];
+
+        TensorBuffer probabilityBuffer =
+                TensorBuffer.createFixedSize(new int[]{1, NUM_CLASS}, DataType.UINT8);
+
+        // Run the model.
+        //tflite.run(imgData, labelProbArray);
+        tflite.run(tImage.getBuffer(), probabilityBuffer.getBuffer());
+
+        final String ASSOCIATED_AXIS_LABELS = "aiy_plants_V1_labelmap.csv";
+        List<String> associatedAxisLabels = null;
+
+        try {
+            associatedAxisLabels = FileUtil.loadLabels(getContext(), ASSOCIATED_AXIS_LABELS);
+        } catch (IOException e) {
+            Log.e("tfliteSupport", "Error reading label file", e);
+        }
+
+        // Post-processor which dequantize the result
+        TensorProcessor probabilityProcessor =
+                new TensorProcessor.Builder().add(new NormalizeOp(0, 255)).build();
+
+        if (null != associatedAxisLabels) {
+            // Map of labels and their corresponding probability
+            TensorLabel labels = new TensorLabel(associatedAxisLabels,
+                    probabilityProcessor.process(probabilityBuffer));
+
+            // Create a map to access the result based on label
+            Map<String, Float> floatMap = labels.getMapWithFloatValue();
+            for (String label: floatMap.keySet()){
+                if (floatMap.get(label)!=0){
+                    Log.i(TAG, "label: " + label + " prob: " + floatMap.get(label));
+                }
+
+            }
+        }
+    }
+
+    // Memory-map the model file in Assets.
+    private MappedByteBuffer loadModelFile(Activity activity) throws IOException {
+        AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(getModelPath());
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+    }
+
+    private String getModelPath() {
+        return "aiy_vision_classifier_plants_V1_1.tflite";
     }
 }
 

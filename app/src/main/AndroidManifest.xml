@@ -18,6 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
+        <activity android:name=".TestingActivity">
+        </activity>
         <activity android:name=".HostEventActivityDetails" />
         <activity android:name=".EditProfileActivity" />
         <!--

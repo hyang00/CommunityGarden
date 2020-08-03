@@ -11,8 +11,11 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    aaptOptions {
+        noCompress "tflite"
     }
 
     buildTypes {
@@ -77,5 +80,16 @@ dependencies {
     // For confetti animation https://github.com/DanielMartinus/Konfetti
     implementation 'nl.dionsegijn:konfetti:1.2.2'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72'
+
+
+    // Import tflite dependencies
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+    // The GPU delegate library is optional. Depend on it as needed.
+    implementation 'org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.0.0-nightly'
+
+    // Image labeling feature with custom classifier support
+    implementation 'com.google.mlkit:image-labeling-custom:16.2.0'
+
 
 }

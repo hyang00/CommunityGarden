@@ -27,6 +27,7 @@ public class Location {
     public Location(String writtenAddress, Context context) {
         Geocoder geoCoder = new Geocoder(context, Locale.getDefault());
         try {
+            Log.i(TAG, "writtenAddress: " + writtenAddress);
             List<Address> myAddress = geoCoder.getFromLocationName(writtenAddress, 1);
             this.writtenAddress = myAddress.get(0).getAddressLine(0);
             this.locality = myAddress.get(0).getLocality();
