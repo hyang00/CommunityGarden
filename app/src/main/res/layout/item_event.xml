@@ -29,6 +29,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginBottom="2dp"
                 android:padding="4dp"
+                android:textColor="@color/colorSecondaryDark"
                 app:layout_constraintBottom_toTopOf="@+id/tvDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ivEventPhoto"

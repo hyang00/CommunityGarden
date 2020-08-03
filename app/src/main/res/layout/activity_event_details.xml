@@ -24,7 +24,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:padding="8dp"
+                android:padding="20dp"
                 android:textSize="36sp"
                 android:textStyle="bold"
                 tools:text="Cactus Garden Tour" />
@@ -54,13 +54,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/vHostProfile"
-                android:orientation="horizontal">
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
 
                 <include
                     android:id="@+id/vEventTime"
                     layout="@layout/item_event_time"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp" />
 
                 <TextView
                     android:id="@+id/tvGoing"
@@ -70,19 +73,33 @@
                     android:layout_marginEnd="24dp"
                     android:padding="12dp"
                     android:text="@string/be_the_first_to_register"
+                    android:textColor="@color/colorSecondary"
                     tools:text="Be the first to register" />
             </RelativeLayout>
+
+            <include
+                android:id="@+id/divider"
+                layout="@layout/horizontal_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/rlTimeAndGoing"
+                android:layout_margin="20dp"
+                android:padding="20dp" />
+
 
             <TextView
                 android:id="@+id/tvAbout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rlTimeAndGoing"
+                android:layout_below="@+id/divider"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:padding="4dp"
+                android:paddingStart="20dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
                 android:text="@string/about"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -96,7 +113,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:padding="3dp"
+                android:padding="20dp"
                 android:textSize="18sp"
                 tools:text="Hello welcome! Our garden has over 200 varieties of Cacti. The garden is drought tolerant, and was started 5 years ago" />
 
@@ -109,7 +126,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:padding="4dp"
+                android:paddingStart="20dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
                 android:text="@string/location"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -124,8 +144,8 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:drawableStart="@drawable/ic_baseline_location_on_24"
-                android:drawablePadding="4dp"
-                android:padding="4dp"
+                android:drawablePadding="12dp"
+                android:padding="20dp"
                 android:textSize="18sp"
                 tools:text="1234 Cacti Lane, Arizona" />
 
