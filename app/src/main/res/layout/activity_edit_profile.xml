@@ -20,8 +20,7 @@
         android:layout_toStartOf="@+id/fabSave"
         android:contentDescription="@string/cancel"
         android:text="@string/cancel"
-        android:textAlignment="center"
-        android:textColorLink="@color/colorAccent" />
+        android:textAlignment="center" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabSave"
