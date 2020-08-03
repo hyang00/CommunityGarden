@@ -383,81 +383,46 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     // Take the uploaded bitmap and run it through the plant classifier data model to find out if it contains any
     // particularily identifiable plants
     private void runLabeler(Bitmap bm){
+
+        final int IMAGE_SIZE_X = 224;
+        final int IMAGE_SIZE_Y = 224;
+        final int NUM_CLASS = 2102;
+
+
+        // Initialize interpreter w/ premade model
         Interpreter tflite = null;
         try {
             tflite = new Interpreter(loadModelFile(getActivity()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        final float IMAGE_MEAN = 127.5f;
-        final float IMAGE_STD = 127.5f;
-        final int IMAGE_SIZE_X = 224;
-        final int IMAGE_SIZE_Y = 224;
-        final int DIM_BATCH_SIZE = 1;
-        final int DIM_PIXEL_SIZE = 3;
-        //changed from 4 --> 1
-        final int NUM_BYTES_PER_CHANNEL = 4;
-        final int NUM_CLASS = 2102;
 
-        // Initialization code
-        // Create an ImageProcessor with all ops required. For more ops, please
-        // refer to the ImageProcessor Architecture section in this README.
+        // Create an ImageProcessor with all ops required. (resize to 224X224)
         ImageProcessor imageProcessor =
                 new ImageProcessor.Builder()
-                        .add(new ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
+                        .add(new ResizeOp(IMAGE_SIZE_X, IMAGE_SIZE_Y, ResizeOp.ResizeMethod.BILINEAR))
                         .build();
 
-        // Create a TensorImage object. This creates the tensor of the corresponding
-        // tensor type (uint8 in this case) that the TensorFlow Lite interpreter needs.
+        // Create a TensorImage object of tensor type uint8
         TensorImage tImage = new TensorImage(DataType.UINT8);
 
         // Analysis code for every frame
-// Preprocess the image
+        // Preprocess the image
         tImage.load(bm);
         tImage = imageProcessor.process(tImage);
 
-
-//
-//        // The example uses Bitmap ARGB_8888 format.
-//        Bitmap bitmap = bm.copy(Bitmap.Config.ARGB_8888, true);
-//        bitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, false);
-//
-//        int[] intValues = new int[IMAGE_SIZE_X * IMAGE_SIZE_Y];
-//        bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-//
-//        ByteBuffer imgData =
-//                ByteBuffer.allocateDirect(
-//                        DIM_BATCH_SIZE
-//                                * IMAGE_SIZE_X
-//                                * IMAGE_SIZE_Y
-//                                * DIM_PIXEL_SIZE
-//                                * NUM_BYTES_PER_CHANNEL);
-//        imgData.rewind();
-//
-//        // Quantized model.
-//        int pixel = 0;
-//        for (int i = 0; i < IMAGE_SIZE_X; ++i) {
-//            for (int j = 0; j < IMAGE_SIZE_Y; ++j) {
-//                int pixelValue = intValues[pixel++];
-//                imgData.put((byte) ((((pixelValue >> 16) & 0xFF)+255)/255));
-//                imgData.put((byte) ((((pixelValue >> 8) & 0xFF)+255)/255));
-//                imgData.put((byte) (((pixelValue & 0xFF)+255)/255));
-//            }
-//        }
-
-        // Output label probabilities.
-        //byte [][] labelProbArray = new byte[1][NUM_CLASS];
-
+        //for storing output
         TensorBuffer probabilityBuffer =
                 TensorBuffer.createFixedSize(new int[]{1, NUM_CLASS}, DataType.UINT8);
 
         // Run the model.
-        //tflite.run(imgData, labelProbArray);
         tflite.run(tImage.getBuffer(), probabilityBuffer.getBuffer());
 
+        // core
         final String ASSOCIATED_AXIS_LABELS = "aiy_plants_V1_labelmap.csv";
         List<String> associatedAxisLabels = null;
 
+        // get file w/ labels corresponding to output probabilities
         try {
             associatedAxisLabels = FileUtil.loadLabels(getContext(), ASSOCIATED_AXIS_LABELS);
         } catch (IOException e) {
@@ -479,7 +444,6 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                 if (floatMap.get(label)!=0){
                     Log.i(TAG, "label: " + label + " prob: " + floatMap.get(label));
                 }
-
             }
         }
     }
