@@ -382,7 +382,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
     // Take the uploaded bitmap and run it through the plant classifier data model to find out if it contains any
     // particularily identifiable plants
-    private void runLabeler(Bitmap bm){
+    private void runLabeler(Bitmap bm) {
 
         final int IMAGE_SIZE_X = 224;
         final int IMAGE_SIZE_Y = 224;
@@ -440,8 +440,8 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
             // Create a map to access the result based on label
             Map<String, Float> floatMap = labels.getMapWithFloatValue();
-            for (String label: floatMap.keySet()){
-                if (floatMap.get(label)!=0){
+            for (String label : floatMap.keySet()) {
+                if (floatMap.get(label) != 0) {
                     Log.i(TAG, "label: " + label + " prob: " + floatMap.get(label));
                 }
             }

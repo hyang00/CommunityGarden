@@ -49,12 +49,12 @@ public class TestingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testing);
         //Glide.with(this).
-        String url= "https://firebasestorage.googleapis.com/v0/b/gardentours-3ec05.appspot.com/o/images%2F66cd5987-19bb-4ac0-8c00-51ca3671b48e?alt=media&token=87b71ec7-f5e5-4c20-8676-bc29d2cd6b1f";
+        String url = "https://firebasestorage.googleapis.com/v0/b/gardentours-3ec05.appspot.com/o/images%2F66cd5987-19bb-4ac0-8c00-51ca3671b48e?alt=media&token=87b71ec7-f5e5-4c20-8676-bc29d2cd6b1f";
         String url1 = "https://cloudinary-a.akamaihd.net/ufn/image/upload/u7cdzxvxu69pmubmtltc.jpg";
         //InputImage image = InputImage.fromBitmap(getBitmapFromURL(url1), 90);
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.ic_baseline_add_box_24);
-        InputImage image =  InputImage.fromBitmap(icon, 0);
+        InputImage image = InputImage.fromBitmap(icon, 0);
         //InputImage image = InputImage.fromFilePath(this, "download.jpg");
         //        Uri uri = null;
 //        try {
@@ -163,7 +163,9 @@ public class TestingActivity extends AppCompatActivity {
 //        tflite.run(imgData, labelProbArray);
     }
 
-    /** Memory-map the model file in Assets. */
+    /**
+     * Memory-map the model file in Assets.
+     */
     private MappedByteBuffer loadModelFile(Activity activity) throws IOException {
         AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(getModelPath());
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
