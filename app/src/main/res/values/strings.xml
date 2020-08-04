@@ -30,7 +30,7 @@
     <string name="tour_photo_preview">Tour Photo Preview</string>
     <string name="mm_dd_yyyy">MM/DD/YYYY</string>
     <string name="time">Time</string>
-    <string name="max_number_of_attendees">Max Number of Attendees</string>
+    <string name="max_number_of_attendees">Max Number of Attendees:</string>
     <string name="post">Post</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="event_history">Event History</string>
