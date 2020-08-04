@@ -120,7 +120,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         private ImageView ivEventPhoto;
         private TextView tvTime;
         private TextView tvDescription;
-        private TextView tvLocation;
+        //private TextView tvLocation;
         private TextView tvGoing;
         private Button btnRSVP;
 
@@ -130,7 +130,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             ivEventPhoto = itemView.findViewById(R.id.ivEventPhoto);
             tvTime = itemView.findViewById(R.id.tvTime);
             tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvLocation = itemView.findViewById(R.id.tvLocation);
+            //tvLocation = itemView.findViewById(R.id.tvLocation);
             tvGoing = itemView.findViewById(R.id.tvGoing);
             btnRSVP = itemView.findViewById(R.id.btnRSVP);
             btnRSVP.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +170,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 Glide.with(context).load(event.getImageUrl()).into(ivEventPhoto);
             }
             tvTime.setText(formatDateWithDayOfWeek(event.getDate()) + " | " + event.getTime());
-            tvLocation.setText(event.getLocation().getLocality());
+            //tvLocation.setText(event.getLocation().getLocality());
             if (event.isEventFull()) {
                 btnRSVP.setText(R.string.rsvp_button_event_full);
             }

@@ -2,6 +2,7 @@ package com.example.finalproject.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -309,6 +310,9 @@ public class EventFragment extends Fragment {
                 Location location = new Location(place.getAddress(), getContext());
                 searchLocation = location.getLocality();
                 tvLocation.setText(searchLocation);
+                //tvLocation.setPaintFlags();
+                //tvLocation.setPaintFlags(R.color.background);
+                tvLocation.setPaintFlags(tvLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 queryEventsNearby(searchLocation);
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
@@ -351,6 +355,9 @@ public class EventFragment extends Fragment {
                 searchLocation = user.getLocation().getLocality();
                 queryEventsNearby(searchLocation);
                 tvLocation.setText(searchLocation);
+                //tvLocation.setPaintFlags(R.color.background);
+                tvLocation.setPaintFlags(tvLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
             }
 
             @Override
