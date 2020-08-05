@@ -113,6 +113,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     private Long maxAttendees;
     private ChipGroup cgTags;
     private HashMap<String, Boolean> eventTags;
+    private ImageView ivAddAdditionalPhotos;
     private GridView gvPhotos;
     ArrayList<AdditionalPhoto> additionalPhotos;
     PhotoGalleryAdapter photosAdapter;
@@ -141,6 +142,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         spMaxAttendees = view.findViewById(R.id.spMaxAttendees);
         btnPost = view.findViewById(R.id.btnPost);
         cgTags = view.findViewById(R.id.cgTags);
+        ivAddAdditionalPhotos = view.findViewById(R.id.ivAddAdditionalPhoto);
 
         gvPhotos = (GridView) view.findViewById(R.id.gvAdditionalPhotos);
         additionalPhotos = new ArrayList<>();
@@ -186,7 +188,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         ivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectImage(getContext());
+                selectImage(getContext(), false);
             }
         });
         // launch a date picker when filling out date, populate date picker w/ current day/month/year to begin with;
@@ -219,6 +221,13 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                     }
                 }, 1, 1, false);
                 picker.show();
+            }
+        });
+
+        ivAddAdditionalPhotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectImage(getContext(), true);
             }
         });
 
@@ -282,7 +291,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     }
 
     //Pops up a dialog to ask the user whether they would like to get a photo from camera or gallery
-    private void selectImage(Context context) {
+    private void selectImage(Context context, final boolean isAdditionalPhoto) {
         final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -295,10 +304,12 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
                 if (options[item].equals("Take Photo")) {
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePicture.putExtra("Photo type", isAdditionalPhoto);
                     startActivityForResult(takePicture, 0);
 
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    pickPhoto.putExtra("Photo type", isAdditionalPhoto);
                     startActivityForResult(pickPhoto, 1);
 
                 } else if (options[item].equals("Cancel")) {
@@ -329,15 +340,23 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                     }
                     break;
             }
-            ivPhoto.setImageBitmap(bm);
-            runLabeler(bm);
-            imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
-            DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    downloadUri = task.getResult();
-                }
-            }, imageToUpload, getContext());
+            boolean isAdditionalPhoto = data.getBooleanExtra("photo type", true);
+            if (isAdditionalPhoto){
+                runLabeler(bm);
+                photosAdapter.add(new AdditionalPhoto(bm, NO_LABEL_FOUND));
+                photosAdapter.notifyDataSetChanged();
+
+            }else {
+                ivPhoto.setImageBitmap(bm);
+                imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
+                DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        downloadUri = task.getResult();
+                    }
+                }, imageToUpload, getContext());
+            }
+
         }
     }
 

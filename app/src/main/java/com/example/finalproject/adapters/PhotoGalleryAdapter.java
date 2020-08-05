@@ -41,7 +41,7 @@ public class PhotoGalleryAdapter extends ArrayAdapter<AdditionalPhoto> {
         ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
         TextView tvLabel = (TextView) convertView.findViewById(R.id.tvLabel);
 
-        if (additionalPhoto.getImageUrl()==null){
+        if (additionalPhoto.getImageUrl()!=null){
             Glide.with(getContext()).load(additionalPhoto.getImageUrl()).into(ivPhoto);
         }else{
             if (additionalPhoto.getBitmap()!=null){
