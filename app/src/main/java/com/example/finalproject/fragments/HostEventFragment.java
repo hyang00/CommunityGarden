@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -32,6 +35,8 @@ import androidx.fragment.app.Fragment;
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.ImageFormatter;
 import com.example.finalproject.R;
+import com.example.finalproject.adapters.PhotoGalleryAdapter;
+import com.example.finalproject.models.AdditionalPhoto;
 import com.example.finalproject.models.Event;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -81,6 +86,7 @@ import java.util.Map;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.example.finalproject.Common.NO_ATTENDEES_CAP_SET;
+import static com.example.finalproject.Common.NO_LABEL_FOUND;
 import static com.example.finalproject.Common.TAGS;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForStorage;
 import static com.example.finalproject.TimeAndDateFormatter.formatDateForView;
@@ -107,6 +113,9 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     private Long maxAttendees;
     private ChipGroup cgTags;
     private HashMap<String, Boolean> eventTags;
+    private GridView gvPhotos;
+    ArrayList<AdditionalPhoto> additionalPhotos;
+    PhotoGalleryAdapter photosAdapter;
 
 
     public HostEventFragment() {
@@ -132,6 +141,15 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         spMaxAttendees = view.findViewById(R.id.spMaxAttendees);
         btnPost = view.findViewById(R.id.btnPost);
         cgTags = view.findViewById(R.id.cgTags);
+
+        gvPhotos = (GridView) view.findViewById(R.id.gvAdditionalPhotos);
+        additionalPhotos = new ArrayList<>();
+        //Bitmap addPhotoIcon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_baseline_add_box_24);
+        //additionalPhotos.add(new AdditionalPhoto(addPhotoIcon, NO_LABEL_FOUND));
+        photosAdapter = new PhotoGalleryAdapter(getContext(), additionalPhotos);
+        gvPhotos.setAdapter(photosAdapter);
+
+
 
         etTitle.setOnFocusChangeListener(this);
         etDescription.setOnFocusChangeListener(this);

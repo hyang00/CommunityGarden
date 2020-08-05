@@ -132,6 +132,40 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/tvAdditionalPhotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Additional Photos:" />
+
+            <ImageView
+                android:id="@+id/ivAddAdditionalPhoto"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/tvAdditionalPhotos"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toEndOf="@+id/tvAdditionalPhotos"
+                android:cropToPadding="false"
+                android:src="@drawable/ic_baseline_add_box_24" />
+
+        </RelativeLayout>
+
+        <GridView
+            android:id="@+id/gvAdditionalPhotos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="auto_fit" >
+
+        </GridView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
                 android:id="@+id/tvTags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

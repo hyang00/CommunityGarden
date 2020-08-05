@@ -16,6 +16,7 @@ public class Common {
     public static final int USER_EVENTS_FRAGMENT = 3;
     public static final int PROFILE_FRAGMENT = 4;
     public static final Long NO_ATTENDEES_CAP_SET = Long.MAX_VALUE;
+    public static final String NO_LABEL_FOUND = "no label";
     public static Map<String, ArrayList<String>> TAGS = new HashMap<>();
 
     static {
