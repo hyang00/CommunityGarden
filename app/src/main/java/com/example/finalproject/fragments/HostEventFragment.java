@@ -156,7 +156,6 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         gvPhotos.setAdapter(photosAdapter);
 
 
-
         etTitle.setOnFocusChangeListener(this);
         etDescription.setOnFocusChangeListener(this);
         eventTags = new HashMap<>();
@@ -309,7 +308,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                 if (options[item].equals("Take Photo")) {
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     takePicture.putExtra("Photo type", isAdditionalPhoto);
-                    if (isAdditionalPhoto){
+                    if (isAdditionalPhoto) {
                         requestCode = CAMERA_ADDITIONAL_PHOTO_REQUEST_CODE;
                     } else {
                         requestCode = CAMERA_PHOTO_REQUEST_CODE;
@@ -319,7 +318,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     pickPhoto.putExtra("Photo type", isAdditionalPhoto);
-                    if (isAdditionalPhoto){
+                    if (isAdditionalPhoto) {
                         requestCode = GALLERY_ADDITIONAL_PHOTO_REQUEST_CODE;
                     } else {
                         requestCode = GALLERY_PHOTO_REQUEST_CODE;
@@ -373,7 +372,8 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
             }
         }
     }
-    private void addAdditionalPhoto(Bitmap bm){
+
+    private void addAdditionalPhoto(Bitmap bm) {
         String label = runLabeler(bm);
         Uri additionalImageToUpload = ImageFormatter.getImageUri(getContext(), bm);
         final AdditionalPhoto photo = new AdditionalPhoto(bm, label);
@@ -388,7 +388,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         }, additionalImageToUpload, getContext());
     }
 
-    private void addEventPhoto(Bitmap bm){
+    private void addEventPhoto(Bitmap bm) {
         ivPhoto.setImageBitmap(bm);
         imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
         DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
@@ -464,7 +464,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         final int IMAGE_SIZE_Y = 224;
         final int NUM_CLASS = 2102;
 
-        String likelyLabel=NO_LABEL_FOUND;
+        String likelyLabel = NO_LABEL_FOUND;
 
         // Initialize interpreter w/ premade model
         Interpreter tflite = null;
@@ -519,7 +519,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
             Map<String, Float> floatMap = labels.getMapWithFloatValue();
             for (String label : floatMap.keySet()) {
                 Float max = 0f;
-                if (floatMap.get(label)>=.8 && floatMap.get(label)>max) {
+                if (floatMap.get(label) >= .8 && floatMap.get(label) > max) {
                     max = floatMap.get(label);
                     likelyLabel = label;
                     Log.i(TAG, "label: " + label + " prob: " + floatMap.get(label));

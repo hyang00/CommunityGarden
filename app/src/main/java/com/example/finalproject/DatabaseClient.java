@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.finalproject.models.AdditionalPhoto;
 import com.example.finalproject.models.Event;
 import com.example.finalproject.models.User;
 import com.google.android.gms.tasks.Continuation;
@@ -28,8 +29,11 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
@@ -41,22 +45,29 @@ public class DatabaseClient {
     private static final String KEY_POSTS = "Posts";
     private static final String KEY_ATTENDEES = "attendees";
     private static final String KEY_PROFILE = "Profiles";
+    private static final String KEY_ADDITIONAL_PHOTOS = "AdditionalPhotos";
     private static final String KEY_EVENT_DATE = "date";
     private static final String KEY_LOCALITY = "location/locality";
     private final static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private final static StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
     // Add a new event to the database
-    public static void postEvent(final Context context, Event event) {
+    public static void postEvent(final Context context, Event event, ArrayList<AdditionalPhoto> additionalPhotos) {
         String key = database.child(KEY_POSTS).push().getKey();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         event.setAuthor(uid);
+        Map<String, String> formattedAdditionalPhotos = new HashMap<>();
+        for (AdditionalPhoto additionalPhoto : additionalPhotos) {
+            formattedAdditionalPhotos.put(additionalPhoto.getLabel(), additionalPhoto.getImageUrl());
+        }
         database.child(KEY_POSTS).child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(context, "Posted Successfully", Toast.LENGTH_SHORT).show();
             }
         });
+
+        database.child(KEY_ADDITIONAL_PHOTOS).child(key).setValue(formattedAdditionalPhotos);
     }
 
     public static void isNewUser(ValueEventListener listener) {

@@ -34,21 +34,21 @@ public class PhotoGalleryAdapter extends ArrayAdapter<AdditionalPhoto> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         AdditionalPhoto additionalPhoto = getItem(position);
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
         }
 
         ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
         TextView tvLabel = (TextView) convertView.findViewById(R.id.tvLabel);
 
-        if (additionalPhoto.getImageUrl()!=null){
+        if (additionalPhoto.getImageUrl() != null) {
             Glide.with(getContext()).load(additionalPhoto.getImageUrl()).into(ivPhoto);
-        }else{
-            if (additionalPhoto.getBitmap()!=null){
+        } else {
+            if (additionalPhoto.getBitmap() != null) {
                 Glide.with(getContext()).load(additionalPhoto.getBitmap()).into(ivPhoto);
             }
         }
-        if (!additionalPhoto.getLabel().equals(Common.NO_LABEL_FOUND)){
+        if (!additionalPhoto.getLabel().equals(Common.NO_LABEL_FOUND)) {
             tvLabel.setText(additionalPhoto.getLabel());
             tvLabel.setVisibility(View.VISIBLE);
         }
