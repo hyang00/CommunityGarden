@@ -8,6 +8,9 @@ public class AdditionalPhoto {
     private String imageUrl;
     private String label;
 
+    public AdditionalPhoto(){
+    }
+
     public AdditionalPhoto(Bitmap bitmap, String label){
         this.bitmap = bitmap;
         this.label = label;

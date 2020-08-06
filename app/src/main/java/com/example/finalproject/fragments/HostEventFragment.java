@@ -97,8 +97,12 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         View.OnFocusChangeListener {
 
     private static final String TAG = "Host Event Fragment";
-    private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
     private static final String NONE_KEY = "None";
+    private static final int CAMERA_PHOTO_REQUEST_CODE = 0;
+    private static final int GALLERY_PHOTO_REQUEST_CODE = 1;
+    private static final int CAMERA_ADDITIONAL_PHOTO_REQUEST_CODE = 2;
+    private static final int GALLERY_ADDITIONAL_PHOTO_REQUEST_CODE = 3;
+
 
     private TextInputEditText etTitle;
     private EditText etDescription;
@@ -246,7 +250,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                 date = formatDateForStorage(date);
                 Event event = new Event(title, description, address, date, time, maxAttendees, downloadUri, getContext());
                 event.setTags(eventTags);
-                DatabaseClient.postEvent(getContext(), event);
+                DatabaseClient.postEvent(getContext(), event, additionalPhotos);
                 resetFields();
             }
         });
@@ -301,16 +305,26 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-
+                int requestCode;
                 if (options[item].equals("Take Photo")) {
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     takePicture.putExtra("Photo type", isAdditionalPhoto);
-                    startActivityForResult(takePicture, 0);
+                    if (isAdditionalPhoto){
+                        requestCode = CAMERA_ADDITIONAL_PHOTO_REQUEST_CODE;
+                    } else {
+                        requestCode = CAMERA_PHOTO_REQUEST_CODE;
+                    }
+                    startActivityForResult(takePicture, requestCode);
 
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     pickPhoto.putExtra("Photo type", isAdditionalPhoto);
-                    startActivityForResult(pickPhoto, 1);
+                    if (isAdditionalPhoto){
+                        requestCode = GALLERY_ADDITIONAL_PHOTO_REQUEST_CODE;
+                    } else {
+                        requestCode = GALLERY_PHOTO_REQUEST_CODE;
+                    }
+                    startActivityForResult(pickPhoto, requestCode);
 
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -323,41 +337,66 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_CANCELED) {
+        if (resultCode == RESULT_OK) {
             Bitmap bm = null;
             switch (requestCode) {
-                case 0:  // If photo from Camera
-                    if (resultCode == RESULT_OK && data != null) {
+                case CAMERA_PHOTO_REQUEST_CODE:  // If photo from Camera
+                    if (data != null) {
                         bm = (Bitmap) data.getExtras().get("data");
+                        addEventPhoto(bm);
                     }
                     break;
-                case 1:     // If photo from Gallery
-                    if (resultCode == RESULT_OK && data != null) {
+                case GALLERY_PHOTO_REQUEST_CODE:     // If photo from Gallery
+                    if (data != null) {
                         Uri selectedImage = data.getData();
                         bm = ImageFormatter.getImageResized(getContext(), selectedImage);
                         int rotation = ImageFormatter.getRotation(getContext(), selectedImage, false);
                         bm = ImageFormatter.rotate(bm, rotation);
+                        addEventPhoto(bm);
+                    }
+                    break;
+                case CAMERA_ADDITIONAL_PHOTO_REQUEST_CODE:
+                    if (data != null) {
+                        bm = (Bitmap) data.getExtras().get("data");
+                        addAdditionalPhoto(bm);
+                    }
+                    break;
+                case GALLERY_ADDITIONAL_PHOTO_REQUEST_CODE:
+                    if (data != null) {
+                        Uri selectedImage = data.getData();
+                        bm = ImageFormatter.getImageResized(getContext(), selectedImage);
+                        int rotation = ImageFormatter.getRotation(getContext(), selectedImage, false);
+                        bm = ImageFormatter.rotate(bm, rotation);
+                        addAdditionalPhoto(bm);
                     }
                     break;
             }
-            boolean isAdditionalPhoto = data.getBooleanExtra("photo type", true);
-            if (isAdditionalPhoto){
-                runLabeler(bm);
-                photosAdapter.add(new AdditionalPhoto(bm, NO_LABEL_FOUND));
-                photosAdapter.notifyDataSetChanged();
-
-            }else {
-                ivPhoto.setImageBitmap(bm);
-                imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
-                DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        downloadUri = task.getResult();
-                    }
-                }, imageToUpload, getContext());
-            }
-
         }
+    }
+    private void addAdditionalPhoto(Bitmap bm){
+        String label = runLabeler(bm);
+        Uri additionalImageToUpload = ImageFormatter.getImageUri(getContext(), bm);
+        final AdditionalPhoto photo = new AdditionalPhoto(bm, label);
+        photosAdapter.add(photo);
+        photosAdapter.notifyDataSetChanged();
+        DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                downloadUri = task.getResult();
+                photo.setImageUrl(downloadUri.toString());
+            }
+        }, additionalImageToUpload, getContext());
+    }
+
+    private void addEventPhoto(Bitmap bm){
+        ivPhoto.setImageBitmap(bm);
+        imageToUpload = ImageFormatter.getImageUri(getContext(), bm);
+        DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                downloadUri = task.getResult();
+            }
+        }, imageToUpload, getContext());
     }
 
     // Listener for when user picks option for max # of attendees from the spinner
@@ -419,12 +458,13 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
     // Take the uploaded bitmap and run it through the plant classifier data model to find out if it contains any
     // particularily identifiable plants
-    private void runLabeler(Bitmap bm) {
+    private String runLabeler(Bitmap bm) {
 
         final int IMAGE_SIZE_X = 224;
         final int IMAGE_SIZE_Y = 224;
         final int NUM_CLASS = 2102;
 
+        String likelyLabel=NO_LABEL_FOUND;
 
         // Initialize interpreter w/ premade model
         Interpreter tflite = null;
@@ -478,11 +518,15 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
             // Create a map to access the result based on label
             Map<String, Float> floatMap = labels.getMapWithFloatValue();
             for (String label : floatMap.keySet()) {
-                if (floatMap.get(label) != 0) {
+                Float max = 0f;
+                if (floatMap.get(label)>=.8 && floatMap.get(label)>max) {
+                    max = floatMap.get(label);
+                    likelyLabel = label;
                     Log.i(TAG, "label: " + label + " prob: " + floatMap.get(label));
                 }
             }
         }
+        return likelyLabel;
     }
 
     // Memory-map the model file in Assets.
