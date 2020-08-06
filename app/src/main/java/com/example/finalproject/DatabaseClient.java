@@ -58,7 +58,6 @@ public class DatabaseClient {
                 Toast.makeText(context, "Posted Successfully", Toast.LENGTH_SHORT).show();
             }
         });
-
         database.child(KEY_ADDITIONAL_PHOTOS).child(key).setValue(additionalPhotos);
     }
 

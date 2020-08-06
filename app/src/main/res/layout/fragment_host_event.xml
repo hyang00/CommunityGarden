@@ -153,14 +153,10 @@
 
         </RelativeLayout>
 
-        <GridView
-            android:id="@+id/gvAdditionalPhotos"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAdditionalPhotos"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:numColumns="3">
-
-        </GridView>
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -29,11 +29,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.DatabaseClient;
 import com.example.finalproject.ImageFormatter;
 import com.example.finalproject.R;
-import com.example.finalproject.adapters.PhotoGalleryAdapter;
+import com.example.finalproject.adapters.AdditionalPhotosAdapter;
 import com.example.finalproject.models.AdditionalPhoto;
 import com.example.finalproject.models.Event;
 import com.google.android.gms.common.api.Status;
@@ -106,7 +108,8 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     private ImageView ivAddAdditionalPhotos;
     private GridView gvPhotos;
     ArrayList<AdditionalPhoto> additionalPhotos;
-    PhotoGalleryAdapter photosAdapter;
+    private RecyclerView rvAdditionalPhotos;
+    AdditionalPhotosAdapter additionalPhotosAdapter;
 
 
     public HostEventFragment() {
@@ -134,12 +137,13 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         cgTags = view.findViewById(R.id.cgTags);
         ivAddAdditionalPhotos = view.findViewById(R.id.ivAddAdditionalPhoto);
 
-        gvPhotos = (GridView) view.findViewById(R.id.gvAdditionalPhotos);
+
+        rvAdditionalPhotos = (RecyclerView) view.findViewById(R.id.rvAdditionalPhotos);
         additionalPhotos = new ArrayList<>();
-        //Bitmap addPhotoIcon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_baseline_add_box_24);
-        //additionalPhotos.add(new AdditionalPhoto(addPhotoIcon, NO_LABEL_FOUND));
-        photosAdapter = new PhotoGalleryAdapter(getContext(), additionalPhotos);
-        gvPhotos.setAdapter(photosAdapter);
+        additionalPhotosAdapter = new AdditionalPhotosAdapter(getContext(), additionalPhotos);
+        rvAdditionalPhotos.setAdapter(additionalPhotosAdapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        rvAdditionalPhotos.setLayoutManager(gridLayoutManager);
 
 
         etTitle.setOnFocusChangeListener(this);
@@ -363,8 +367,10 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         String label = runLabeler(bm);
         Uri additionalImageToUpload = ImageFormatter.getImageUri(getContext(), bm);
         final AdditionalPhoto photo = new AdditionalPhoto(bm, label);
-        photosAdapter.add(photo);
-        photosAdapter.notifyDataSetChanged();
+        additionalPhotosAdapter.add(photo);
+        additionalPhotosAdapter.notifyDataSetChanged();
+        //photosAdapter.add(photo);
+        //photosAdapter.notifyDataSetChanged();
         DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
@@ -505,7 +511,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
             Map<String, Float> floatMap = labels.getMapWithFloatValue();
             for (String label : floatMap.keySet()) {
                 Float max = 0f;
-                if (floatMap.get(label) >= .8 && floatMap.get(label) > max) {
+                if (floatMap.get(label) >= .7 && floatMap.get(label) > max) {
                     max = floatMap.get(label);
                     likelyLabel = label;
                     Log.i(TAG, "label: " + label + " prob: " + floatMap.get(label));
