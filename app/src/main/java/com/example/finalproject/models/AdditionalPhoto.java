@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 
 import com.google.firebase.database.Exclude;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class AdditionalPhoto {
 
     private Bitmap bitmap;
@@ -15,6 +18,11 @@ public class AdditionalPhoto {
 
     public AdditionalPhoto(Bitmap bitmap, String label) {
         this.bitmap = bitmap;
+        this.label = label;
+    }
+
+    public AdditionalPhoto(String imageUrl, String label) {
+        this.imageUrl = imageUrl;
         this.label = label;
     }
 

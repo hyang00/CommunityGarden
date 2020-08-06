@@ -1,7 +1,7 @@
 package com.example.finalproject.adapters;
 
 import android.content.Context;
-import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +16,7 @@ import com.example.finalproject.Common;
 import com.example.finalproject.R;
 import com.example.finalproject.models.AdditionalPhoto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdditionalPhotosAdapter extends RecyclerView.Adapter<AdditionalPhotosAdapter.ViewHolder> {
@@ -52,6 +53,10 @@ public class AdditionalPhotosAdapter extends RecyclerView.Adapter<AdditionalPhot
         additionalPhotos.add(additionalPhoto);
     }
 
+    public void add(ArrayList<AdditionalPhoto> additionalPhotos){
+        this.additionalPhotos.addAll(additionalPhotos);
+    }
+
     public void clear() {
         additionalPhotos.clear();
     }
@@ -70,7 +75,7 @@ public class AdditionalPhotosAdapter extends RecyclerView.Adapter<AdditionalPhot
         return position;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView ivPhoto;
         private TextView tvLabel;
@@ -89,7 +94,7 @@ public class AdditionalPhotosAdapter extends RecyclerView.Adapter<AdditionalPhot
                     Glide.with(context).load(additionalPhoto.getBitmap()).into(ivPhoto);
                 }
             }
-            if (!additionalPhoto.getLabel().equals(Common.NO_LABEL_FOUND)) {
+            if (additionalPhoto.getLabel()!=null && !additionalPhoto.getLabel().equals(Common.NO_LABEL_FOUND)) {
                 tvLabel.setText(additionalPhoto.getLabel());
                 tvLabel.setVisibility(View.VISIBLE);
             }

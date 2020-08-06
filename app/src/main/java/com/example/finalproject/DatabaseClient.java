@@ -180,6 +180,12 @@ public class DatabaseClient {
         ref.addListenerForSingleValueEvent(listener);
     }
 
+    // Query additional photos for an event
+    public static void queryAdditionalPhotos(ValueEventListener listener, Event event){
+        Query ref = database.child(KEY_ADDITIONAL_PHOTOS).child(event.getEventId());
+        ref.addListenerForSingleValueEvent(listener);
+    }
+
     //upload the image to firebase storage, can also use listener to get download url
     public static void uploadImage(OnCompleteListener<Uri> listener, Uri filePath, final Context context) {
         if (filePath != null) {
