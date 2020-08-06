@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

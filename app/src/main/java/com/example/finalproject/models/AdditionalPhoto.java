@@ -2,6 +2,8 @@ package com.example.finalproject.models;
 
 import android.graphics.Bitmap;
 
+import com.google.firebase.database.Exclude;
+
 public class AdditionalPhoto {
 
     private Bitmap bitmap;
@@ -16,10 +18,12 @@ public class AdditionalPhoto {
         this.label = label;
     }
 
+    @Exclude
     public Bitmap getBitmap() {
         return bitmap;
     }
 
+    @Exclude
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
     }

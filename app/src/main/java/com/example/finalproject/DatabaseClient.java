@@ -30,10 +30,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
@@ -56,10 +52,6 @@ public class DatabaseClient {
         String key = database.child(KEY_POSTS).push().getKey();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         event.setAuthor(uid);
-        Map<String, String> formattedAdditionalPhotos = new HashMap<>();
-        for (AdditionalPhoto additionalPhoto : additionalPhotos) {
-            formattedAdditionalPhotos.put(additionalPhoto.getLabel(), additionalPhoto.getImageUrl());
-        }
         database.child(KEY_POSTS).child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -67,7 +59,7 @@ public class DatabaseClient {
             }
         });
 
-        database.child(KEY_ADDITIONAL_PHOTOS).child(key).setValue(formattedAdditionalPhotos);
+        database.child(KEY_ADDITIONAL_PHOTOS).child(key).setValue(additionalPhotos);
     }
 
     public static void isNewUser(ValueEventListener listener) {

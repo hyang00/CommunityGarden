@@ -156,8 +156,9 @@
         <GridView
             android:id="@+id/gvAdditionalPhotos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="auto_fit">
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:numColumns="3">
 
         </GridView>
 

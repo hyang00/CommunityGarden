@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.example.finalproject.fragments.ProfileFragment;
 import com.example.finalproject.models.User;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,7 +36,6 @@ import java.util.Arrays;
 
 import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
 import static com.example.finalproject.Common.PROFILE_FRAGMENT;
-import static com.example.finalproject.Common.USER_EVENTS_FRAGMENT;
 
 public class EditProfileActivity extends AppCompatActivity {
 
