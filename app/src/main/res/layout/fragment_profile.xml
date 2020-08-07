@@ -8,6 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="800dp"
+        android:background="@color/colorPrimaryFaded"
         android:orientation="vertical">
 
         <include
@@ -38,6 +39,7 @@
             android:layout_below="@+id/ivProfilePic"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="4dp"
+            android:padding="4dp"
             android:textSize="30sp"
             android:textStyle="bold"
             tools:text="Hannah" />
@@ -49,6 +51,7 @@
             android:layout_below="@+id/tvName"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="0dp"
+            android:padding="4dp"
             android:text="@string/edit_profile" />
 
         <TextView
@@ -57,8 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnEditProfile"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
-            android:padding="4dp"
+            android:padding="12dp"
             android:textSize="24sp"
             tools:text="Bio: Hi I am Hannah" />
 
@@ -69,8 +71,7 @@
             android:layout_below="@+id/tvBio"
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="4dp"
-            android:padding="4dp"
+            android:padding="12dp"
             android:textSize="24sp"
             tools:text="Location: Los Altos, CA" />
 
@@ -78,26 +79,13 @@
             android:id="@+id/tvEventHistory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvInterests"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/event_history"
-            android:padding="4dp"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvInterests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_below="@+id/tvLocation"
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="4dp"
-            android:padding="4dp"
-            android:text="@string/interests"
-            android:textSize="24sp" />
+            android:padding="12dp"
+            android:text="@string/event_history"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvAttendedCount"
@@ -108,8 +96,9 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
             android:padding="4dp"
-            android:paddingStart="12dp"
+            android:paddingStart="20dp"
             android:textAlignment="textStart"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="30sp"
             tools:text="10 Events Attended" />
 
@@ -122,8 +111,9 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
             android:padding="4dp"
-            android:paddingStart="12dp"
+            android:paddingStart="20dp"
             android:textAlignment="textStart"
+            android:textColor="@color/colorSecondaryDark"
             android:textSize="30sp"
             tools:text="2 Events Hosted" />
 
@@ -133,11 +123,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvHostedCount"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="0dp"
+            android:layout_marginStart="1dp"
             android:layout_marginTop="4dp"
             android:padding="4dp"
-            android:paddingStart="12dp"
+            android:paddingStart="20dp"
             android:textAlignment="textStart"
+            android:textColor="@color/colorSecondary"
             android:textSize="30sp"
             tools:text="2 Events Hosted" />
 
