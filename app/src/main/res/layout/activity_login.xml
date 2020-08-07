@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryFaded"
     android:padding="30dp"
     tools:context=".LoginActivity">
 
@@ -39,7 +40,7 @@
         android:layout_alignStart="@+id/etPassword"
         android:layout_centerInParent="false"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="-2dp"
         android:layout_marginTop="11dp"
         android:text="@string/login"
         android:textColor="#FFFFFF"
@@ -53,6 +54,7 @@
         android:layout_alignStart="@+id/btnLogin"
         android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/colorSecondaryLight"
         android:text="@string/sign_up"
         android:textColor="#FFFFFF" />
 
@@ -60,9 +62,23 @@
         android:id="@+id/btnFacebookLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/btnSignUp"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginTop="60dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/etEmail"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="casual"
+        android:text="Community Garden"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="48sp" />
 
 
 </RelativeLayout>
