@@ -20,27 +20,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.models.User;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.parceler.Parcels;
 
 import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("ALL")
 public class SignUpActivity extends AppCompatActivity {
 
     public static final String TAG = "SignUpActivity";
+    private static int AUTOCOMPLETE_REQUEST_CODE = 30;
 
     private EditText etName;
     private EditText etBio;
+    private EditText etAddress;
     private ImageView ivProfilePic;
     private Button btnFinish;
     private String profileImageUrl;
@@ -56,6 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         etName = findViewById(R.id.etName);
         etBio = findViewById(R.id.etBio);
+        etAddress = findViewById(R.id.etAddress);
         ivProfilePic = findViewById(R.id.ivProfilePic);
         btnFinish = findViewById(R.id.btnFinish);
         fabAddProfilePic = findViewById(R.id.fabAddProfilePic);
@@ -65,28 +68,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
         PlacesClient placesClient = Places.createClient(SignUpActivity.this);
 
-        // Initialize the AutocompleteSupportFragment.
-        final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME));
-        autocompleteFragment.setHint("Address");
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                address = place.getAddress();
-                //TODO: fix bug where address isn't showing
-                autocompleteFragment.setHint(address);
-                Log.i(TAG, "Place: " + place.getAddress());
-            }
-
-            @Override
-            public void onError(Status status) {
-                Log.e(TAG, "An error occurred: " + status);
-            }
-        });
-
-
         // If user making account w/ Facebook, prepopulate fields
         if (getIntent().hasExtra(User.class.getSimpleName())) {
             User user = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
@@ -94,6 +75,17 @@ public class SignUpActivity extends AppCompatActivity {
             profileImageUrl = user.getProfileImageUrl();
             Glide.with(SignUpActivity.this).load(profileImageUrl).into(ivProfilePic);
         }
+
+        etAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "address clicked");
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(SignUpActivity.this);
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+            }
+        });
 
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,6 +191,10 @@ public class SignUpActivity extends AppCompatActivity {
                         profileImageUrl = task.getResult().toString();
                     }
                 }, imageToUpload, SignUpActivity.this);
+            } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                address = place.getAddress();
+                etAddress.setText(address);
             }
 
         }

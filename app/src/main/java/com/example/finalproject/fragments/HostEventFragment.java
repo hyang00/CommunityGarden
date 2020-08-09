@@ -44,8 +44,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
@@ -90,11 +92,13 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     private static final int GALLERY_PHOTO_REQUEST_CODE = 1;
     private static final int CAMERA_ADDITIONAL_PHOTO_REQUEST_CODE = 2;
     private static final int GALLERY_ADDITIONAL_PHOTO_REQUEST_CODE = 3;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 30;
 
 
     private TextInputEditText etTitle;
     private EditText etDescription;
     private ImageView ivPhoto;
+    private EditText etAddress;
     private EditText etDate;
     private EditText etTime;
     private Spinner spMaxAttendees;
@@ -130,6 +134,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         etTitle = view.findViewById(R.id.etTitle);
         etDescription = view.findViewById(R.id.etDescription);
         ivPhoto = view.findViewById(R.id.ivPhoto);
+        etAddress = view.findViewById(R.id.etAddress);
         etDate = view.findViewById(R.id.etDate);
         etTime = view.findViewById(R.id.etTime);
         spMaxAttendees = view.findViewById(R.id.spMaxAttendees);
@@ -156,32 +161,22 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         }
         PlacesClient placesClient = Places.createClient(getContext());
 
-        // Initialize the AutocompleteSupportFragment.
-        final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME));
-        autocompleteFragment.setHint("Address");
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                address = place.getAddress();
-                autocompleteFragment.setText(address);
-                //autocompleteFragment.setHint(address);
-                Log.i(TAG, "Place: " + place.getAddress());
-            }
-
-            @Override
-            public void onError(Status status) {
-                Log.e(TAG, "An error occurred: " + status);
-            }
-        });
-
         // launch an option to either add photo to post from camera/gallery
         ivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectImage(getContext(), false);
+            }
+        });
+        // launch activity to set address
+        etAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "address clicked");
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(getContext());
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
         // launch a date picker when filling out date, populate date picker w/ current day/month/year to begin with;
@@ -359,6 +354,10 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
                         addAdditionalPhoto(bm);
                     }
                     break;
+                case AUTOCOMPLETE_REQUEST_CODE:
+                    Place place = Autocomplete.getPlaceFromIntent(data);
+                    address = place.getAddress();
+                    etAddress.setText(address);
             }
         }
     }
