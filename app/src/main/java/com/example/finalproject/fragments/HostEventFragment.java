@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -38,18 +37,17 @@ import com.example.finalproject.R;
 import com.example.finalproject.adapters.AdditionalPhotosAdapter;
 import com.example.finalproject.models.AdditionalPhoto;
 import com.example.finalproject.models.Event;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.tensorflow.lite.DataType;
@@ -102,7 +100,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     private EditText etDate;
     private EditText etTime;
     private Spinner spMaxAttendees;
-    private Button btnPost;
+    private ExtendedFloatingActionButton fabPost;
     private Uri imageToUpload;
     private Uri downloadUri;
     private String address;
@@ -138,7 +136,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
         etDate = view.findViewById(R.id.etDate);
         etTime = view.findViewById(R.id.etTime);
         spMaxAttendees = view.findViewById(R.id.spMaxAttendees);
-        btnPost = view.findViewById(R.id.btnPost);
+        fabPost = view.findViewById(R.id.fabPost);
         cgTags = view.findViewById(R.id.cgTags);
         ivAddAdditionalPhotos = view.findViewById(R.id.ivAddAdditionalPhoto);
 
@@ -221,7 +219,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
 
         spMaxAttendees.setOnItemSelectedListener(this);
         // Save Post to database on click
-        btnPost.setOnClickListener(new View.OnClickListener() {
+        fabPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String title = etTitle.getText().toString();
@@ -363,7 +361,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
     }
 
     private void addAdditionalPhoto(Bitmap bm) {
-        String label = runLabeler(bm);
+        final String label = runLabeler(bm);
         Uri additionalImageToUpload = ImageFormatter.getImageUri(getContext(), bm);
         final AdditionalPhoto photo = new AdditionalPhoto(bm, label);
         additionalPhotosAdapter.add(photo);
@@ -375,6 +373,17 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
             public void onComplete(@NonNull Task<Uri> task) {
                 downloadUri = task.getResult();
                 photo.setImageUrl(downloadUri.toString());
+                if (!label.equals(NO_LABEL_FOUND)) {
+                    String message = "Plant was labeled as " + label;
+                    Snackbar.make(getView(), message, Snackbar.LENGTH_INDEFINITE).setAction("Remove Label", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.i(TAG, "remove");
+                            photo.setLabel(NO_LABEL_FOUND);
+                            additionalPhotosAdapter.notifyItemChanged(additionalPhotosAdapter.getItemCount() - 1);
+                        }
+                    }).show();
+                }
             }
         }, additionalImageToUpload, getContext());
     }
@@ -510,7 +519,7 @@ public class HostEventFragment extends Fragment implements AdapterView.OnItemSel
             Map<String, Float> floatMap = labels.getMapWithFloatValue();
             for (String label : floatMap.keySet()) {
                 Float max = 0f;
-                if (floatMap.get(label) >= .7 && floatMap.get(label) > max) {
+                if (floatMap.get(label) >= .5 && floatMap.get(label) > max) {
                     max = floatMap.get(label);
                     likelyLabel = label;
                     Log.i(TAG, "label: " + label + " prob: " + floatMap.get(label));

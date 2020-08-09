@@ -199,7 +199,7 @@ public class DatabaseClient {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
