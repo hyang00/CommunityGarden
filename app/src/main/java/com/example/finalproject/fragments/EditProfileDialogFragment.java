@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.finalproject.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,16 +7,25 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.finalproject.DatabaseClient;
+import com.example.finalproject.ImageFormatter;
+import com.example.finalproject.R;
 import com.example.finalproject.models.User;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,51 +39,63 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.annotations.NotNull;
 
-import org.parceler.Parcels;
-
 import java.util.Arrays;
 
-import static com.example.finalproject.Common.MAIN_ACT_FRG_TO_LOAD_KEY;
-import static com.example.finalproject.Common.PROFILE_FRAGMENT;
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileDialogFragment extends DialogFragment {
 
-    public static final String TAG = "EditProfile";
+    private static final String TAG = "EditProfDialogFragment";
 
     private EditText etName;
     private EditText etBio;
     private ImageView ivProfilePic;
     private FloatingActionButton fabAddProfilePic;
     private ExtendedFloatingActionButton fabSave;
-    private ExtendedFloatingActionButton fabCancel;
+    private User user;
     private String profileImageUrl;
     private String address;
-    private User user;
     private AutocompleteSupportFragment autocompleteFragment;
 
+    public EditProfileDialogFragment() {
+
+    }
+
+    public static EditProfileDialogFragment newInstance(User user){
+        EditProfileDialogFragment frag = new EditProfileDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(User.class.getSimpleName(), user);
+        frag.setArguments(args);
+        return frag;
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return getActivity().getLayoutInflater().inflate(R.layout.fragment_edit_profile_dialog, container);
+    }
 
-        user = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        etName = findViewById(R.id.etName);
-        etBio = findViewById(R.id.etBio);
-        //etAddress = findViewById(R.id.etAddress);
-        ivProfilePic = findViewById(R.id.ivProfilePic);
-        fabAddProfilePic = findViewById(R.id.fabAddProfilePic);
-        fabSave = findViewById(R.id.fabSave);
-        fabCancel = findViewById(R.id.fabCancel);
+        etName = view.findViewById(R.id.etName);
+        etBio = view.findViewById(R.id.etBio);
+        ivProfilePic = view.findViewById(R.id.ivProfilePic);
+        fabAddProfilePic = view.findViewById(R.id.fabAddProfilePic);
+        fabSave = view.findViewById(R.id.fabSave);
+        user = (User) getArguments().getSerializable(User.class.getSimpleName());
 
         if (!Places.isInitialized()) {
-            Places.initialize(EditProfileActivity.this, getString(R.string.api_key));
+            Places.initialize(getContext(), getString(R.string.api_key));
         }
-        @SuppressWarnings("unused") PlacesClient placesClient = Places.createClient(EditProfileActivity.this);
+        @SuppressWarnings("unused") PlacesClient placesClient = Places.createClient(getContext());
 
         // Initialize the AutocompleteSupportFragment.
-        autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        autocompleteFragment = new AutocompleteSupportFragment();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.autocomplete_fragment, autocompleteFragment).commit();
 
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME));
@@ -94,37 +115,31 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-
+        address = user.getLocation().getWrittenAddress();
+        autocompleteFragment.setText(address);
         etName.setText(user.getScreenName());
         etBio.setText(user.getBio());
-        autocompleteFragment.setText(user.getLocation().getWrittenAddress());
-        address = user.getLocation().getWrittenAddress();
         profileImageUrl = user.getProfileImageUrl();
-        Glide.with(EditProfileActivity.this).load(profileImageUrl).transform(new CircleCrop()).into(ivProfilePic);
+        Glide.with(getContext()).load(profileImageUrl).transform(new CircleCrop()).into(ivProfilePic);
         fabAddProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectImage(EditProfileActivity.this);
+                selectImage(getContext());
             }
         });
+
         fabSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = etName.getText().toString();
                 String bio = etBio.getText().toString();
-                DatabaseClient.createUser(name, bio, profileImageUrl, address, EditProfileActivity.this);
-                Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-                intent.putExtra(MAIN_ACT_FRG_TO_LOAD_KEY, PROFILE_FRAGMENT);
-                startActivity(intent);
-                finish();
+                DatabaseClient.createUser(name, bio, profileImageUrl, address, getContext());
+                sendBackResult();
             }
         });
-        fabCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        // Show soft keyboard automatically
+        getDialog().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     //Pops up a dialog to ask the user whether they would like to get a photo from camera or gallery
@@ -155,9 +170,8 @@ public class EditProfileActivity extends AppCompatActivity {
         builder.show();
     }
 
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Uri imageToUpload;
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_CANCELED) {
@@ -172,23 +186,39 @@ public class EditProfileActivity extends AppCompatActivity {
                     case 1:     // If photo from Gallery
                         if (resultCode == RESULT_OK && data != null) {
                             Uri selectedImage = data.getData();
-                            bm = ImageFormatter.getImageResized(EditProfileActivity.this, selectedImage);
-                            int rotation = ImageFormatter.getRotation(EditProfileActivity.this, selectedImage, false);
+                            bm = ImageFormatter.getImageResized(getActivity(), selectedImage);
+                            int rotation = ImageFormatter.getRotation(getActivity(), selectedImage, false);
                             bm = ImageFormatter.rotate(bm, rotation);
                         }
                         break;
                 }
-                Glide.with(EditProfileActivity.this).load(bm).transform(new CircleCrop()).into(ivProfilePic);
-                //ivProfilePic.setImageBitmap(bm);
-                imageToUpload = ImageFormatter.getImageUri(EditProfileActivity.this, bm);
+                Glide.with(getActivity()).load(bm).transform(new CircleCrop()).into(ivProfilePic);
+                imageToUpload = ImageFormatter.getImageUri(getActivity(), bm);
                 DatabaseClient.uploadImage(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         profileImageUrl = task.getResult().toString();
                     }
-                }, imageToUpload, EditProfileActivity.this);
+                }, imageToUpload, getActivity());
             }
 
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Window window = getDialog().getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    public interface EditProfileDialogListener {
+        void onFinishEditDialog();
+    }
+
+    public void sendBackResult() {
+        EditProfileDialogListener listener = (EditProfileDialogListener) getTargetFragment();
+        listener.onFinishEditDialog();
+        dismiss();
     }
 }

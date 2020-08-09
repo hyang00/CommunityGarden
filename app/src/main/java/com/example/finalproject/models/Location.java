@@ -9,11 +9,12 @@ import android.widget.Toast;
 import org.parceler.Parcel;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
 @Parcel
-public class Location {
+public class Location implements Serializable {
     private static final String TAG = "Location";
 
     private String writtenAddress;

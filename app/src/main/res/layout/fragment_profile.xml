@@ -92,17 +92,6 @@
             android:textSize="14sp"
             tools:text="Los Altos, CA" />
 
-        <Button
-            android:id="@+id/btnEditProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvLocation"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="0dp"
-            android:padding="4dp"
-            android:text="@string/edit_profile"
-            android:visibility="gone" />
-
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView

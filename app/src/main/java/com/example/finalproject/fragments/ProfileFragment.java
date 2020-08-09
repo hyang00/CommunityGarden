@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
@@ -15,11 +14,11 @@ import android.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.finalproject.DatabaseClient;
-import com.example.finalproject.EditProfileActivity;
 import com.example.finalproject.LoginActivity;
 import com.example.finalproject.R;
 import com.example.finalproject.models.Event;
@@ -31,10 +30,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import org.parceler.Parcels;
 
-
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements EditProfileDialogFragment.EditProfileDialogListener {
 
     private static final String TAG = "Profile Fragment";
 
@@ -42,7 +39,6 @@ public class ProfileFragment extends Fragment {
     private TextView tvName;
     private TextView tvBio;
     private TextView tvLocation;
-    private Button btnEditProfile;
     private FloatingActionButton fabEditProfile;
     private TextView tvAttendedCount;
     private TextView tvHostedCount;
@@ -75,7 +71,6 @@ public class ProfileFragment extends Fragment {
         tvName = view.findViewById(R.id.tvName);
         tvBio = view.findViewById(R.id.tvBio);
         tvLocation = view.findViewById(R.id.tvLocation);
-        btnEditProfile = view.findViewById(R.id.btnEditProfile);
         fabEditProfile = view.findViewById(R.id.fabEditProfile);
         tvAttendedCount = view.findViewById(R.id.tvAttendedCount);
         tvHostedCount = view.findViewById(R.id.tvHostedCount);
@@ -105,21 +100,14 @@ public class ProfileFragment extends Fragment {
                 return true;
             }
         });
-        btnEditProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), EditProfileActivity.class);
-                intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
-                startActivity(intent);
-            }
-        });
 
         fabEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), EditProfileActivity.class);
-                intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
-                startActivity(intent);
+                FragmentManager fm = getFragmentManager();
+                EditProfileDialogFragment editProfileDialogFragment = EditProfileDialogFragment.newInstance(user);
+                editProfileDialogFragment.setTargetFragment(ProfileFragment.this, 300);
+                editProfileDialogFragment.show(fm, "fragment_edit_name");
             }
         });
 
@@ -147,12 +135,6 @@ public class ProfileFragment extends Fragment {
                         usersMet += (event.getNumberofAttendees() - 1);
                     }
                 }
-//                String strAttended = "<big>" + attended + "</big>" + "<small> Events Attended</small>";
-//                String strHosted = "<big>" + hosted + "</big>" + "<small> Events Hosted</small>";
-//                String strUsersMet = "<big>" + usersMet + "</big>" + "<small> Gardeners Met</small>";
-//                tvAttendedCount.setText(Html.fromHtml(strAttended));
-//                tvHostedCount.setText(Html.fromHtml(strHosted));
-//                tvUsersMet.setText(Html.fromHtml(strUsersMet));
                 tvAttendedCount.setText("" + attended);
                 tvHostedCount.setText("" + hosted);
                 tvUsersMet.setText("" + usersMet);
@@ -173,9 +155,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 user = snapshot.getValue(User.class);
                 tvName.setText(user.getScreenName());
-                //String bio = "<b>" + "Bio: " + "</b> " + user.getBio();
                 tvBio.setText(user.getBio());
-                //String location = "<b>" + "Location: " + "</b> " + user.getLocation().getLocality();
                 tvLocation.setText(user.getLocation().getLocality());
                 if (user.getProfileImageUrl() != null && getActivity() != null) {
                     Glide.with(getActivity()).load(user.getProfileImageUrl()).transform(new CircleCrop()).into(ivProfilePic);
@@ -202,5 +182,11 @@ public class ProfileFragment extends Fragment {
     private boolean attended(Event event) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         return event.isAttending(uid);
+    }
+
+    // After User hits save from edit profile dialog
+    @Override
+    public void onFinishEditDialog() {
+        setProfileFields();
     }
 }

@@ -6,9 +6,11 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import org.parceler.Parcel;
 
+import java.io.Serializable;
+
 @IgnoreExtraProperties
 @Parcel
-public class User {
+public class User implements Serializable {
     private String uid;
     private String screenName;
     private String bio;
