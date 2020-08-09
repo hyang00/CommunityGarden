@@ -119,12 +119,12 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 additionalPhotosAdapter.clear();
-                for (DataSnapshot singleSnapshot : snapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
                     Map<String, String> info = (Map<String, String>) singleSnapshot.getValue();
                     AdditionalPhoto additionalPhoto = new AdditionalPhoto(info.get("imageUrl"), info.get("label"));
                     additionalPhotosAdapter.add(additionalPhoto);
                 }
-                if (additionalPhotosAdapter.getItemCount()>0){
+                if (additionalPhotosAdapter.getItemCount() > 0) {
                     tvAdditionalPhotos.setVisibility(View.VISIBLE);
                 }
                 additionalPhotosAdapter.notifyDataSetChanged();

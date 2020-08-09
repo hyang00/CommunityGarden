@@ -65,11 +65,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
         PlacesClient placesClient = Places.createClient(SignUpActivity.this);
 
-        // change default icon on places autocomplete
-        ImageView searchIcon = findViewById(R.id.places_autocomplete_search_button);
-        //TODO: image not loading properly
-        Glide.with(SignUpActivity.this).load(R.drawable.ic_baseline_location_on_24).into(searchIcon);
-
         // Initialize the AutocompleteSupportFragment.
         final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);

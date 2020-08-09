@@ -1,7 +1,6 @@
 package com.example.finalproject.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +52,7 @@ public class AdditionalPhotosAdapter extends RecyclerView.Adapter<AdditionalPhot
         additionalPhotos.add(additionalPhoto);
     }
 
-    public void add(ArrayList<AdditionalPhoto> additionalPhotos){
+    public void add(ArrayList<AdditionalPhoto> additionalPhotos) {
         this.additionalPhotos.addAll(additionalPhotos);
     }
 
@@ -94,7 +93,7 @@ public class AdditionalPhotosAdapter extends RecyclerView.Adapter<AdditionalPhot
                     Glide.with(context).load(additionalPhoto.getBitmap()).into(ivPhoto);
                 }
             }
-            if (additionalPhoto.getLabel()!=null && !additionalPhoto.getLabel().equals(Common.NO_LABEL_FOUND)) {
+            if (additionalPhoto.getLabel() != null && !additionalPhoto.getLabel().equals(Common.NO_LABEL_FOUND)) {
                 tvLabel.setText(additionalPhoto.getLabel());
                 tvLabel.setVisibility(View.VISIBLE);
             }

@@ -181,7 +181,7 @@ public class DatabaseClient {
     }
 
     // Query additional photos for an event
-    public static void queryAdditionalPhotos(ValueEventListener listener, Event event){
+    public static void queryAdditionalPhotos(ValueEventListener listener, Event event) {
         Query ref = database.child(KEY_ADDITIONAL_PHOTOS).child(event.getEventId());
         ref.addListenerForSingleValueEvent(listener);
     }

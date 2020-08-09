@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#689f38</color>
-    <color name="colorPrimaryFaded">#6699d066</color>
-    <color name="colorPrimaryDark">#387002</color>
+    <color name="colorPrimaryOg">#689f38</color>
+    <color name="colorPrimary">#96BB7C</color>
+    <color name="colorPrimaryFaded">#D6EFC7</color>
+    <color name="colorPrimaryFadedOg">#6699d066</color>
+    <color name="colorPrimaryDark">#184D47</color>
+    <color name="colorAlmostBlack">#051A14</color>
+    <color name="colorPrimaryDarkOg">#387002</color>
     <color name="colorPrimaryLight">#99d066</color>
-    <color name="colorSecondary">#e64a19</color>
+    <color name="colorSecondaryOg">#e64a19</color>
+    <color name="colorSecondary">#EEBB4D</color>
     <color name="colorSecondaryDark">#ac0800</color>
-    <color name="colorSecondaryLight">#ff7d47</color>
+    <color name="colorSecondaryLightOg">#ff7d47</color>
+    <color name="colorSecondaryLight">#EEBB4D</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="background">#dddddd</color>
+    <color name="semiTransparentBackground">#DDFFFFFF</color>
 </resources>

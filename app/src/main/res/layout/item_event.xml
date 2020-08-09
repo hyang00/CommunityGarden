@@ -3,23 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#00FFFFFF">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="4dp"
-        app:cardBackgroundColor="#FDFCFC"
+        android:background="#88FFFFFF"
+        app:cardBackgroundColor="#88FFFFFF"
         app:cardCornerRadius="4dp"
-        app:cardElevation="4dp"
+        app:cardElevation="12dp"
+        app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:contentPadding="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false">
+            android:background="@color/white"
+            android:clipToPadding="true">
 
             <TextView
                 android:id="@+id/tvTime"
@@ -31,7 +34,8 @@
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingRight="8dp"
-                android:textColor="@color/colorSecondary"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tvDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ivEventPhoto"
@@ -127,7 +131,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 
 </FrameLayout>
