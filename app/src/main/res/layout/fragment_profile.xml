@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?><!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    tools:context=".fragments.ProfileFragment">-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -78,6 +73,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="0dp"
             android:padding="4dp"
+            android:textAlignment="center"
             android:textSize="14sp"
             tools:text="Hi I am Hannah" />
 
@@ -304,4 +300,4 @@
 
     </androidx.cardview.widget.CardView>
 
-</RelativeLayout><!--</ScrollView>-->
+</RelativeLayout>
