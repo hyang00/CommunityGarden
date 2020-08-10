@@ -4,10 +4,16 @@
 Community Garden is an app that aims to connect people in their local communities through gardening. The app allows users to host tours of their home gardens and check out other people's gardens too.
 
 ### Demo 
-<img src='https://github.com/hyang00/FinalProject/blob/master/EventFeed.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' /> <img src='https://github.com/hyang00/FinalProject/blob/master/Filter.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-<img src='https://github.com/hyang00/FinalProject/blob/master/HostEvent.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-<img src='https://github.com/hyang00/FinalProject/blob/master/MyEvent.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-<img src='https://github.com/hyang00/FinalProject/blob/master/profile2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' /><img src='https://github.com/hyang00/FinalProject/blob/master/labeler.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+# Event Feed
+![](https://github.com/hyang00/FinalProject/blob/master/EventFeed.gif)
+![](https://github.com/hyang00/FinalProject/blob/master/Filter.gif)
+# Host Event
+![](https://github.com/hyang00/FinalProject/blob/master/HostEvent.gif)
+![](https://github.com/hyang00/FinalProject/blob/master/labeler.gif)
+# My Events Feed
+![](https://github.com/hyang00/FinalProject/blob/master/MyEvent.gif)
+# Profile Page
+![](https://github.com/hyang00/FinalProject/blob/master/profile2.gif)
 
 ### Features
 - Event Feed
