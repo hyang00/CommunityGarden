@@ -16,6 +16,9 @@ Community Garden is an app that aims to connect people in their local communitie
 ![](https://github.com/hyang00/FinalProject/blob/master/profile2.gif)
 
 ### Features
+- Login Page
+    - Login w/ email + password 
+    - Login w/ Facebook
 - Event Feed
     - View garden tours near the user's profile location
     - RSVP to events using button or double tap
@@ -30,7 +33,8 @@ Community Garden is an app that aims to connect people in their local communitie
 - Host Event
     - Input event information
     - Set cap on number of attendees
-    - 
+    - Automatic tagging of events using substring search on title/description
+    - Labeling of plant photos that user uploads
 - My Events
     - View events attending
     - View events hosting
