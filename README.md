@@ -45,4 +45,5 @@ Community Garden is an app that aims to connect people in their local communitie
     - Logout
     - View Summary of Event History
     - View Badges Earned (Not implemented) 
-  
+    
+Original Project Plan https://hackmd.io/OZfjpCHsQQ2Bc5e-xb27SQ
