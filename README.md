@@ -19,6 +19,7 @@ Community Garden is an app that aims to connect people in their local communitie
 - Login Page
     - Login w/ email + password 
     - Login w/ Facebook
+    - Create new account
 - Event Feed
     - View garden tours near the user's profile location
     - RSVP to events using button or double tap
